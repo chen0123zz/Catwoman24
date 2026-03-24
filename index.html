@@ -412,14 +412,20 @@ async function init(){
   applyConfig();renderGrid();applyNotice();
 }
 
-// ── DATE FORMAT ──
+// ── DATE FORMAT — 純字串拆解，完全不用 Date 物件避免時區偏移 ──
 function fmtDate(raw){
   if(!raw)return'—';
   const m=raw.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
   if(!m)return raw;
+  const y=+m[1],mo=+m[2],d=+m[3];
+  // Zeller's congruence — 計算星期幾，不建立 Date 物件
+  const a=mo<3?mo+12:mo, b=mo<3?y-1:y;
+  const c=Math.floor(b/100), bb=b%100;
+  const dow=((d+Math.floor(13*(a+1)/5)+bb+Math.floor(bb/4)+Math.floor(c/4)-2*c)%7+7)%7;
+  // Zeller: 0=Sat,1=Sun,2=Mon,...,6=Fri → 轉成 0=Sun,1=Mon,...,6=Sat
+  const dayIdx=[1,2,3,4,5,6,0][dow];
   const days=['日','一','二','三','四','五','六'];
-  const dow=new Date(+m[1],+m[2]-1,+m[3]).getDay();
-  return`${+m[2]}/${String(+m[3]).padStart(2,'0')}（${days[dow]}）`;
+  return`${mo}/${String(d).padStart(2,'0')}（${days[dayIdx]}）`;
 }
 
 function applyConfig(){
@@ -435,7 +441,6 @@ function applyConfig(){
     document.getElementById('pHolder').textContent=cfg.bankInfo.name||'—';
   }
   if(cfg.lotteryContent)document.getElementById('lotteryContent').textContent=cfg.lotteryContent;
-  if(cfg.lotteryHistory)document.getElementById('lotteryHistory').textContent=cfg.lotteryHistory;
   if(cfg.lotterySubtitle)document.getElementById('lotterySubtitle').textContent=cfg.lotterySubtitle;
 }
 function applyNotice(){
@@ -443,7 +448,9 @@ function applyNotice(){
   keys.forEach(k=>{
     if(!cfg[k])return;
     const el=document.getElementById(k);if(!el)return;
-    el.innerHTML=cfg[k].split('\n').filter(Boolean).map(l=>`<li>${l}</li>`).join('');
+    // 支援 \n 和 \r\n 換行（Google Sheets 讀出來可能是 \r\n）
+    const lines=cfg[k].replace(/\r\n/g,'\n').split('\n').filter(l=>l.trim());
+    el.innerHTML=lines.map(l=>`<li>${l.trim()}</li>`).join('');
   });
 }
 
