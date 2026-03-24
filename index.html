@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貓系傲嬌女子 — 24hrs 內衣團購</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0e0e0e;--ink2:#2a2a2a;--ink3:#555;--muted:#999;
+  --line:#e0e0e0;--line2:#f4f4f2;--bg:#faf9f7;--white:#fff;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Noto Sans TC',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:#ccc;}
+/* HEADER */
+header{position:sticky;top:0;z-index:80;background:rgba(250,249,247,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.hd{max-width:1100px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;}
+.brand-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.04em;line-height:1;}
+.brand-sub{font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;color:var(--ink3);padding:6px 0;transition:color .2s;}
+.cart-btn:hover{color:var(--ink);}
+.cart-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.badge{position:absolute;top:0;right:-8px;background:var(--ink);color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:500;display:none;align-items:center;justify-content:center;}
+.badge.on{display:flex;}
+/* HERO */
+.hero{background:var(--ink);color:#fff;text-align:center;padding:5rem 2rem 4rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.015) 40px,rgba(255,255,255,.015) 41px);}
+.hero-eye{font-size:10px;letter-spacing:.28em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:1.2rem;}
+.hero-title{font-family:var(--serif);font-size:clamp(36px,6vw,62px);font-weight:300;line-height:1.1;letter-spacing:-.01em;margin-bottom:.8rem;}
+.hero-title em{font-style:italic;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.45);letter-spacing:.08em;margin-bottom:2.5rem;}
+.hero-bar{display:inline-flex;border:1px solid rgba(255,255,255,.15);}
+.hero-bar-item{padding:10px 22px;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.08em;}
+.hero-bar-item+.hero-bar-item{border-left:1px solid rgba(255,255,255,.15);}
+.hero-bar-item strong{display:block;color:rgba(255,255,255,.9);font-size:13px;font-weight:500;margin-top:2px;}
+/* MAIN */
+main{max-width:1100px;margin:0 auto;padding:3rem 2rem;}
+.sec-head{text-align:center;margin-bottom:2.5rem;}
+.sec-head h2{font-family:var(--serif);font-size:28px;font-weight:300;letter-spacing:.04em;}
+.sec-head p{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.05em;}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
+/* PRODUCT CARD */
+.pc{background:var(--white);cursor:pointer;transition:all .3s;overflow:hidden;}
+.pc:hover{z-index:1;box-shadow:0 8px 40px rgba(0,0,0,.12);transform:translateY(-2px);}
+.pc-img{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--line2);}
+.pc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.25,.46,.45,.94);}
+.pc:hover .pc-img img{transform:scale(1.04);}
+.pc-img-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;letter-spacing:.12em;}
+.pc-img-count{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 8px;letter-spacing:.06em;}
+.sold-badge{position:absolute;inset:0;background:rgba(250,249,247,.8);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;font-weight:300;letter-spacing:.1em;}
+.pc-body{padding:16px 16px 20px;}
+.pc-brand{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.pc-name{font-family:var(--serif);font-size:18px;font-weight:400;margin-bottom:8px;line-height:1.3;}
+.pc-dots{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.pc-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.12);transition:transform .15s;}
+.pc-dot:hover{transform:scale(1.25);}
+.pc-foot{display:flex;align-items:baseline;justify-content:space-between;}
+.pc-price{font-family:var(--serif);font-size:20px;font-weight:300;}
+.pc-price small{font-size:12px;font-family:var(--sans);color:var(--muted);}
+.pc-pick{font-size:11px;letter-spacing:.1em;color:var(--ink3);border:none;background:none;cursor:pointer;text-transform:uppercase;transition:color .15s;}
+.pc-pick:hover{color:var(--ink);}
+.empty-state{grid-column:1/-1;text-align:center;padding:6rem 2rem;background:var(--white);color:var(--muted);}
+.empty-state em{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--line);display:block;margin-bottom:1rem;}
+/* PRODUCT MODAL */
+.overlay{position:fixed;inset:0;background:rgba(10,10,10,.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.pm{background:var(--white);width:100%;max-width:920px;max-height:93vh;overflow-y:auto;border-radius:2px 2px 0 0;display:grid;grid-template-columns:1fr 1fr;transform:translateY(30px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.overlay.open .pm{transform:translateY(0);}
+/* gallery */
+.pm-gallery{position:relative;background:var(--line2);}
+.gallery-main{aspect-ratio:3/4;position:sticky;top:0;overflow:hidden;}
+.gallery-main img{width:100%;height:100%;object-fit:cover;}
+.gallery-main .no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;color:var(--muted);letter-spacing:.1em;}
+.gallery-thumbs{display:flex;gap:2px;flex-wrap:wrap;padding:2px;background:var(--line);}
+.g-thumb{width:calc(25% - 1.5px);aspect-ratio:1;overflow:hidden;cursor:pointer;opacity:.55;transition:opacity .15s;}
+.g-thumb:hover,.g-thumb.active{opacity:1;}
+.g-thumb img{width:100%;height:100%;object-fit:cover;}
+.pm-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;transition:background .15s;}
+.pm-close:hover{background:rgba(0,0,0,.75);}
+.pm-close svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;}
+/* info */
+.pm-info{padding:2.5rem 2rem;display:flex;flex-direction:column;gap:1.4rem;overflow-y:auto;}
+.pm-brand{font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.pm-name{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.2;}
+.pm-desc{font-size:13px;color:var(--ink3);line-height:1.7;}
+.pm-price{font-family:var(--serif);font-size:24px;font-weight:300;}
+.pm-price small{font-size:13px;font-family:var(--sans);color:var(--muted);}
+.vsec{border-top:1px solid var(--line);padding-top:1.2rem;}
+.vlabel{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.vlabel span{font-family:var(--sans);font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
+/* swatches */
+.swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+.sw-circle{width:32px;height:32px;border-radius:50%;border:2px solid transparent;box-shadow:0 0 0 1px rgba(0,0,0,.12);transition:all .15s;}
+.swatch:hover .sw-circle,.swatch.active .sw-circle{box-shadow:0 0 0 2.5px var(--ink);transform:scale(1.1);}
+.sw-name{font-size:10px;color:var(--muted);}
+.swatch.active .sw-name{color:var(--ink);}
+/* sizes */
+.size-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.sp{min-width:44px;padding:6px 10px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;letter-spacing:.06em;color:var(--ink3);transition:all .15s;font-family:var(--sans);}
+.sp:hover{border-color:var(--ink);color:var(--ink);}
+.sp.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.sp.oos{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+/* qty */
+.qty-row{display:flex;align-items:center;}
+.qty-btn{width:36px;height:36px;border:1px solid var(--line);background:none;cursor:pointer;font-size:16px;color:var(--ink);transition:background .1s;}
+.qty-btn:hover{background:var(--line2);}
+.qty-num{width:48px;height:36px;border:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:14px;color:var(--ink);background:var(--white);-moz-appearance:textfield;}
+.qty-num::-webkit-outer-spin-button,.qty-num::-webkit-inner-spin-button{-webkit-appearance:none;}
+.add-btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;transition:background .2s;}
+.add-btn:hover{background:var(--ink2);}
+.add-btn:disabled{background:var(--line);color:var(--muted);cursor:not-allowed;}
+/* CART DRAWER */
+.do{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .2s;}
+.do.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,100%);background:var(--white);z-index:301;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);border-left:1px solid var(--line);}
+.drawer.open{transform:translateX(0);}
+.dh{padding:1.5rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.dh h2{font-family:var(--serif);font-size:20px;font-weight:300;letter-spacing:.05em;}
+.dc{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);}
+.di{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
+.di-empty{text-align:center;padding:4rem 1rem;color:var(--muted);}
+.di-empty p{font-family:var(--serif);font-size:16px;font-weight:300;letter-spacing:.08em;margin-top:.5rem;}
+.ci{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--line2);}
+.ci-img{width:60px;height:76px;flex-shrink:0;overflow:hidden;background:var(--line2);display:flex;align-items:center;justify-content:center;}
+.ci-img img{width:100%;height:100%;object-fit:cover;}
+.ci-name{font-size:14px;font-weight:500;margin-bottom:3px;line-height:1.3;}
+.ci-var{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.ci-bot{display:flex;align-items:center;justify-content:space-between;}
+.ci-price{font-family:var(--serif);font-size:15px;}
+.ci-acts{display:flex;align-items:center;gap:5px;}
+.cqb{width:22px;height:22px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;color:var(--ink3);}
+.cqn{font-size:13px;min-width:18px;text-align:center;}
+.cdel{background:none;border:none;cursor:pointer;font-size:11px;color:var(--muted);letter-spacing:.05em;margin-left:4px;}
+.cdel:hover{color:#b00;}
+.df{padding:1.5rem;border-top:1px solid var(--line);}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;}
+.total-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.total-amt{font-family:var(--serif);font-size:24px;font-weight:300;}
+.checkout-btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:var(--sans);font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s;}
+.checkout-btn:hover{background:var(--ink2);}
+/* CHECKOUT SHEET */
+.so{position:fixed;inset:0;background:rgba(10,10,10,.6);z-index:400;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.so.open{opacity:1;pointer-events:all;}
+.cs{background:var(--white);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:2px 2px 0 0;padding:2rem;transform:translateY(40px);transition:transform .3s cubic-bezier(.34,1.2,.64,1);}
+.so.open .cs{transform:translateY(0);}
+.cs-title{font-family:var(--serif);font-size:22px;font-weight:300;margin-bottom:1.5rem;letter-spacing:.04em;}
+.fg{margin-bottom:14px;}
+.fl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.fl span{color:#b00;}
+.fi{width:100%;padding:10px 0;border:none;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:14px;color:var(--ink);background:none;outline:none;transition:border-color .15s;}
+.fi:focus{border-color:var(--ink);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.summary{background:var(--line2);padding:1rem;margin:1rem 0;font-size:13px;}
+.sr{display:flex;justify-content:space-between;padding:3px 0;}
+.st{font-size:15px;font-weight:500;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;}
+.pay-box{background:var(--ink);color:#fff;padding:1.2rem;margin:.8rem 0;}
+.pay-box h4{font-family:var(--serif);font-size:14px;font-weight:300;letter-spacing:.1em;margin-bottom:10px;opacity:.7;}
+.pr{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
+.pr span:last-child{font-weight:500;}
+.pnote{font-size:11px;opacity:.45;margin-top:8px;letter-spacing:.04em;}
+.sh-acts{display:flex;flex-direction:column;gap:8px;margin-top:1.2rem;}
+.btn-line{padding:13px;background:#06C755;color:#fff;border:none;cursor:pointer;font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
+.btn-copy{padding:13px;background:none;color:var(--ink);border:1px solid var(--ink);cursor:pointer;font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
+.btn-cancel{padding:10px;background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);}
+.success-v{text-align:center;padding:3rem 1rem;}
+.success-v h3{font-family:var(--serif);font-size:26px;font-weight:300;margin:1rem 0 .5rem;}
+.success-v p{font-size:13px;color:var(--muted);}
+.success-v button{margin-top:2rem;padding:12px 32px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:11px;letter-spacing:.18em;}
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#fff;padding:10px 20px;font-size:12px;letter-spacing:.06em;z-index:999;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* RESPONSIVE */
+@media(max-width:700px){
+  .pm{grid-template-columns:1fr;max-height:95vh;}
+  .gallery-main{aspect-ratio:4/3;position:relative;}
+  main{padding:2rem 1rem;}
+  .hd{padding:0 1rem;}
+  .hero{padding:3rem 1rem 2.5rem;}
+}
+@media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div>
+      <div class="brand-name" id="shopName">貓系傲嬌女子</div>
+      <div class="brand-sub" id="shopTagline">24hrs 內衣團購</div>
+    </div>
+    <button class="cart-btn" onclick="openDrawer()">
+      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      購物袋
+      <span class="badge" id="badge">0</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eye">✦ 貓系傲嬌女子 ✦</div>
+  <h1 class="hero-title"><em id="heroTitle">本期開團</em></h1>
+  <p class="hero-sub" id="heroDesc">精選 24hours 內衣 · 限量優惠</p>
+  <div class="hero-bar">
+    <div class="hero-bar-item">截單<strong id="heroDeadline">請洽團主</strong></div>
+    <div class="hero-bar-item">到貨<strong id="heroShipping">待確認</strong></div>
+    <div class="hero-bar-item">品牌<strong>24hours</strong></div>
+  </div>
+</div>
+
+<main>
+  <div class="sec-head">
+    <h2>本期商品</h2>
+    <p id="pCount">載入中⋯</p>
+  </div>
+  <div class="grid" id="grid">
+    <div class="empty-state"><em>~</em>商品載入中</div>
+  </div>
+</main>
+
+<!-- Product Modal -->
+<div class="overlay" id="pModal" onclick="if(event.target===this)closeModal()">
+  <div class="pm" id="pmBox">
+    <div class="pm-gallery" id="pmGallery">
+      <div class="gallery-main" id="gMain"><div class="no-img">No Image</div></div>
+      <div class="gallery-thumbs" id="gThumbs"></div>
+    </div>
+    <div class="pm-info" id="pmInfo"></div>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div class="do" id="dOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dh">
+    <h2>購物袋</h2>
+    <button class="dc" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="di" id="di"><div class="di-empty"><p>袋子還是空的</p></div></div>
+  <div class="df">
+    <div class="total-row">
+      <span class="total-lbl">合計</span>
+      <span class="total-amt" id="total">NT$ 0</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">前往結帳</button>
+  </div>
+</div>
+
+<!-- Checkout Sheet -->
+<div class="so" id="so">
+  <div class="cs" id="cs">
+    <div class="cs-title">填寫訂購資料</div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
+      <div class="fg"><label class="fl">手機 <span>*</span></label><input class="fi" id="bPhone" type="tel" placeholder="09xx-xxxxxx"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">取貨方式 <span>*</span></label>
+      <select class="fi" id="bPickup" onchange="toggleAddr()">
+        <option value="">請選擇</option>
+        <option value="自取">自取</option>
+        <option value="宅配">宅配（需加運費）</option>
+      </select>
+    </div>
+    <div class="fg" id="addrSec" style="display:none">
+      <label class="fl">宅配地址 <span>*</span></label>
+      <input class="fi" id="bAddr" placeholder="完整地址">
+    </div>
+    <div class="fg"><label class="fl">備註</label><input class="fi" id="bNote" placeholder="特殊需求（選填）"></div>
+    <div class="summary" id="sSummary"></div>
+    <div class="pay-box" id="sPayment">
+      <h4>匯款資訊</h4>
+      <div class="pr"><span>銀行</span><span id="pBank">—</span></div>
+      <div class="pr"><span>帳號</span><span id="pAcc">—</span></div>
+      <div class="pr"><span>戶名</span><span id="pHolder">—</span></div>
+      <div class="pnote">匯款後請截圖傳給貓女確認 🐱</div>
+    </div>
+    <div class="sh-acts">
+      <button class="btn-line" onclick="sendLine()">傳送訂單至 LINE</button>
+      <button class="btn-copy" onclick="copyOrder()">複製訂單文字</button>
+      <button class="btn-cancel" onclick="closeCheckout()">← 返回修改</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const GAS_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+let products=[],cart=[],cfg={},curP=null,selColor=null,selSize=null;
+
+async function init(){
+  try{
+    const r=await fetch(`${GAS_URL}?action=getPublicData`);
+    const d=await r.json();
+    products=d.products||[];cfg=d.config||{};
+  }catch{products=demo();cfg=demoCfg();showToast('⚠ 示範模式');}
+  applyConfig();renderGrid();
+}
+
+function applyConfig(){
+  if(cfg.shopName)document.getElementById('shopName').textContent=cfg.shopName;
+  if(cfg.tagline)document.getElementById('shopTagline').textContent=cfg.tagline;
+  if(cfg.heroTitle)document.getElementById('heroTitle').textContent=cfg.heroTitle;
+  if(cfg.heroDesc)document.getElementById('heroDesc').textContent=cfg.heroDesc;
+  if(cfg.deadline)document.getElementById('heroDeadline').textContent=cfg.deadline;
+  if(cfg.shipping)document.getElementById('heroShipping').textContent=cfg.shipping;
+  if(cfg.bankInfo){
+    document.getElementById('pBank').textContent=cfg.bankInfo.bank||'—';
+    document.getElementById('pAcc').textContent=cfg.bankInfo.account||'—';
+    document.getElementById('pHolder').textContent=cfg.bankInfo.name||'—';
+  }
+}
+
+function renderGrid(){
+  const g=document.getElementById('grid');
+  const list=products.filter(p=>p.active!==false);
+  document.getElementById('pCount').textContent=list.length?`共 ${list.length} 款商品`:'目前無商品';
+  if(!list.length){g.innerHTML='<div class="empty-state"><em>~</em>商品即將上架</div>';return;}
+  g.innerHTML=list.map(p=>{
+    const colors=p.colors||[];
+    const thumb=colors[0]?.images?.[0]||'';
+    const sold=!colors.some(c=>(c.sizes||[]).some(s=>s.stock>0));
+    const imgCount=colors[0]?.images?.length||0;
+    return`<div class="pc" onclick="openModal('${p.id}')">
+      <div class="pc-img">
+        ${thumb?`<img src="${dThumb(thumb)}" alt="${p.name}" loading="lazy">`:`<div class="pc-img-empty">NO IMAGE</div>`}
+        ${imgCount>1?`<span class="pc-img-count">1 / ${imgCount}</span>`:''}
+        ${sold?'<div class="sold-badge">Sold Out</div>':''}
+      </div>
+      <div class="pc-body">
+        <div class="pc-brand">${p.brand||'24hours'}</div>
+        <div class="pc-name">${p.name}</div>
+        <div class="pc-dots">${colors.map(c=>`<div class="pc-dot" style="background:${c.hex||'#ccc'}" title="${c.name}"></div>`).join('')}</div>
+        <div class="pc-foot">
+          <div class="pc-price">NT$ ${(p.price||0).toLocaleString()} <small>/ 件</small></div>
+          <button class="pc-pick" onclick="event.stopPropagation();openModal('${p.id}')">選購</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(id){
+  curP=products.find(p=>p.id===id);if(!curP)return;
+  selColor=curP.colors?.[0]||null;selSize=null;
+  renderModal();
+  document.getElementById('pModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('pModal').classList.remove('open');document.body.style.overflow='';}
+
+function renderModal(){
+  renderGallery();
+  document.getElementById('pmInfo').innerHTML=`
+    <div>
+      <div class="pm-brand">${curP.brand||'24hours'}</div>
+      <div class="pm-name">${curP.name}</div>
+    </div>
+    ${curP.desc?`<div class="pm-desc">${curP.desc}</div>`:''}
+    <div class="pm-price">NT$ ${(curP.price||0).toLocaleString()} <small>/ 件</small></div>
+    <div class="vsec">
+      <div class="vlabel">顏色 <span id="scName">${selColor?.name||'請選擇'}</span></div>
+      <div class="swatches" id="swatches">${renderSwatches()}</div>
+    </div>
+    <div class="vsec">
+      <div class="vlabel">尺寸 <span id="ssName">${selSize||'請選擇'}</span></div>
+      <div class="size-pills" id="sizePills">${renderSizes()}</div>
+    </div>
+    <div class="vsec" style="border:none;padding-top:0">
+      <div class="vlabel">數量</div>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="chQty(-1)">−</button>
+        <input class="qty-num" type="number" id="qtyInput" value="1" min="1">
+        <button class="qty-btn" onclick="chQty(1)">+</button>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addToCart()">加入購物袋</button>`;
+
+  if(!document.querySelector('.pm-close')){
+    const btn=document.createElement('button');
+    btn.className='pm-close';btn.onclick=closeModal;
+    btn.innerHTML=`<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+    document.getElementById('pmGallery').prepend(btn);
+  }
+}
+
+function renderSwatches(){
+  return(curP.colors||[]).map(c=>`
+    <div class="swatch ${selColor?.name===c.name?'active':''}" onclick="selC('${c.name}')">
+      <div class="sw-circle" style="background:${c.hex||'#ccc'}"></div>
+      <span class="sw-name">${c.name}</span>
+    </div>`).join('');
+}
+function renderSizes(){
+  if(!selColor)return'<span style="font-size:12px;color:var(--muted)">請先選擇顏色</span>';
+  return(selColor.sizes||[]).map(s=>`
+    <button class="sp ${s.stock<=0?'oos':''} ${selSize===s.name?'active':''}"
+      onclick="${s.stock>0?`selS('${s.name}')`:''}">${s.name}</button>`).join('');
+}
+function renderGallery(){
+  const imgs=selColor?.images||[];
+  const main=document.getElementById('gMain');
+  main.innerHTML=imgs.length?`<img id="mainImg" src="${dThumb(imgs[0])}" alt="">`:`<div class="no-img">No Image</div>`;
+  document.getElementById('gThumbs').innerHTML=imgs.map((u,i)=>`
+    <div class="g-thumb ${i===0?'active':''}" onclick="swImg('${u}',this)">
+      <img src="${dThumb(u)}" loading="lazy">
+    </div>`).join('');
+}
+function swImg(url,el){
+  document.getElementById('mainImg').src=dThumb(url);
+  document.querySelectorAll('.g-thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function selC(name){
+  selColor=curP.colors.find(c=>c.name===name);selSize=null;
+  document.getElementById('scName').textContent=name;
+  document.getElementById('ssName').textContent='請選擇';
+  document.getElementById('swatches').innerHTML=renderSwatches();
+  document.getElementById('sizePills').innerHTML=renderSizes();
+  renderGallery();
+}
+function selS(name){
+  selSize=name;
+  document.getElementById('ssName').textContent=name;
+  document.getElementById('sizePills').innerHTML=renderSizes();
+}
+function chQty(d){const e=document.getElementById('qtyInput');e.value=Math.max(1,(parseInt(e.value)||1)+d);}
+
+function addToCart(){
+  if(!selColor){showToast('請選擇顏色');return;}
+  if(!selSize){showToast('請選擇尺寸');return;}
+  const qty=Math.max(1,parseInt(document.getElementById('qtyInput').value)||1);
+  const key=`${curP.id}_${selColor.name}_${selSize}`;
+  const ex=cart.find(x=>x.key===key);
+  if(ex)ex.qty+=qty;
+  else cart.push({key,id:curP.id,name:curP.name,color:selColor.name,hex:selColor.hex,size:selSize,price:curP.price,qty,thumb:selColor.images?.[0]||''});
+  renderCart();closeModal();
+  showToast(`已加入：${curP.name} · ${selColor.name} · ${selSize}`);
+}
+
+function renderCart(){
+  const tot=cart.reduce((s,x)=>s+x.qty*x.price,0);
+  const cnt=cart.reduce((s,x)=>s+x.qty,0);
+  document.getElementById('total').textContent='NT$ '+tot.toLocaleString();
+  const b=document.getElementById('badge');b.textContent=cnt;b.classList.toggle('on',cnt>0);
+  const el=document.getElementById('di');
+  if(!cart.length){el.innerHTML='<div class="di-empty"><p>袋子還是空的</p></div>';return;}
+  el.innerHTML=cart.map(item=>`
+    <div class="ci">
+      <div class="ci-img">${item.thumb?`<img src="${dThumb(item.thumb)}" alt="">`:`<span style="font-size:20px;color:var(--muted)">👗</span>`}</div>
+      <div style="flex:1">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-var">
+          <span style="width:10px;height:10px;border-radius:50%;background:${item.hex||'#ccc'};border:1px solid rgba(0,0,0,.12);display:inline-block"></span>
+          ${item.color} · ${item.size}
+        </div>
+        <div class="ci-bot">
+          <div class="ci-price">NT$ ${(item.qty*item.price).toLocaleString()}</div>
+          <div class="ci-acts">
+            <button class="cqb" onclick="upCart('${item.key}',-1)">−</button>
+            <span class="cqn">${item.qty}</span>
+            <button class="cqb" onclick="upCart('${item.key}',1)">+</button>
+            <button class="cdel" onclick="rmCart('${item.key}')">移除</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function upCart(k,d){const i=cart.find(x=>x.key===k);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.key!==k);renderCart();}
+function rmCart(k){cart=cart.filter(x=>x.key!==k);renderCart();}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('dOverlay').classList.add('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('dOverlay').classList.remove('open');}
+
+function openCheckout(){
+  if(!cart.length){showToast('購物袋是空的');return;}
+  closeDrawer();refreshSum();
+  document.getElementById('so').classList.add('open');
+}
+function closeCheckout(){document.getElementById('so').classList.remove('open');}
+function toggleAddr(){document.getElementById('addrSec').style.display=document.getElementById('bPickup').value==='宅配'?'block':'none';}
+
+function refreshSum(){
+  const tot=cart.reduce((s,x)=>s+x.qty*x.price,0);
+  document.getElementById('sSummary').innerHTML=`
+    ${cart.map(x=>`<div class="sr"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>NT$ ${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
+    <div class="sr st"><span>合計</span><span>NT$ ${tot.toLocaleString()}</span></div>`;
+}
+
+function buildTxt(){
+  const n=document.getElementById('bName').value.trim();
+  const ph=document.getElementById('bPhone').value.trim();
+  const pk=document.getElementById('bPickup').value;
+  const ad=document.getElementById('bAddr').value.trim();
+  const nt=document.getElementById('bNote').value.trim();
+  if(!n||!ph||!pk){showToast('請填寫必填欄位');return null;}
+  if(pk==='宅配'&&!ad){showToast('請填寫宅配地址');return null;}
+  const tot=cart.reduce((s,x)=>s+x.qty*x.price,0);
+  let t=`【貓系傲嬌女子 團購訂單】\n`;
+  t+=`姓名：${n}\n手機：${ph}\n取貨：${pk}\n`;
+  if(ad)t+=`地址：${ad}\n`;
+  t+=`\n訂購明細：\n`;
+  cart.forEach(x=>{t+=`・${x.name} / ${x.color} / ${x.size} × ${x.qty}件 = NT$ ${(x.qty*x.price).toLocaleString()}\n`;});
+  t+=`\n合計：NT$ ${tot.toLocaleString()}\n`;
+  if(nt)t+=`備註：${nt}\n`;
+  t+=`\n匯款後請截圖傳給貓女確認 🐱`;
+  return t;
+}
+
+async function sendLine(){
+  const t=buildTxt();if(!t)return;
+  navigator.clipboard.writeText(t).catch(()=>{});
+  const lid=cfg.lineId||'';
+  if(lid)window.open(`https://line.me/ti/p/${lid}`,'_blank');
+  else window.open('https://line.me/','_blank');
+  setTimeout(()=>showToast('已複製訂單，請在 LINE 貼上傳送'),600);
+  await submit(t);
+}
+async function copyOrder(){
+  const t=buildTxt();if(!t)return;
+  await navigator.clipboard.writeText(t);
+  showToast('已複製訂單文字');
+  await submit(t);
+}
+async function submit(txt){
+  const data={name:document.getElementById('bName').value.trim(),phone:document.getElementById('bPhone').value.trim(),pickup:document.getElementById('bPickup').value,address:document.getElementById('bAddr').value.trim(),note:document.getElementById('bNote').value.trim(),total:cart.reduce((s,x)=>s+x.qty*x.price,0),items:cart,orderText:txt};
+  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submitOrder',data})});}catch{}
+  cart=[];renderCart();closeCheckout();showSuccess();
+}
+function showSuccess(){
+  document.getElementById('cs').innerHTML=`<div class="success-v"><div style="font-size:52px">🐱</div><h3>訂單已送出！</h3><p>感謝下單，貓女會盡快確認匯款</p><p style="margin-top:6px">收到款項後將盡速安排出貨 ♡</p><button onclick="closeCheckout()">繼續逛逛</button></div>`;
+  document.getElementById('so').classList.add('open');
+}
+
+function dThumb(url){
+  if(!url)return'';
+  const m=url.match(/[-\w]{25,}/);
+  return m?`https://drive.google.com/thumbnail?id=${m[0]}&sz=w600`:url;
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+function demo(){return[
+  {id:'1',name:'Lace Secret 蕾絲無鋼圈內衣',brand:'24hours',desc:'超輕薄蕾絲設計，無鋼圈自然支撐，整日穿著如裸感。',price:790,colors:[
+    {name:'霧玫瑰',hex:'#d4a0a0',images:[],sizes:[{name:'S',stock:5},{name:'M',stock:3},{name:'L',stock:2},{name:'XL',stock:0}]},
+    {name:'奶茶白',hex:'#e8d5c0',images:[],sizes:[{name:'S',stock:2},{name:'M',stock:4},{name:'L',stock:1},{name:'XL',stock:2}]},
+    {name:'午夜黑',hex:'#1a1a1a',images:[],sizes:[{name:'S',stock:0},{name:'M',stock:2},{name:'L',stock:3},{name:'XL',stock:1}]},
+  ]},
+  {id:'2',name:'Silk Touch 絲感內褲',brand:'24hours',desc:'莫代爾面料，絲滑親膚，平角剪裁不夾臀。',price:320,colors:[
+    {name:'薰衣草',hex:'#c4b0d4',images:[],sizes:[{name:'S',stock:8},{name:'M',stock:5},{name:'L',stock:3}]},
+    {name:'珊瑚橘',hex:'#e0916a',images:[],sizes:[{name:'S',stock:4},{name:'M',stock:6},{name:'L',stock:2}]},
+  ]},
+  {id:'3',name:'Cloud Bra 雲感無痕胸罩',brand:'24hours',desc:'一體成形無縫技術，無痕貼身，運動日常兩用。',price:650,colors:[
+    {name:'裸膚色',hex:'#d9b99b',images:[],sizes:[{name:'S/M',stock:6},{name:'L/XL',stock:4}]},
+    {name:'煙灰藍',hex:'#8fa8b8',images:[],sizes:[{name:'S/M',stock:3},{name:'L/XL',stock:5}]},
+  ]},
+];}
+function demoCfg(){return{shopName:'貓系傲嬌女子',tagline:'24hrs 內衣團購',heroTitle:'本期開團',heroDesc:'精選 24hours 內衣 · 限量優惠',deadline:'本週日截單',shipping:'下下週到貨',lineId:'',bankInfo:{bank:'玉山銀行 808',account:'0123-456-789012',name:'貓女'}};}
+
+init();
+</script>
+</body>
+</html>
