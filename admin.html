@@ -307,7 +307,6 @@ tr:hover td{background:#fdfdfb;}
           <div class="card-body" style="display:grid;gap:12px">
             <div class="fgroup" style="margin:0"><label class="flabel">活動副標題</label><input class="finput" id="cLotterySubtitle" placeholder="本期活動辦法"></div>
             <div class="fgroup" style="margin:0"><label class="flabel">參加辦法（支援換行）</label><textarea class="finput" id="cLotteryContent" rows="5" style="resize:vertical;line-height:1.6" placeholder="本期購買任一商品即可參加抽獎！&#10;抽獎日期：截單後一週&#10;獎品：24hours 購物金 $500"></textarea></div>
-            <div class="fgroup" style="margin:0"><label class="flabel">歷期得獎紀錄</label><textarea class="finput" id="cLotteryHistory" rows="3" style="resize:vertical;line-height:1.6" placeholder="2025/12 得獎：王小美&#10;2026/01 得獎：陳小花"></textarea></div>
           </div>
         </div>
         <button class="btn btn-ink" onclick="saveSettings()" style="padding:13px;font-size:12px;letter-spacing:.18em">儲存所有設定</button>
@@ -340,6 +339,22 @@ tr:hover td{background:#fdfdfb;}
         </div>
       </div>
       <div class="fgroup" style="margin-bottom:20px"><label class="flabel">商品描述</label><input class="finput" id="pDesc" placeholder="商品特色介紹..."></div>
+
+      <!-- Detail images (shared across all colors, shown in bottom detail zone) -->
+      <div style="margin-bottom:1.2rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div>
+            <div style="font-size:13px;font-weight:500">商品介紹圖</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">顯示在商品頁下方的長圖介紹區，所有顏色共用</div>
+          </div>
+        </div>
+        <div class="img-thumbs" id="detailThumbs"></div>
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <input class="finput" id="detailImgUrl" placeholder="貼上 Google Drive 分享連結 or 圖片 URL" style="flex:1">
+          <button class="btn btn-ghost btn-sm" onclick="addDetailImg()">新增</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted)">圖片需設為「知道連結的人都可以查看」</div>
+      </div>
 
       <!-- Colors & variants -->
       <div style="margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between">
@@ -375,7 +390,7 @@ tr:hover td{background:#fdfdfb;}
 <script>
 const GAS_URL='https://script.google.com/macros/s/AKfycbyjGQqyxZ1fWK8ygJCSwY6IIESUGNIkD4POKrDwCstV6Id53cdBF5mV0v225zuvmqS4MA/exec';
 let products=[],orders=[],allOrders=[],cfg={};
-let editingId=null,editColors=[];
+let editingId=null,editColors=[],editDetailImgs=[];
 
 // ── AUTH ──
 function doLogin(){
@@ -438,7 +453,6 @@ function applyCfg(){
   // lottery
   document.getElementById('cLotterySubtitle').value=cfg.lotterySubtitle||'';
   document.getElementById('cLotteryContent').value=cfg.lotteryContent||'';
-  document.getElementById('cLotteryHistory').value=cfg.lotteryHistory||'';
   document.getElementById('cLine').value=cfg.lineId||'';
   document.getElementById('cAdminU').value=cfg.adminUser||'';
   if(cfg.bankInfo){
@@ -512,7 +526,9 @@ function openPModal(id){
   document.getElementById('pDesc').value=p?.desc||'';
   document.getElementById('pActive').value=p?.active===false?'false':'true';
   editColors=JSON.parse(JSON.stringify(p?.colors||[]));
+  editDetailImgs=JSON.parse(JSON.stringify(p?.detailImages||[]));
   renderColorsEditor();
+  renderDetailThumbs();
   document.getElementById('pModal').classList.add('open');
 }
 function closePModal(){document.getElementById('pModal').classList.remove('open');}
@@ -627,6 +643,23 @@ function updateColorMeta(ci){
   if(span)span.textContent=`${(editColors[ci].images||[]).length}張圖 · ${(editColors[ci].sizes||[]).length}個尺寸`;
 }
 
+// ── DETAIL IMAGES ──
+function addDetailImg(){
+  const inp=document.getElementById('detailImgUrl');
+  const url=inp.value.trim();if(!url)return;
+  editDetailImgs.push(url);inp.value='';
+  renderDetailThumbs();
+}
+function rmDetailImg(i){editDetailImgs.splice(i,1);renderDetailThumbs();}
+function renderDetailThumbs(){
+  const el=document.getElementById('detailThumbs');if(!el)return;
+  el.innerHTML=editDetailImgs.map((u,i)=>`
+    <div class="img-thumb">
+      <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
+      <button class="img-del" onclick="rmDetailImg(${i})">✕</button>
+    </div>`).join('');
+}
+
 async function saveProduct(){
   const name=document.getElementById('pName').value.trim();
   const price=parseInt(document.getElementById('pPrice').value);
@@ -636,7 +669,8 @@ async function saveProduct(){
     name,brand:document.getElementById('pBrand').value.trim()||'24hours',
     price,desc:document.getElementById('pDesc').value.trim(),
     active:document.getElementById('pActive').value==='true',
-    colors:editColors
+    colors:editColors,
+    detailImages:editDetailImgs
   };
   if(editingId){const i=products.findIndex(p=>p.id===editingId);products[i]=prod;}
   else products.push(prod);
@@ -740,7 +774,6 @@ async function saveSettings(){
     noticeOther:document.getElementById('cNoticeOther').value.trim(),
     lotterySubtitle:document.getElementById('cLotterySubtitle').value.trim(),
     lotteryContent:document.getElementById('cLotteryContent').value.trim(),
-    lotteryHistory:document.getElementById('cLotteryHistory').value.trim(),
   };
   const np=document.getElementById('cAdminP').value;if(np)nc.adminPass=np;
   cfg={...cfg,...nc};
