@@ -262,8 +262,8 @@ tr:hover td{background:#fdfdfb;}
             <div class="fgroup" style="margin:0"><label class="flabel">主頁大標</label><input class="finput" id="cHeroT" placeholder="本期開團"></div>
             <div class="fgroup" style="margin:0"><label class="flabel">主頁描述</label><input class="finput" id="cHeroD" placeholder="精選 24hours 內衣..."></div>
             <div class="frow">
-              <div class="fgroup" style="margin:0"><label class="flabel">截單日期</label><input class="finput" id="cDeadline" placeholder="本週日截單"></div>
-              <div class="fgroup" style="margin:0"><label class="flabel">預計到貨</label><input class="finput" id="cShipping" placeholder="下下週到貨"></div>
+              <div class="fgroup" style="margin:0"><label class="flabel">截單日期</label><input class="finput" type="date" id="cDeadline"></div>
+              <div class="fgroup" style="margin:0"><label class="flabel">預計到貨日</label><input class="finput" type="date" id="cShipping"></div>
             </div>
           </div>
         </div>
@@ -411,8 +411,8 @@ function applyCfg(){
   document.getElementById('cTag').value=cfg.tagline||'';
   document.getElementById('cHeroT').value=cfg.heroTitle||'';
   document.getElementById('cHeroD').value=cfg.heroDesc||'';
-  document.getElementById('cDeadline').value=cfg.deadline||'';
-  document.getElementById('cShipping').value=cfg.shipping||'';
+  document.getElementById('cDeadline').value=cfg.deadlineRaw||'';
+  document.getElementById('cShipping').value=cfg.shippingRaw||'';
   document.getElementById('cLine').value=cfg.lineId||'';
   document.getElementById('cAdminU').value=cfg.adminUser||'';
   if(cfg.bankInfo){
@@ -462,9 +462,8 @@ function renderProds(){
       </td>
       <td><strong>NT$ ${(p.price||0).toLocaleString()}</strong></td>
       <td>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">
-          ${(p.colors||[]).map(c=>`<span title="${c.name}" style="width:16px;height:16px;border-radius:50%;background:${c.hex||'#ccc'};border:1px solid rgba(0,0,0,.15);display:inline-block"></span>`).join('')}
-          <span style="font-size:11px;color:var(--muted);margin-left:4px">${clrCount}色</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+          ${(p.colors||[]).map(c=>`<span style="font-size:11px;background:var(--line2);padding:2px 6px;color:var(--ink3)">${c.name}</span>`).join('')}
         </div>
       </td>
       <td>${sold?`<span class="badge badge-r">已售完</span>`:`<span class="badge badge-g">${p.active===false?'已下架':'上架中'}</span>`}</td>
@@ -501,7 +500,6 @@ function renderColorsEditor(){
   el.innerHTML=editColors.map((c,ci)=>`
     <div class="color-item" id="ci_${ci}">
       <div class="color-item-hd" onclick="toggleColor(${ci})">
-        <div class="color-swatch-sm" style="background:${c.hex||'#ccc'}"></div>
         <span class="color-item-name">${c.name||'（未命名）'}</span>
         <span style="font-size:11px;color:var(--muted)">${(c.images||[]).length}張圖 · ${(c.sizes||[]).length}個尺寸</span>
         <button onclick="event.stopPropagation();rmColor(${ci})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px" title="刪除此顏色">✕</button>
@@ -509,17 +507,10 @@ function renderColorsEditor(){
       </div>
       <div class="color-item-body" id="cb_${ci}">
         <!-- color basic -->
-        <div class="frow" style="margin-bottom:12px">
+        <div style="margin-bottom:12px">
           <div class="fgroup" style="margin:0">
             <label class="flabel">顏色名稱</label>
-            <input class="finput" value="${c.name||''}" onchange="editColors[${ci}].name=this.value;document.querySelector('#ci_${ci} .color-item-name').textContent=this.value||'（未命名）'">
-          </div>
-          <div class="fgroup" style="margin:0">
-            <label class="flabel">色碼（Hex）</label>
-            <div style="display:flex;gap:8px;align-items:center">
-              <input type="color" value="${c.hex||'#cccccc'}" onchange="editColors[${ci}].hex=this.value;document.querySelector('#ci_${ci} .color-swatch-sm').style.background=this.value" style="width:36px;height:36px;border:1px solid var(--line);cursor:pointer;padding:2px">
-              <input class="finput" value="${c.hex||''}" placeholder="#cccccc" style="flex:1" onchange="editColors[${ci}].hex=this.value">
-            </div>
+            <input class="finput" value="${c.name||''}" placeholder="e.g. 霧玫瑰、午夜黑、奶茶白" onchange="editColors[${ci}].name=this.value;document.querySelector('#ci_${ci} .color-item-name').textContent=this.value||'（未命名）'">
           </div>
         </div>
 
@@ -697,7 +688,27 @@ async function updateStatus(id){
 
 // ── SETTINGS ──
 async function saveSettings(){
-  const nc={shopName:document.getElementById('cShop').value.trim(),tagline:document.getElementById('cTag').value.trim(),heroTitle:document.getElementById('cHeroT').value.trim(),heroDesc:document.getElementById('cHeroD').value.trim(),deadline:document.getElementById('cDeadline').value.trim(),shipping:document.getElementById('cShipping').value.trim(),lineId:document.getElementById('cLine').value.trim(),bankInfo:{bank:document.getElementById('cBank').value.trim(),name:document.getElementById('cBankName').value.trim(),account:document.getElementById('cAccount').value.trim()},adminUser:document.getElementById('cAdminU').value.trim()};
+  const deadlineRaw=document.getElementById('cDeadline').value;
+  const shippingRaw=document.getElementById('cShipping').value;
+  // 格式化成前台顯示用的中文格式
+  const fmtDate=v=>{if(!v)return'';const[y,m,d]=v.split('-');return`${y}/${m}/${d}`;};
+  const nc={
+    shopName:document.getElementById('cShop').value.trim(),
+    tagline:document.getElementById('cTag').value.trim(),
+    heroTitle:document.getElementById('cHeroT').value.trim(),
+    heroDesc:document.getElementById('cHeroD').value.trim(),
+    deadline:fmtDate(deadlineRaw),
+    deadlineRaw,
+    shipping:fmtDate(shippingRaw),
+    shippingRaw,
+    lineId:document.getElementById('cLine').value.trim(),
+    bankInfo:{
+      bank:document.getElementById('cBank').value.trim(),
+      name:document.getElementById('cBankName').value.trim(),
+      account:document.getElementById('cAccount').value.trim()
+    },
+    adminUser:document.getElementById('cAdminU').value.trim()
+  };
   const np=document.getElementById('cAdminP').value;if(np)nc.adminPass=np;
   cfg={...cfg,...nc};
   if(nc.shopName)document.getElementById('sbName').textContent=nc.shopName;
