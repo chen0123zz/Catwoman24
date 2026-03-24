@@ -293,6 +293,23 @@ tr:hover td{background:#fdfdfb;}
             </div>
           </div>
         </div>
+        <div class="card">
+          <div class="card-hd"><h3>📋 跟團須知</h3><span style="font-size:11px;color:var(--muted)">每行一條規則</span></div>
+          <div class="card-body" style="display:grid;gap:12px">
+            <div class="fgroup" style="margin:0"><label class="flabel">出貨說明</label><textarea class="finput" id="cNoticeShipping" rows="4" style="resize:vertical;line-height:1.6" placeholder="統一出貨，不接受分批&#10;到貨後將通知取貨"></textarea></div>
+            <div class="fgroup" style="margin:0"><label class="flabel">付款說明</label><textarea class="finput" id="cNoticePayment" rows="4" style="resize:vertical;line-height:1.6" placeholder="請於截單後 48 小時內完成匯款&#10;匯款後請截圖私訊貓女"></textarea></div>
+            <div class="fgroup" style="margin:0"><label class="flabel">退換說明</label><textarea class="finput" id="cNoticeReturn" rows="4" style="resize:vertical;line-height:1.6" placeholder="商品為預購性質，非瑕疵不接受退換"></textarea></div>
+            <div class="fgroup" style="margin:0"><label class="flabel">其他注意事項</label><textarea class="finput" id="cNoticeOther" rows="4" style="resize:vertical;line-height:1.6" placeholder="顏色可能因螢幕顯示略有差異"></textarea></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>🎁 抽獎活動</h3></div>
+          <div class="card-body" style="display:grid;gap:12px">
+            <div class="fgroup" style="margin:0"><label class="flabel">活動副標題</label><input class="finput" id="cLotterySubtitle" placeholder="本期活動辦法"></div>
+            <div class="fgroup" style="margin:0"><label class="flabel">參加辦法（支援換行）</label><textarea class="finput" id="cLotteryContent" rows="5" style="resize:vertical;line-height:1.6" placeholder="本期購買任一商品即可參加抽獎！&#10;抽獎日期：截單後一週&#10;獎品：24hours 購物金 $500"></textarea></div>
+            <div class="fgroup" style="margin:0"><label class="flabel">歷期得獎紀錄</label><textarea class="finput" id="cLotteryHistory" rows="3" style="resize:vertical;line-height:1.6" placeholder="2025/12 得獎：王小美&#10;2026/01 得獎：陳小花"></textarea></div>
+          </div>
+        </div>
         <button class="btn btn-ink" onclick="saveSettings()" style="padding:13px;font-size:12px;letter-spacing:.18em">儲存所有設定</button>
       </div>
     </div>
@@ -413,6 +430,15 @@ function applyCfg(){
   document.getElementById('cHeroD').value=cfg.heroDesc||'';
   document.getElementById('cDeadline').value=cfg.deadlineRaw||'';
   document.getElementById('cShipping').value=cfg.shippingRaw||'';
+  // notice
+  document.getElementById('cNoticeShipping').value=cfg.noticeShipping||'';
+  document.getElementById('cNoticePayment').value=cfg.noticePayment||'';
+  document.getElementById('cNoticeReturn').value=cfg.noticeReturn||'';
+  document.getElementById('cNoticeOther').value=cfg.noticeOther||'';
+  // lottery
+  document.getElementById('cLotterySubtitle').value=cfg.lotterySubtitle||'';
+  document.getElementById('cLotteryContent').value=cfg.lotteryContent||'';
+  document.getElementById('cLotteryHistory').value=cfg.lotteryHistory||'';
   document.getElementById('cLine').value=cfg.lineId||'';
   document.getElementById('cAdminU').value=cfg.adminUser||'';
   if(cfg.bankInfo){
@@ -707,7 +733,14 @@ async function saveSettings(){
       name:document.getElementById('cBankName').value.trim(),
       account:document.getElementById('cAccount').value.trim()
     },
-    adminUser:document.getElementById('cAdminU').value.trim()
+    adminUser:document.getElementById('cAdminU').value.trim(),
+    noticeShipping:document.getElementById('cNoticeShipping').value.trim(),
+    noticePayment:document.getElementById('cNoticePayment').value.trim(),
+    noticeReturn:document.getElementById('cNoticeReturn').value.trim(),
+    noticeOther:document.getElementById('cNoticeOther').value.trim(),
+    lotterySubtitle:document.getElementById('cLotterySubtitle').value.trim(),
+    lotteryContent:document.getElementById('cLotteryContent').value.trim(),
+    lotteryHistory:document.getElementById('cLotteryHistory').value.trim(),
   };
   const np=document.getElementById('cAdminP').value;if(np)nc.adminPass=np;
   cfg={...cfg,...nc};
