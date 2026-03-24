@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>貓系傲嬌女子 — 24hrs 內衣團購</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#0e0e0e;--ink2:#2a2a2a;--ink3:#555;--muted:#999;
   --line:#e0e0e0;--line2:#f4f4f2;--bg:#faf9f7;--white:#fff;
-  --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Noto Sans TC',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -21,150 +20,138 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 /* ── HEADER ── */
 header{position:sticky;top:0;z-index:80;background:rgba(250,249,247,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
 .hd{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;}
-.brand-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.04em;line-height:1;}
-.brand-sub{font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
-.cart-btn{position:relative;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;color:var(--ink3);padding:6px 0;transition:color .2s;}
+.brand-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.brand-name{font-size:17px;font-weight:700;letter-spacing:.02em;line-height:1;}
+.brand-sub{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3);padding:6px 0;transition:color .2s;}
 .cart-btn:hover{color:var(--ink);}
 .cart-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;}
-.badge{position:absolute;top:0;right:-8px;background:var(--ink);color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:500;display:none;align-items:center;justify-content:center;}
+.badge{position:absolute;top:0;right:-8px;background:var(--ink);color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;}
 .badge.on{display:flex;}
 
-/* ── HERO — gradient ── */
-.hero{
-  background: linear-gradient(160deg, #1a0a0f 0%, #2d1520 30%, #1e1830 65%, #0d1220 100%);
-  color:#fff;text-align:center;padding:5.5rem 2rem 4.5rem;position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(180,80,100,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(80,60,160,.15) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 0%, rgba(255,200,180,.08) 0%, transparent 50%);
-}
-.hero::after{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(-55deg,transparent,transparent 60px,rgba(255,255,255,.012) 60px,rgba(255,255,255,.012) 61px);
-}
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,#1a0a0f 0%,#2d1520 30%,#1e1830 65%,#0d1220 100%);color:#fff;text-align:center;padding:5rem 2rem 4rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 30%,rgba(180,80,100,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 70%,rgba(80,60,160,.15) 0%,transparent 60%);}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent,transparent 60px,rgba(255,255,255,.012) 60px,rgba(255,255,255,.012) 61px);}
 .hero-inner{position:relative;z-index:1;}
-.hero-eye{font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:1.4rem;}
-.hero-title{font-family:var(--serif);font-size:clamp(38px,6vw,68px);font-weight:300;line-height:1.05;letter-spacing:-.01em;margin-bottom:.8rem;}
-.hero-title em{font-style:italic;opacity:.9;}
-.hero-sub{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.1em;margin-bottom:3rem;}
+.hero-eye{font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:1.2rem;}
+.hero-title{font-size:clamp(30px,5vw,56px);font-weight:700;line-height:1.1;margin-bottom:.6rem;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.08em;margin-bottom:2.5rem;}
 .hero-bar{display:inline-flex;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);background:rgba(255,255,255,.04);}
-.hbi{padding:12px 26px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;}
+.hbi{padding:12px 24px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;}
 .hbi+.hbi{border-left:1px solid rgba(255,255,255,.12);}
-.hbi strong{display:block;color:rgba(255,255,255,.92);font-size:14px;font-weight:400;margin-top:3px;letter-spacing:.02em;font-family:var(--serif);}
+.hbi strong{display:block;color:rgba(255,255,255,.92);font-size:14px;font-weight:500;margin-top:3px;}
 
-/* ── NAV SECTIONS ── */
+/* ── PAGE NAV ── */
 .page-nav{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:62px;z-index:70;}
-.page-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;gap:0;}
-.pni{padding:12px 20px;font-size:12px;letter-spacing:.08em;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;}
+.page-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;}
+.pni{padding:12px 18px;font-size:12px;letter-spacing:.06em;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;}
 .pni:hover{color:var(--ink);}
 .pni.active{color:var(--ink);font-weight:500;border-bottom-color:var(--ink);}
 
-/* ── MAIN ── */
-main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
+/* ── VIEWS (SPA) ── */
+.view{display:none;}
+.view.active{display:block;}
 
-/* ── SECTION HEADERS ── */
+/* ── LIST VIEW ── */
+main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .sec{padding:3rem 0 2rem;}
 .sec-hd{margin-bottom:2rem;}
-.sec-hd h2{font-family:var(--serif);font-size:26px;font-weight:300;letter-spacing:.04em;}
-.sec-hd p{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.06em;}
+.sec-hd h2{font-size:20px;font-weight:700;}
+.sec-hd p{font-size:12px;color:var(--muted);margin-top:4px;}
 .sec-divider{border:none;border-top:1px solid var(--line);margin:0;}
-
-/* ── NOTICE SECTION ── */
 .notice-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .notice-box{background:var(--white);border:1px solid var(--line);padding:1.4rem 1.6rem;}
-.notice-box h3{font-family:var(--serif);font-size:17px;font-weight:400;letter-spacing:.04em;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;}
+.notice-box h3{font-size:14px;font-weight:700;margin-bottom:.8rem;}
 .notice-box ul{list-style:none;display:grid;gap:5px;}
 .notice-box ul li{font-size:13px;color:var(--ink3);padding-left:1rem;position:relative;line-height:1.6;}
 .notice-box ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
 .notice-box p{font-size:13px;color:var(--ink3);line-height:1.7;}
-.notice-highlight{background:var(--ink);color:#fff;}
-.notice-highlight h3{color:#fff;}
-.notice-highlight ul li{color:rgba(255,255,255,.8);}
-.notice-highlight ul li::before{color:rgba(255,255,255,.4);}
-.lottery-box{background:linear-gradient(135deg,#2d1520,#1e1830);color:#fff;border:none;padding:1.6rem;}
-.lottery-box h3{color:#fff;font-size:18px;}
-.lottery-box p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.7;}
-.lottery-tag{display:inline-block;padding:3px 10px;background:rgba(255,255,255,.15);font-size:10px;letter-spacing:.1em;margin-bottom:.8rem;}
+.notice-dark{background:var(--ink);color:#fff;}
+.notice-dark h3{color:#fff;}
+.notice-dark ul li{color:rgba(255,255,255,.75);}
+.notice-dark ul li::before{color:rgba(255,255,255,.3);}
+.lottery-box{background:linear-gradient(135deg,#2d1520,#1e1830);color:#fff;border:none;}
+.lottery-box h3{color:#fff;}
+.lottery-box p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.7;white-space:pre-line;}
+.lottery-tag{display:inline-block;padding:2px 8px;background:rgba(255,255,255,.15);font-size:10px;letter-spacing:.1em;margin-bottom:.6rem;}
 
 /* ── PRODUCT GRID ── */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
-.pc{background:var(--white);cursor:pointer;transition:all .3s;overflow:hidden;}
-.pc:hover{z-index:1;box-shadow:0 8px 40px rgba(0,0,0,.12);transform:translateY(-2px);}
-/* card image — fixed height, no bleed */
-.pc-img{position:relative;height:340px;overflow:hidden;background:var(--line2);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
+.pc{background:var(--white);cursor:pointer;transition:all .25s;overflow:hidden;}
+.pc:hover{z-index:1;box-shadow:0 6px 32px rgba(0,0,0,.1);transform:translateY(-2px);}
+.pc-img{position:relative;height:320px;overflow:hidden;background:var(--line2);}
 .pc-img img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s cubic-bezier(.25,.46,.45,.94);}
 .pc:hover .pc-img img{transform:scale(1.04);}
-.pc-img-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;letter-spacing:.12em;}
-.pc-img-count{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 8px;letter-spacing:.06em;}
-.sold-badge{position:absolute;inset:0;background:rgba(250,249,247,.8);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;font-weight:300;letter-spacing:.1em;}
-.pc-body{padding:16px 16px 20px;}
-.pc-brand{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
-.pc-name{font-family:var(--serif);font-size:17px;font-weight:400;margin-bottom:8px;line-height:1.3;}
-/* color tags — text only */
-.pc-colors{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;}
-.pc-ctag{font-size:10px;padding:2px 7px;border:1px solid var(--line);color:var(--ink3);letter-spacing:.04em;}
+.pc-img-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;letter-spacing:.1em;}
+.pc-img-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 7px;}
+.sold-badge{position:absolute;inset:0;background:rgba(250,249,247,.8);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;letter-spacing:.1em;}
+.pc-body{padding:14px 16px 18px;}
+.pc-brand{font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
+.pc-name{font-size:14px;font-weight:500;margin-bottom:7px;line-height:1.4;}
+.pc-colors{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+.pc-ctag{font-size:10px;padding:2px 6px;border:1px solid var(--line);color:var(--ink3);}
 .pc-foot{display:flex;align-items:baseline;justify-content:space-between;}
-.pc-price{font-family:var(--serif);font-size:20px;font-weight:300;}
-.pc-price small{font-size:12px;font-family:var(--sans);color:var(--muted);}
-.pc-pick{font-size:11px;letter-spacing:.1em;color:var(--ink3);border:none;background:none;cursor:pointer;text-transform:uppercase;transition:color .15s;}
+.pc-price{font-size:17px;font-weight:700;}
+.pc-price small{font-size:11px;font-weight:400;color:var(--muted);margin-left:2px;}
+.pc-pick{font-size:11px;letter-spacing:.08em;color:var(--ink3);border:none;background:none;cursor:pointer;text-transform:uppercase;transition:color .15s;}
 .pc-pick:hover{color:var(--ink);}
-.empty-state{grid-column:1/-1;text-align:center;padding:6rem 2rem;background:var(--white);color:var(--muted);}
+.empty-state{grid-column:1/-1;text-align:center;padding:5rem 2rem;background:var(--white);color:var(--muted);}
 
-/* ── PRODUCT MODAL ── */
-.overlay{position:fixed;inset:0;background:rgba(10,10,10,.65);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
-.overlay.open{opacity:1;pointer-events:all;}
-.pm{background:var(--white);width:100%;max-width:980px;max-height:94vh;border-radius:2px 2px 0 0;display:grid;grid-template-columns:1fr 1fr;transform:translateY(30px);transition:transform .3s cubic-bezier(.34,1.4,.64,1);overflow:hidden;}
-.overlay.open .pm{transform:translateY(0);}
+/* ── PRODUCT DETAIL VIEW (SPA) ── */
+#view-product{background:var(--white);}
+.pdp-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 2rem 0;}
+.pdp-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;margin-bottom:1.2rem;border:none;background:none;letter-spacing:.05em;transition:color .15s;}
+.pdp-back:hover{color:var(--ink);}
+.pdp-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
 
-/* gallery — supports tall long images */
-.pm-gallery{position:relative;background:var(--line2);display:flex;flex-direction:column;overflow:hidden;}
-.gallery-main{flex:1;overflow-y:auto;overflow-x:hidden;min-height:0;scroll-behavior:smooth;}
-.gallery-main img{width:100%;display:block;object-fit:contain;}
-.gallery-main .no-img{height:400px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;color:var(--muted);letter-spacing:.1em;}
-/* thumbnails horizontal strip */
-.gallery-thumbs{display:flex;gap:2px;overflow-x:auto;flex-shrink:0;background:var(--line);padding:2px;}
-.gallery-thumbs::-webkit-scrollbar{height:2px;}
-.g-thumb{width:70px;height:90px;flex-shrink:0;overflow:hidden;cursor:pointer;opacity:.5;transition:opacity .15s;}
-.g-thumb:hover,.g-thumb.active{opacity:1;}
-.g-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+/* Top: left images, right info */
+.pdp-top{display:grid;grid-template-columns:1fr 400px;gap:3.5rem;align-items:start;}
 
-.pm-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;transition:background .15s;}
-.pm-close:hover{background:rgba(0,0,0,.8);}
-.pm-close svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;}
+/* Left: main image (1:1 square) + thumb strip */
+.pdp-main-img{width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--line2);position:relative;}
+.pdp-main-img img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:opacity .18s;}
+.pdp-main-img .no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;}
+.pdp-thumbs{display:flex;gap:4px;margin-top:6px;overflow-x:auto;padding-bottom:2px;}
+.pdp-thumbs::-webkit-scrollbar{height:2px;}
+.pdp-thumb{width:70px;height:70px;flex-shrink:0;overflow:hidden;cursor:pointer;opacity:.5;transition:opacity .15s;border:2px solid transparent;}
+.pdp-thumb:hover,.pdp-thumb.active{opacity:1;border-color:var(--ink);}
+.pdp-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;}
 
-/* modal info */
-.pm-info{padding:2.5rem 2rem 2rem;display:flex;flex-direction:column;gap:1.4rem;overflow-y:auto;}
-.pm-brand{font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
-.pm-name{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.2;}
-.pm-desc{font-size:13px;color:var(--ink3);line-height:1.8;}
-.pm-price{font-family:var(--serif);font-size:26px;font-weight:300;}
-.pm-price small{font-size:13px;font-family:var(--sans);color:var(--muted);}
-.vsec{border-top:1px solid var(--line);padding-top:1.2rem;}
-.vlabel{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.vlabel span{font-family:var(--sans);font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
-/* color — text tags only */
+/* Right: sticky info panel */
+.pdp-info{position:sticky;top:130px;padding-bottom:2rem;}
+.pdp-brand{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.pdp-name{font-size:22px;font-weight:700;line-height:1.35;margin-bottom:.8rem;}
+.pdp-price{font-size:28px;font-weight:700;margin-bottom:1.2rem;color:var(--ink);}
+.pdp-price small{font-size:14px;font-weight:400;color:var(--muted);margin-left:6px;}
+.pdp-section{border-top:1px solid var(--line);padding-top:1rem;margin-top:1rem;}
+.pdp-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.pdp-label span{font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600;}
 .color-tags{display:flex;gap:6px;flex-wrap:wrap;}
-.ctag{padding:6px 14px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;color:var(--ink3);transition:all .15s;font-family:var(--sans);letter-spacing:.04em;}
+.ctag{padding:7px 14px;border:1px solid var(--line);background:none;cursor:pointer;font-size:13px;color:var(--ink3);transition:all .15s;}
 .ctag:hover{border-color:var(--ink);color:var(--ink);}
 .ctag.active{background:var(--ink);color:#fff;border-color:var(--ink);}
-/* sizes */
 .size-pills{display:flex;gap:6px;flex-wrap:wrap;}
-.sp{min-width:46px;padding:7px 12px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;letter-spacing:.06em;color:var(--ink3);transition:all .15s;font-family:var(--sans);}
+.sp{min-width:52px;padding:8px 14px;border:1px solid var(--line);background:none;cursor:pointer;font-size:13px;color:var(--ink3);transition:all .15s;text-align:center;}
 .sp:hover{border-color:var(--ink);color:var(--ink);}
 .sp.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 .sp.oos{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
-/* qty */
 .qty-row{display:flex;align-items:center;}
-.qty-btn{width:38px;height:38px;border:1px solid var(--line);background:none;cursor:pointer;font-size:17px;color:var(--ink);transition:background .1s;}
+.qty-btn{width:40px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;font-size:18px;color:var(--ink);transition:background .1s;}
 .qty-btn:hover{background:var(--line2);}
-.qty-num{width:50px;height:38px;border:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:14px;color:var(--ink);background:var(--white);-moz-appearance:textfield;}
+.qty-num{width:52px;height:40px;border:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:14px;color:var(--ink);background:var(--white);-moz-appearance:textfield;}
 .qty-num::-webkit-outer-spin-button,.qty-num::-webkit-inner-spin-button{-webkit-appearance:none;}
-.add-btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s;}
+.add-btn{width:100%;padding:16px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:13px;letter-spacing:.15em;text-transform:uppercase;transition:background .2s;margin-top:1.2rem;}
 .add-btn:hover{background:var(--ink2);}
 .add-btn:disabled{background:var(--line);color:var(--muted);cursor:not-allowed;}
+
+/* Bottom: full-width detail area — long images + desc */
+.pdp-detail{border-top:1px solid var(--line);margin-top:3rem;padding:3rem 2rem 5rem;max-width:1100px;margin-left:auto;margin-right:auto;}
+.pdp-detail-label{font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;text-align:center;margin-bottom:2rem;}
+.pdp-detail-imgs{max-width:680px;margin:0 auto;}
+.pdp-detail-imgs img{width:100%;display:block;}
+.pdp-detail-imgs img+img{margin-top:3px;}
+.pdp-detail-desc{max-width:680px;margin:2.5rem auto 0;font-size:14px;color:var(--ink3);line-height:1.9;white-space:pre-line;}
 
 /* ── CART DRAWER ── */
 .do{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .2s;}
@@ -172,84 +159,77 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,100%);background:var(--white);z-index:301;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);border-left:1px solid var(--line);}
 .drawer.open{transform:translateX(0);}
 .dh{padding:1.5rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
-.dh h2{font-family:var(--serif);font-size:20px;font-weight:300;letter-spacing:.05em;}
+.dh h2{font-size:16px;font-weight:700;}
 .dc{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);}
 .di{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
 .di-empty{text-align:center;padding:4rem 1rem;color:var(--muted);}
-.di-empty p{font-family:var(--serif);font-size:16px;font-weight:300;letter-spacing:.08em;margin-top:.5rem;}
 .ci{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--line2);}
 .ci-img{width:56px;height:72px;flex-shrink:0;overflow:hidden;background:var(--line2);display:flex;align-items:center;justify-content:center;}
 .ci-img img{width:100%;height:100%;object-fit:cover;object-position:top center;}
-.ci-name{font-size:14px;font-weight:500;margin-bottom:3px;line-height:1.3;}
-.ci-var{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.ci-name{font-size:13px;font-weight:500;margin-bottom:2px;line-height:1.3;}
+.ci-var{font-size:11px;color:var(--muted);margin-bottom:7px;}
 .ci-bot{display:flex;align-items:center;justify-content:space-between;}
-.ci-price{font-family:var(--serif);font-size:15px;}
+.ci-price{font-size:14px;font-weight:700;}
 .ci-acts{display:flex;align-items:center;gap:5px;}
 .cqb{width:22px;height:22px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12px;color:var(--ink3);}
 .cqn{font-size:13px;min-width:18px;text-align:center;}
-.cdel{background:none;border:none;cursor:pointer;font-size:11px;color:var(--muted);letter-spacing:.05em;margin-left:4px;}
+.cdel{background:none;border:none;cursor:pointer;font-size:11px;color:var(--muted);margin-left:4px;}
 .cdel:hover{color:#b00;}
 .df{padding:1.5rem;border-top:1px solid var(--line);}
 .total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;}
-.total-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-.total-amt{font-family:var(--serif);font-size:24px;font-weight:300;}
-.checkout-btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:var(--sans);font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s;}
+.total-lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.total-amt{font-size:20px;font-weight:700;}
+.checkout-btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:12px;letter-spacing:.15em;text-transform:uppercase;transition:background .2s;}
 .checkout-btn:hover{background:var(--ink2);}
 
 /* ── CHECKOUT SHEET ── */
 .so{position:fixed;inset:0;background:rgba(10,10,10,.6);z-index:400;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
 .so.open{opacity:1;pointer-events:all;}
-.cs{background:var(--white);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:2px 2px 0 0;padding:2rem;transform:translateY(40px);transition:transform .3s cubic-bezier(.34,1.2,.64,1);}
+.cs{background:var(--white);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;border-radius:2px 2px 0 0;padding:2rem;transform:translateY(40px);transition:transform .3s cubic-bezier(.34,1.2,.64,1);}
 .so.open .cs{transform:translateY(0);}
-.cs-title{font-family:var(--serif);font-size:22px;font-weight:300;margin-bottom:1.5rem;letter-spacing:.04em;}
+.cs-title{font-size:18px;font-weight:700;margin-bottom:1.5rem;}
 .fg{margin-bottom:14px;}
-.fl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.fl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block;}
 .fl span{color:#b00;}
 .fi{width:100%;padding:10px 0;border:none;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:14px;color:var(--ink);background:none;outline:none;transition:border-color .15s;}
 .fi:focus{border-color:var(--ink);}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-/* shipping options */
-.ship-opts{display:flex;flex-direction:column;gap:8px;}
-.ship-opt{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--line);cursor:pointer;transition:border-color .15s;}
-.ship-opt:hover{border-color:var(--ink);}
-.ship-opt.active{border-color:var(--ink);background:var(--line2);}
-.ship-opt input[type=radio]{margin-top:2px;accent-color:var(--ink);}
-.ship-opt-info{flex:1;}
-.ship-opt-name{font-size:13px;font-weight:500;}
-.ship-opt-desc{font-size:11px;color:var(--muted);margin-top:2px;}
-.ship-opt-price{font-size:13px;font-weight:500;white-space:nowrap;}
-/* summary */
-.summary{background:var(--line2);padding:1rem;margin:1rem 0;font-size:13px;}
-.sr{display:flex;justify-content:space-between;padding:3px 0;}
-.st{font-size:15px;font-weight:500;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;}
+.fee-box{background:var(--line2);padding:12px;font-size:13px;margin:1rem 0;}
+.fee-row{display:flex;justify-content:space-between;padding:3px 0;color:var(--ink3);}
+.fee-note{font-size:11px;color:var(--muted);margin-top:2px;}
+.fee-total{font-size:15px;font-weight:700;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;display:flex;justify-content:space-between;}
 .pay-box{background:var(--ink);color:#fff;padding:1.2rem;margin:.8rem 0;}
-.pay-box h4{font-family:var(--serif);font-size:14px;font-weight:300;letter-spacing:.1em;margin-bottom:10px;opacity:.7;}
+.pay-box h4{font-size:13px;font-weight:500;letter-spacing:.06em;margin-bottom:10px;opacity:.7;}
 .pr{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
 .pr span:last-child{font-weight:500;}
-.pnote{font-size:11px;opacity:.45;margin-top:8px;letter-spacing:.04em;}
-.sh-acts{display:flex;flex-direction:column;gap:8px;margin-top:1.2rem;}
-.btn-copy{padding:13px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
-.btn-line{padding:13px;background:none;color:var(--ink);border:1px solid var(--ink);cursor:pointer;font-size:11px;letter-spacing:.18em;text-transform:uppercase;}
-.btn-cancel{padding:10px;background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);}
+.pnote{font-size:11px;opacity:.45;margin-top:8px;}
+.lottery-hint{background:#fffbf0;border:1px solid #f0e0a0;padding:10px 12px;font-size:12px;color:#7a5500;line-height:1.7;margin-bottom:10px;}
+.submit-btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:13px;letter-spacing:.15em;text-transform:uppercase;transition:background .2s;margin-top:1rem;}
+.submit-btn:hover{background:var(--ink2);}
+.btn-cancel{width:100%;padding:10px;background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);margin-top:4px;}
 .success-v{text-align:center;padding:3rem 1rem;}
-.success-v h3{font-family:var(--serif);font-size:26px;font-weight:300;margin:1rem 0 .5rem;}
-.success-v p{font-size:13px;color:var(--muted);}
-.success-v button{margin-top:2rem;padding:12px 32px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:11px;letter-spacing:.18em;}
+.success-v .cat{font-size:52px;}
+.success-v h3{font-size:20px;font-weight:700;margin:.8rem 0 .4rem;}
+.success-v p{font-size:13px;color:var(--muted);line-height:1.7;}
+.success-v button{margin-top:2rem;padding:12px 32px;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:12px;letter-spacing:.15em;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#fff;padding:10px 20px;font-size:12px;letter-spacing:.06em;z-index:999;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* ── RESPONSIVE ── */
-@media(max-width:720px){
-  .pm{grid-template-columns:1fr;max-height:96vh;}
-  .gallery-main{max-height:55vw;}
+@media(max-width:900px){
+  .pdp-top{grid-template-columns:1fr;}
+  .pdp-info{position:static;}
+}
+@media(max-width:700px){
   main{padding:0 1rem 3rem;}
   .hd{padding:0 1rem;}
   .hero{padding:3.5rem 1.2rem 3rem;}
   .notice-grid{grid-template-columns:1fr;}
   .fgrid{grid-template-columns:1fr;}
   .page-nav-inner{padding:0 1rem;}
+  .pdp-wrap{padding:1rem 1rem 0;}
+  .pdp-detail{padding:2rem 1rem 4rem;}
 }
 @media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr);}}
 </style>
@@ -258,9 +238,11 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
 <header>
   <div class="hd">
-    <div>
-      <div class="brand-name" id="shopName">貓系傲嬌女子</div>
-      <div class="brand-sub" id="shopTagline">24hrs 內衣團購</div>
+    <div class="brand-wrap" onclick="showList()">
+      <div>
+        <div class="brand-name" id="shopName">貓系傲嬌女子</div>
+        <div class="brand-sub" id="shopTagline">24hrs 內衣團購</div>
+      </div>
     </div>
     <button class="cart-btn" onclick="openDrawer()">
       <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -270,136 +252,96 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
   </div>
 </header>
 
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-eye">✦ 貓系傲嬌女子 ✦</div>
-    <h1 class="hero-title"><em id="heroTitle">本期開團</em></h1>
-    <p class="hero-sub" id="heroDesc">精選 24hours 內衣 · 限量優惠</p>
-    <div class="hero-bar">
-      <div class="hbi">截單<strong id="heroDeadline">—</strong></div>
-      <div class="hbi">到貨<strong id="heroShipping">—</strong></div>
-      <div class="hbi">品牌<strong>24hours</strong></div>
-    </div>
-  </div>
-</div>
+<!-- ── VIEW: LIST ── -->
+<div class="view active" id="view-list">
 
-<nav class="page-nav">
-  <div class="page-nav-inner">
-    <div class="pni active" onclick="scrollTo('#sec-products',this)">本期商品</div>
-    <div class="pni" onclick="scrollTo('#sec-notice',this)">跟團須知</div>
-    <div class="pni" onclick="scrollTo('#sec-lottery',this)">抽獎活動</div>
-  </div>
-</nav>
-
-<main>
-
-  <!-- PRODUCTS -->
-  <div class="sec" id="sec-products">
-    <div class="sec-hd">
-      <h2>本期商品</h2>
-      <p id="pCount">載入中⋯</p>
-    </div>
-    <div class="grid" id="grid">
-      <div class="empty-state">商品載入中⋯</div>
-    </div>
-  </div>
-
-  <hr class="sec-divider">
-
-  <!-- NOTICE -->
-  <div class="sec" id="sec-notice">
-    <div class="sec-hd">
-      <h2>跟團須知</h2>
-      <p>下單前請詳閱以下規則</p>
-    </div>
-    <div class="notice-grid" id="noticeGrid">
-      <div class="notice-box">
-        <h3>📦 出貨說明</h3>
-        <ul id="noticeShipping">
-          <li>統一出貨，不接受分批</li>
-          <li>到貨後將通知取貨或安排寄送</li>
-          <li>宅配需另加包材費 $30</li>
-          <li>711 賣貨便運費依重量計算</li>
-        </ul>
-      </div>
-      <div class="notice-box">
-        <h3>💳 付款說明</h3>
-        <ul id="noticePayment">
-          <li>請於截單後 48 小時內完成匯款</li>
-          <li>匯款後請截圖私訊貓女</li>
-          <li>未付款視同放棄，不保留商品</li>
-          <li>確認收款後才算訂單成立</li>
-        </ul>
-      </div>
-      <div class="notice-box">
-        <h3>🔄 退換說明</h3>
-        <ul id="noticeReturn">
-          <li>商品為預購性質，非瑕疵不接受退換</li>
-          <li>收到後請立即確認商品</li>
-          <li>如有瑕疵請於 3 日內告知並附照片</li>
-          <li>尺寸選擇錯誤恕不接受換貨</li>
-        </ul>
-      </div>
-      <div class="notice-box notice-highlight">
-        <h3>⚠️ 注意事項</h3>
-        <ul id="noticeOther">
-          <li>顏色可能因螢幕顯示略有差異</li>
-          <li>尺寸建議參考品牌官方尺寸表</li>
-          <li>本團為個人代購，非官方授權</li>
-          <li>如有問題請私訊貓女 LINE</li>
-        </ul>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eye">✦ 貓系傲嬌女子 ✦</div>
+      <h1 class="hero-title" id="heroTitle">本期開團</h1>
+      <p class="hero-sub" id="heroDesc">精選 24hours 內衣 · 限量優惠</p>
+      <div class="hero-bar">
+        <div class="hbi">截單<strong id="heroDeadline">—</strong></div>
+        <div class="hbi">到貨<strong id="heroShipping">—</strong></div>
+        <div class="hbi">品牌<strong>24hours</strong></div>
       </div>
     </div>
   </div>
 
-  <hr class="sec-divider">
-
-  <!-- LOTTERY -->
-  <div class="sec" id="sec-lottery">
-    <div class="sec-hd">
-      <h2>抽獎活動</h2>
-      <p id="lotterySubtitle">本期活動辦法</p>
+  <nav class="page-nav">
+    <div class="page-nav-inner">
+      <div class="pni active" onclick="navTo('#sec-notice',this)">跟團須知</div>
+      <div class="pni" onclick="navTo('#sec-lottery',this)">抽獎活動</div>
+      <div class="pni" onclick="navTo('#sec-products',this)">本期商品</div>
     </div>
-    <div class="notice-grid">
-      <div class="lottery-box notice-box" id="lotteryBox">
-        <div class="lottery-tag">本期抽獎</div>
-        <h3>🎁 參加辦法</h3>
-        <p id="lotteryContent">本期抽獎活動說明請洽貓女，詳情待公告。</p>
+  </nav>
+
+  <main>
+    <!-- NOTICE -->
+    <div class="sec" id="sec-notice">
+      <div class="sec-hd"><h2>跟團須知</h2><p>下單前請詳閱</p></div>
+      <div class="notice-grid">
+        <div class="notice-box"><h3>📦 出貨說明</h3><ul id="noticeShipping"><li>統一出貨，不接受分批</li><li>到貨後通知取貨或寄送</li><li>711 賣貨便 $38，含包材費</li></ul></div>
+        <div class="notice-box"><h3>💳 付款說明</h3><ul id="noticePayment"><li>下單後 12 小時內完成匯款</li><li>匯款後截圖私訊貓女</li><li>逾期未付款視同棄單</li></ul></div>
+        <div class="notice-box"><h3>🔄 退換說明</h3><ul id="noticeReturn"><li>預購性質，非瑕疵不退換</li><li>收到後立即確認商品</li><li>瑕疵請於 3 日內告知並附照</li></ul></div>
+        <div class="notice-box notice-dark"><h3>⚠️ 注意事項</h3><ul id="noticeOther"><li>顏色因螢幕顯示略有差異</li><li>尺寸建議參考官方尺寸表</li><li>本團為個人代購，非官方授權</li></ul></div>
       </div>
-      <div class="notice-box">
-        <h3>🏆 歷期得獎</h3>
-        <p id="lotteryHistory" style="font-size:13px;color:var(--muted);line-height:1.8">本期暫無歷期紀錄。</p>
+    </div>
+    <hr class="sec-divider">
+
+    <!-- LOTTERY -->
+    <div class="sec" id="sec-lottery">
+      <div class="sec-hd"><h2>抽獎活動</h2><p id="lotterySubtitle">本期活動辦法</p></div>
+      <div class="notice-grid" style="grid-template-columns:1fr">
+        <div class="lottery-box notice-box">
+          <div class="lottery-tag">本期抽獎</div>
+          <h3 style="color:#fff;font-size:15px;margin-bottom:.6rem;">🎁 參加辦法</h3>
+          <p id="lotteryContent">本期抽獎說明請洽貓女，詳情待公告。</p>
+        </div>
       </div>
+    </div>
+    <hr class="sec-divider">
+
+    <!-- PRODUCTS -->
+    <div class="sec" id="sec-products">
+      <div class="sec-hd"><h2>本期商品</h2><p id="pCount">載入中⋯</p></div>
+      <div class="grid" id="grid"><div class="empty-state">商品載入中⋯</div></div>
+    </div>
+  </main>
+</div><!-- end view-list -->
+
+<!-- ── VIEW: PRODUCT DETAIL ── -->
+<div class="view" id="view-product">
+  <div class="pdp-wrap">
+    <button class="pdp-back" onclick="showList()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      返回商品列表
+    </button>
+    <!-- TOP: left images + right info -->
+    <div class="pdp-top">
+      <div>
+        <div class="pdp-main-img" id="pdpMainImg"><div class="no-img">No Image</div></div>
+        <div class="pdp-thumbs" id="pdpThumbs"></div>
+      </div>
+      <div class="pdp-info" id="pdpInfo"></div>
     </div>
   </div>
-
-</main>
-
-<!-- Product Modal -->
-<div class="overlay" id="pModal" onclick="if(event.target===this)closeModal()">
-  <div class="pm" id="pmBox">
-    <div class="pm-gallery" id="pmGallery">
-      <div class="gallery-main" id="gMain"><div class="no-img">No Image</div></div>
-      <div class="gallery-thumbs" id="gThumbs"></div>
-    </div>
-    <div class="pm-info" id="pmInfo"></div>
+  <!-- BOTTOM: full-width detail images -->
+  <div class="pdp-detail" id="pdpDetail" style="display:none">
+    <div class="pdp-detail-label">商品詳細介紹</div>
+    <div class="pdp-detail-imgs" id="pdpDetailImgs"></div>
+    <div class="pdp-detail-desc" id="pdpDetailDesc"></div>
   </div>
-</div>
+</div><!-- end view-product -->
 
 <!-- Cart Drawer -->
 <div class="do" id="dOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
-  <div class="dh">
-    <h2>購物袋</h2>
-    <button class="dc" onclick="closeDrawer()">✕</button>
-  </div>
-  <div class="di" id="di"><div class="di-empty"><p>袋子還是空的</p></div></div>
+  <div class="dh"><h2>購物袋</h2><button class="dc" onclick="closeDrawer()">✕</button></div>
+  <div class="di" id="di"><div class="di-empty">袋子還是空的</div></div>
   <div class="df">
-    <div class="total-row">
-      <span class="total-lbl">合計</span>
-      <span class="total-amt" id="total">NT$ 0</span>
-    </div>
-    <button class="checkout-btn" onclick="openCheckout()">前往結帳</button>
+    <div class="total-row"><span class="total-lbl">商品小計</span><span class="total-amt" id="total">NT$ 0</span></div>
+    <button class="checkout-btn" onclick="openCheckout()">前往填寫訂購資料</button>
   </div>
 </div>
 
@@ -410,64 +352,44 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
     <div class="fgrid">
       <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
-      <div class="fg"><label class="fl">手機末五碼 <span>*</span></label><input class="fi" id="bPhone" type="tel" placeholder="例：12345" maxlength="5"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="tel" placeholder="09xxxxxxxx"></div>
     </div>
-    <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="你的 LINE ID（不含@）"></div>
-    <div class="fg"><label class="fl">LINE 社群名稱</label><input class="fi" id="bLineName" placeholder="你在社群裡的顯示名稱"></div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
+      <div class="fg"><label class="fl">社群顯示名稱</label><input class="fi" id="bLineName" placeholder="社群裡的名字"></div>
+    </div>
+    <div class="fg"><label class="fl">匯款帳號末 5 碼 <span>*</span></label><input class="fi" id="bAcct" type="tel" placeholder="例：53813" maxlength="5"></div>
 
     <div class="fg">
-      <label class="fl">取貨 / 寄送方式 <span>*</span></label>
-      <div class="ship-opts" id="shipOpts">
-        <label class="ship-opt active" onclick="selectShip(this,'自取','0')">
-          <input type="radio" name="ship" value="自取" checked>
-          <div class="ship-opt-info">
-            <div class="ship-opt-name">自取</div>
-            <div class="ship-opt-desc">取貨地點待貓女通知</div>
-          </div>
-          <div class="ship-opt-price">免費</div>
-        </label>
-        <label class="ship-opt" onclick="selectShip(this,'711賣貨便','depends')">
-          <input type="radio" name="ship" value="711賣貨便">
-          <div class="ship-opt-info">
-            <div class="ship-opt-name">711 賣貨便</div>
-            <div class="ship-opt-desc">請填寫指定門市或讓貓女決定</div>
-          </div>
-          <div class="ship-opt-price">依重量</div>
-        </label>
-        <label class="ship-opt" onclick="selectShip(this,'宅配（含包材費$30）','30')">
-          <input type="radio" name="ship" value="宅配（含包材費$30）">
-          <div class="ship-opt-info">
-            <div class="ship-opt-name">宅配</div>
-            <div class="ship-opt-desc">需另加包材費 $30</div>
-          </div>
-          <div class="ship-opt-price">+$30</div>
-        </label>
-      </div>
-    </div>
-
-    <div class="fg" id="addrSec" style="display:none">
-      <label class="fl">收件地址 <span>*</span></label>
-      <input class="fi" id="bAddr" placeholder="完整地址">
-    </div>
-    <div class="fg" id="sevenSec" style="display:none">
       <label class="fl">指定 7-11 門市（選填）</label>
-      <input class="fi" id="bSeven" placeholder="門市名稱（可留空由貓女安排）">
+      <input class="fi" id="bSeven" placeholder="可留空，由貓女安排">
     </div>
-    <div class="fg"><label class="fl">備註</label><input class="fi" id="bNote" placeholder="特殊需求（選填）"></div>
 
-    <div class="summary" id="sSummary"></div>
-    <div class="pay-box" id="sPayment">
+    <div class="fg">
+      <label class="fl">🎁 活動密語 / 抽獎資格</label>
+      <div class="lottery-hint">
+        🥬 首次跟團 → 填「我是第一次跟團」<br>
+        🙈 回購獎 → 填「我是忠實粉絲」<br>
+        ❤️ 兌換獎品 → 填抽到的密語
+      </div>
+      <input class="fi" id="bLottery" placeholder="填入適用的密語（選填）">
+    </div>
+
+    <div class="fg"><label class="fl">備註</label><input class="fi" id="bNote" placeholder="其他需求（選填）"></div>
+
+    <!-- Fee breakdown -->
+    <div class="fee-box" id="feeBox"></div>
+
+    <div class="pay-box">
       <h4>匯款資訊</h4>
       <div class="pr"><span>銀行</span><span id="pBank">—</span></div>
       <div class="pr"><span>帳號</span><span id="pAcc">—</span></div>
       <div class="pr"><span>戶名</span><span id="pHolder">—</span></div>
-      <div class="pnote">匯款後請截圖傳給貓女確認 🐱</div>
+      <div class="pnote">下單後 12 小時內請完成匯款，逾期視同棄單</div>
     </div>
-    <div class="sh-acts">
-      <button class="btn-copy" onclick="copyOrder()">複製訂單文字</button>
-      <button class="btn-line" onclick="sendLine()">開啟 LINE 傳送</button>
-      <button class="btn-cancel" onclick="closeCheckout()">← 返回修改</button>
-    </div>
+
+    <button class="submit-btn" onclick="submitOrder()">確認送出訂單</button>
+    <button class="btn-cancel" onclick="closeCheckout()">← 返回修改</button>
   </div>
 </div>
 
@@ -475,8 +397,12 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
 <script>
 const GAS_URL='https://script.google.com/macros/s/AKfycbyjGQqyxZ1fWK8ygJCSwY6IIESUGNIkD4POKrDwCstV6Id53cdBF5mV0v225zuvmqS4MA/exec';
-let products=[],cart=[],cfg={},curP=null,selColor=null,selSize=null,shipMode='自取',shipExtra=0;
+const SHIP_FEE=38;
+const SHIP_DISCOUNT=20; // 711 賣貨便代墊，取貨時另付，預先從匯款額扣除
+let products=[],cart=[],cfg={};
+let curP=null,selColor=null,selSize=null;
 
+// ── INIT ──
 async function init(){
   try{
     const r=await fetch(`${GAS_URL}?action=getPublicData`);
@@ -486,15 +412,14 @@ async function init(){
   applyConfig();renderGrid();applyNotice();
 }
 
-// ── FORMAT DATE ──
+// ── DATE FORMAT ──
 function fmtDate(raw){
   if(!raw)return'—';
-  // Already formatted like 2026/03/24
   const m=raw.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
   if(!m)return raw;
-  const d=new Date(+m[1],+m[2]-1,+m[3]);
   const days=['日','一','二','三','四','五','六'];
-  return`${m[2]}/${m[3]}（${days[d.getDay()]}）`;
+  const dow=new Date(+m[1],+m[2]-1,+m[3]).getDay();
+  return`${+m[2]}/${String(+m[3]).padStart(2,'0')}（${days[dow]}）`;
 }
 
 function applyConfig(){
@@ -509,33 +434,36 @@ function applyConfig(){
     document.getElementById('pAcc').textContent=cfg.bankInfo.account||'—';
     document.getElementById('pHolder').textContent=cfg.bankInfo.name||'—';
   }
-  // lottery
   if(cfg.lotteryContent)document.getElementById('lotteryContent').textContent=cfg.lotteryContent;
   if(cfg.lotteryHistory)document.getElementById('lotteryHistory').textContent=cfg.lotteryHistory;
   if(cfg.lotterySubtitle)document.getElementById('lotterySubtitle').textContent=cfg.lotterySubtitle;
 }
-
 function applyNotice(){
-  if(cfg.noticeShipping)setNotice('noticeShipping',cfg.noticeShipping);
-  if(cfg.noticePayment)setNotice('noticePayment',cfg.noticePayment);
-  if(cfg.noticeReturn)setNotice('noticeReturn',cfg.noticeReturn);
-  if(cfg.noticeOther)setNotice('noticeOther',cfg.noticeOther);
-}
-function setNotice(id,text){
-  const el=document.getElementById(id);if(!el)return;
-  const lines=text.split('\n').filter(Boolean);
-  el.innerHTML=lines.map(l=>`<li>${l}</li>`).join('');
+  const keys=['noticeShipping','noticePayment','noticeReturn','noticeOther'];
+  keys.forEach(k=>{
+    if(!cfg[k])return;
+    const el=document.getElementById(k);if(!el)return;
+    el.innerHTML=cfg[k].split('\n').filter(Boolean).map(l=>`<li>${l}</li>`).join('');
+  });
 }
 
 // ── PAGE NAV ──
-function scrollTo(hash,el){
+function navTo(hash,el){
   document.querySelectorAll('.pni').forEach(n=>n.classList.remove('active'));
   el.classList.add('active');
-  const target=document.querySelector(hash);
-  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  const t=document.querySelector(hash);
+  if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-130,behavior:'smooth'});
 }
 
-// ── GRID ──
+// ── SPA VIEWS ──
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function showList(){showView('view-list');}
+
+// ── PRODUCT GRID ──
 function renderGrid(){
   const g=document.getElementById('grid');
   const list=products.filter(p=>p.active!==false);
@@ -545,11 +473,11 @@ function renderGrid(){
     const colors=p.colors||[];
     const thumb=colors[0]?.images?.[0]||'';
     const sold=!colors.some(c=>(c.sizes||[]).some(s=>s.stock>0));
-    const imgCount=colors[0]?.images?.length||0;
-    return`<div class="pc" onclick="openModal('${p.id}')">
+    const imgCount=colors.reduce((s,c)=>s+(c.images||[]).length,0);
+    return`<div class="pc" onclick="openProduct('${p.id}')">
       <div class="pc-img">
-        ${thumb?`<img src="${dThumb(thumb)}" alt="${p.name}" loading="lazy">`:`<div class="pc-img-empty">NO IMAGE</div>`}
-        ${imgCount>1?`<span class="pc-img-count">+${imgCount-1}</span>`:''}
+        ${thumb?`<img src="${dThumb(thumb,400)}" alt="${p.name}" loading="lazy">`:`<div class="pc-img-empty">NO IMAGE</div>`}
+        ${imgCount>1?`<span class="pc-img-badge">${imgCount} 張</span>`:''}
         ${sold?'<div class="sold-badge">Sold Out</div>':''}
       </div>
       <div class="pc-body">
@@ -558,57 +486,91 @@ function renderGrid(){
         <div class="pc-colors">${colors.map(c=>`<span class="pc-ctag">${c.name}</span>`).join('')}</div>
         <div class="pc-foot">
           <div class="pc-price">NT$ ${(p.price||0).toLocaleString()} <small>/ 件</small></div>
-          <button class="pc-pick" onclick="event.stopPropagation();openModal('${p.id}')">選購</button>
+          <button class="pc-pick" onclick="event.stopPropagation();openProduct('${p.id}')">選購 →</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── MODAL ──
-function openModal(id){
+// ── PRODUCT DETAIL (SPA) ──
+function openProduct(id){
   curP=products.find(p=>p.id===id);if(!curP)return;
   selColor=curP.colors?.[0]||null;selSize=null;
-  renderModal();
-  document.getElementById('pModal').classList.add('open');
-  document.body.style.overflow='hidden';
+  renderPDP();
+  showView('view-product');
 }
-function closeModal(){document.getElementById('pModal').classList.remove('open');document.body.style.overflow='';}
 
-function renderModal(){
-  renderGallery();
-  document.getElementById('pmInfo').innerHTML=`
-    <div>
-      <div class="pm-brand">${curP.brand||'24hours'}</div>
-      <div class="pm-name">${curP.name}</div>
-    </div>
-    ${curP.desc?`<div class="pm-desc">${curP.desc}</div>`:''}
-    <div class="pm-price">NT$ ${(curP.price||0).toLocaleString()} <small>/ 件</small></div>
-    <div class="vsec">
-      <div class="vlabel">顏色 <span id="scName">${selColor?.name||'請選擇'}</span></div>
+function renderPDP(){
+  renderPDPImages();
+  renderPDPInfo();
+  renderPDPDetail();
+}
+
+function renderPDPImages(){
+  const imgs=selColor?.images||[];
+  const mainEl=document.getElementById('pdpMainImg');
+  const thumbsEl=document.getElementById('pdpThumbs');
+  if(!imgs.length){
+    mainEl.innerHTML='<div class="no-img">No Image</div>';
+    thumbsEl.innerHTML='';
+    return;
+  }
+  // Main image: show first image of current color
+  mainEl.innerHTML=`<img id="pdpActiveImg" src="${dThumb(imgs[0],800)}" alt="" loading="eager">`;
+  // Thumbs: all images of current color
+  thumbsEl.innerHTML=imgs.map((u,i)=>`
+    <div class="pdp-thumb ${i===0?'active':''}" onclick="switchMainImg('${u}',this)">
+      <img src="${dThumb(u,200)}" alt="" loading="lazy">
+    </div>`).join('');
+}
+
+function switchMainImg(url,el){
+  const mainImg=document.getElementById('pdpActiveImg');
+  if(mainImg){mainImg.style.opacity='0';setTimeout(()=>{mainImg.src=dThumb(url,800);mainImg.style.opacity='1';},150);}
+  document.querySelectorAll('.pdp-thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderPDPDetail(){
+  const p=curP;
+  const detailImgs=p.detailImages||[];
+  const detailEl=document.getElementById('pdpDetail');
+  const imgsEl=document.getElementById('pdpDetailImgs');
+  const descEl=document.getElementById('pdpDetailDesc');
+  if(!detailImgs.length&&!p.desc){detailEl.style.display='none';return;}
+  detailEl.style.display='block';
+  imgsEl.innerHTML=detailImgs.map(u=>`<img src="${dThumb(u,900)}" alt="" loading="lazy">`).join('');
+  descEl.textContent=p.desc||'';
+  descEl.style.display=p.desc?'block':'none';
+}
+
+function renderPDPInfo(){
+  const p=curP;
+  document.getElementById('pdpInfo').innerHTML=`
+    <div class="pdp-brand">${p.brand||'24hours'}</div>
+    <div class="pdp-name">${p.name}</div>
+    <div class="pdp-price">NT$ ${(p.price||0).toLocaleString()} <small>/ 件</small></div>
+    <div class="pdp-section">
+      <div class="pdp-label">顏色 <span id="scName">${selColor?.name||'請選擇'}</span></div>
       <div class="color-tags" id="cTags">${renderCTags()}</div>
     </div>
-    <div class="vsec">
-      <div class="vlabel">尺寸 <span id="ssName">${selSize||'請選擇'}</span></div>
+    <div class="pdp-section">
+      <div class="pdp-label">尺寸 <span id="ssName">${selSize||'請選擇'}</span></div>
       <div class="size-pills" id="sizePills">${renderSizes()}</div>
     </div>
-    <div class="vsec" style="border:none;padding-top:0">
-      <div class="vlabel">數量</div>
+    <div class="pdp-section" style="border:none;padding-top:0">
+      <div class="pdp-label">數量</div>
       <div class="qty-row">
         <button class="qty-btn" onclick="chQty(-1)">−</button>
         <input class="qty-num" type="number" id="qtyInput" value="1" min="1">
         <button class="qty-btn" onclick="chQty(1)">+</button>
       </div>
     </div>
-    <button class="add-btn" onclick="addToCart()">加入購物袋</button>`;
-
-  // ensure close btn
-  if(!document.querySelector('.pm-close')){
-    const btn=document.createElement('button');
-    btn.className='pm-close';btn.onclick=closeModal;
-    btn.innerHTML=`<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-    document.getElementById('pmGallery').prepend(btn);
-  }
+    <button class="add-btn" onclick="addToCart()">加入購物袋</button>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6">
+      ↓ 向下捲動查看詳細商品介紹
+    </div>`;
 }
 
 function renderCTags(){
@@ -621,34 +583,14 @@ function renderSizes(){
     <button class="sp ${s.stock<=0?'oos':''} ${selSize===s.name?'active':''}"
       onclick="${s.stock>0?`selS('${s.name}')`:''}">${s.name}</button>`).join('');
 }
-function renderGallery(){
-  const imgs=selColor?.images||[];
-  const main=document.getElementById('gMain');
-  // Long image support: render all images stacked, scroll to see
-  if(imgs.length){
-    main.innerHTML=imgs.map((u,i)=>`<img src="${dThumb(u,800)}" alt="" loading="${i===0?'eager':'lazy'}" style="${i>0?'border-top:2px solid var(--line2)':''};">`).join('');
-  }else{
-    main.innerHTML=`<div class="no-img">No Image</div>`;
-  }
-  // thumbs
-  document.getElementById('gThumbs').innerHTML=imgs.map((u,i)=>`
-    <div class="g-thumb ${i===0?'active':''}" onclick="scrollToImg(${i},this)">
-      <img src="${dThumb(u,200)}" loading="lazy">
-    </div>`).join('');
-}
-function scrollToImg(idx,el){
-  const imgs=document.getElementById('gMain').querySelectorAll('img');
-  if(imgs[idx])imgs[idx].scrollIntoView({behavior:'smooth',block:'start'});
-  document.querySelectorAll('.g-thumb').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-}
 function selC(name){
   selColor=curP.colors.find(c=>c.name===name);selSize=null;
   document.getElementById('scName').textContent=name;
   document.getElementById('ssName').textContent='請選擇';
   document.getElementById('cTags').innerHTML=renderCTags();
   document.getElementById('sizePills').innerHTML=renderSizes();
-  renderGallery();
+  // Only re-render images — switch main photo to this color's first image
+  renderPDPImages();
 }
 function selS(name){selSize=name;document.getElementById('ssName').textContent=name;document.getElementById('sizePills').innerHTML=renderSizes();}
 function chQty(d){const e=document.getElementById('qtyInput');e.value=Math.max(1,(parseInt(e.value)||1)+d);}
@@ -661,18 +603,25 @@ function addToCart(){
   const ex=cart.find(x=>x.key===key);
   if(ex)ex.qty+=qty;
   else cart.push({key,id:curP.id,name:curP.name,color:selColor.name,size:selSize,price:curP.price,qty,thumb:selColor.images?.[0]||''});
-  renderCart();closeModal();
-  showToast(`已加入：${curP.name} · ${selColor.name} · ${selSize}`);
+  renderCart();
+  showToast(`已加入購物袋：${curP.name} · ${selColor.name} · ${selSize}`);
 }
 
 // ── CART ──
+function calcPacking(){
+  const n=cart.reduce((s,x)=>s+x.qty,0);
+  if(n===0)return{fee:0,label:'—'};
+  if(n<=6)return{fee:3,label:`${n}件，破壞袋 $3`};
+  return{fee:8,label:`${n}件，紙箱 $8`};
+}
+
 function renderCart(){
   const tot=cart.reduce((s,x)=>s+x.qty*x.price,0);
   const cnt=cart.reduce((s,x)=>s+x.qty,0);
   document.getElementById('total').textContent='NT$ '+tot.toLocaleString();
   const b=document.getElementById('badge');b.textContent=cnt;b.classList.toggle('on',cnt>0);
   const el=document.getElementById('di');
-  if(!cart.length){el.innerHTML='<div class="di-empty"><p>袋子還是空的</p></div>';return;}
+  if(!cart.length){el.innerHTML='<div class="di-empty">袋子還是空的</div>';return;}
   el.innerHTML=cart.map(item=>`
     <div class="ci">
       <div class="ci-img">${item.thumb?`<img src="${dThumb(item.thumb,200)}" alt="">`:''}</div>
@@ -696,94 +645,60 @@ function rmCart(k){cart=cart.filter(x=>x.key!==k);renderCart();}
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('dOverlay').classList.add('open');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('dOverlay').classList.remove('open');}
 
-// ── SHIPPING ──
-function selectShip(el,mode,extra){
-  document.querySelectorAll('.ship-opt').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-  shipMode=mode;shipExtra=extra==='30'?30:0;
-  document.getElementById('addrSec').style.display=mode.includes('宅配')?'block':'none';
-  document.getElementById('sevenSec').style.display=mode.includes('711')?'block':'none';
-  refreshSum();
-}
-
 // ── CHECKOUT ──
 function openCheckout(){
   if(!cart.length){showToast('購物袋是空的');return;}
-  closeDrawer();refreshSum();
+  closeDrawer();renderFeeBox();
   document.getElementById('so').classList.add('open');
 }
 function closeCheckout(){document.getElementById('so').classList.remove('open');}
-function refreshSum(){
+
+function renderFeeBox(){
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
-  const grand=itemTot+shipExtra;
-  document.getElementById('sSummary').innerHTML=`
-    ${cart.map(x=>`<div class="sr"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>NT$ ${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
-    ${shipExtra?`<div class="sr"><span>包材費</span><span>NT$ ${shipExtra}</span></div>`:''}
-    <div class="sr st"><span>合計</span><span>NT$ ${grand.toLocaleString()}</span></div>`;
+  const pack=calcPacking();
+  // 應匯 = 商品 + 包材費 + 運費 - 代墊扣除
+  // 說明：運費 $38 由賣貨便代收，下單者不需先匯，取貨時付；$20 代墊折抵
+  const grand=itemTot+pack.fee;
+  document.getElementById('feeBox').innerHTML=`
+    ${cart.map(x=>`<div class="fee-row"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>$${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
+    <div class="fee-row"><span>包材費（${pack.label}）</span><span>$${pack.fee}</span></div>
+    <div class="fee-row"><span>711 賣貨便運費</span><span>$38</span></div>
+    <div class="fee-note">※ 運費 $38 由賣貨便代收，取貨時支付，不含在匯款金額內</div>
+    <div class="fee-total"><span>應匯金額</span><span>NT$ ${grand.toLocaleString()}</span></div>`;
 }
 
-function buildTxt(){
+async function submitOrder(){
   const name=document.getElementById('bName').value.trim();
-  const phone=document.getElementById('bPhone').value.trim();
+  const mobile=document.getElementById('bMobile').value.trim();
   const lineId=document.getElementById('bLineId').value.trim();
   const lineName=document.getElementById('bLineName').value.trim();
-  const addr=document.getElementById('bAddr').value.trim();
+  const acct=document.getElementById('bAcct').value.trim();
   const seven=document.getElementById('bSeven').value.trim();
+  const lottery=document.getElementById('bLottery').value.trim();
   const note=document.getElementById('bNote').value.trim();
-  if(!name||!phone||!lineId){showToast('請填寫姓名、手機末五碼及 LINE ID');return null;}
-  if(shipMode.includes('宅配')&&!addr){showToast('請填寫宅配地址');return null;}
+  if(!name||!mobile||!lineId||!acct){showToast('請填寫姓名、手機、LINE ID 及帳號末5碼');return;}
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
-  const grand=itemTot+shipExtra;
-  let t=`【貓系傲嬌女子 團購訂單】\n`;
-  t+=`姓名：${name}\n`;
-  t+=`手機末五碼：${phone}\n`;
-  t+=`LINE ID：${lineId}\n`;
-  if(lineName)t+=`LINE 社群名稱：${lineName}\n`;
-  t+=`取貨方式：${shipMode}\n`;
-  if(addr)t+=`地址：${addr}\n`;
-  if(seven)t+=`指定 7-11：${seven}\n`;
-  t+=`\n訂購明細：\n`;
-  cart.forEach(x=>{t+=`・${x.name} / ${x.color} / ${x.size} × ${x.qty}件 = NT$ ${(x.qty*x.price).toLocaleString()}\n`;});
-  if(shipExtra)t+=`・包材費 = NT$ ${shipExtra}\n`;
-  t+=`\n合計：NT$ ${grand.toLocaleString()}\n`;
-  if(note)t+=`備註：${note}\n`;
-  t+=`\n匯款後請截圖傳給貓女確認 🐱`;
-  return t;
-}
-
-async function copyOrder(){
-  const txt=buildTxt();if(!txt)return;
-  await navigator.clipboard.writeText(txt);
-  showToast('已複製訂單文字');
-  await submit(txt);
-}
-async function sendLine(){
-  const txt=buildTxt();if(!txt)return;
-  navigator.clipboard.writeText(txt).catch(()=>{});
-  const lid=cfg.lineId||'';
-  if(lid)window.open(`https://line.me/ti/p/${lid}`,'_blank');
-  else window.open('https://line.me/','_blank');
-  setTimeout(()=>showToast('已複製訂單，請在 LINE 貼上'),600);
-  await submit(txt);
-}
-async function submit(txt){
-  const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
-  const data={
-    name:document.getElementById('bName').value.trim(),
-    phone:document.getElementById('bPhone').value.trim(),
-    lineId:document.getElementById('bLineId').value.trim(),
-    lineName:document.getElementById('bLineName').value.trim(),
-    pickup:shipMode,
-    address:document.getElementById('bAddr').value.trim(),
-    sevenEleven:document.getElementById('bSeven').value.trim(),
-    note:document.getElementById('bNote').value.trim(),
-    shipExtra,total:itemTot+shipExtra,items:cart,orderText:txt
-  };
+  const pack=calcPacking();
+  const grand=itemTot+pack.fee;
+  const data={name,mobile,lineId,lineName,acct,seven,lottery,note,
+    shipFee:SHIP_FEE,packFee:pack.fee,packLabel:pack.label,
+    total:grand,items:cart};
   try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submitOrder',data})});}catch{}
   cart=[];renderCart();closeCheckout();showSuccess();
 }
+
 function showSuccess(){
-  document.getElementById('cs').innerHTML=`<div class="success-v"><div style="font-size:52px">🐱</div><h3>訂單已送出！</h3><p>感謝下單，貓女會盡快確認匯款</p><p style="margin-top:6px">收到款項後將盡速安排出貨 ♡</p><button onclick="closeCheckout()">繼續逛逛</button></div>`;
+  document.getElementById('cs').innerHTML=`
+    <div class="success-v">
+      <div class="cat">🐱</div>
+      <h3>訂單已送出！</h3>
+      <p>感謝你的下單 ♡<br>
+      請在 <strong>12 小時內</strong>完成匯款<br>
+      匯款後截圖私訊貓女確認<br><br>
+      <strong>應匯金額已顯示在訂單摘要中</strong><br>
+      （運費 $38 取貨時另付給 7-11）</p>
+      <button onclick="closeCheckout()">繼續逛逛</button>
+    </div>`;
   document.getElementById('so').classList.add('open');
 }
 
@@ -800,17 +715,17 @@ function showToast(msg){
 
 // ── DEMO ──
 function demo(){return[
-  {id:'1',name:'【鎮店款】24HRS 無感支撐內衣',brand:'24hours',desc:'超輕薄無縫設計，無鋼圈自然支撐，整日穿著如裸感。採用高彈力莫代爾布料，親膚透氣。',price:380,colors:[
+  {id:'1',name:'【鎮店款】24HRS 無感支撐內衣',brand:'24hours',desc:'超輕薄無縫設計，無鋼圈自然支撐，整日穿著如裸感。\n採用高彈力莫代爾布料，親膚透氣不悶熱。',price:380,active:true,colors:[
     {name:'棉花糖粉',images:[],sizes:[{name:'S',stock:5},{name:'M',stock:3},{name:'L',stock:2}]},
     {name:'春日粉紫',images:[],sizes:[{name:'S',stock:2},{name:'M',stock:0},{name:'L',stock:1}]},
     {name:'午夜黑',images:[],sizes:[{name:'S',stock:0},{name:'M',stock:2},{name:'L',stock:3}]},
   ]},
-  {id:'2',name:'涼感冰絲內褲',brand:'24hours',desc:'冰絲面料，夏日涼感首選，平角剪裁不夾臀。',price:180,colors:[
+  {id:'2',name:'涼感冰絲內褲',brand:'24hours',desc:'冰絲面料，夏日涼感首選，平角剪裁不夾臀。',price:180,active:true,colors:[
     {name:'奶油白',images:[],sizes:[{name:'S',stock:8},{name:'M',stock:5},{name:'L',stock:3}]},
     {name:'薰衣草紫',images:[],sizes:[{name:'S',stock:4},{name:'M',stock:6},{name:'L',stock:0}]},
   ]},
 ];}
-function demoCfg(){return{shopName:'貓系傲嬌女子',tagline:'24hrs 內衣團購',heroTitle:'2026.03 內衣團',heroDesc:'精選 24hours 內衣 · 限量優惠',deadline:'2026/03/24',shipping:'2026/04/10',lineId:'',bankInfo:{bank:'玉山銀行 808',account:'0123-456-789012',name:'貓女'},lotteryContent:'本期購買任一商品即可參加抽獎！\n抽獎日期：截單後一週\n獎品：24hours 購物金 $500\n參加方式：完成付款即自動參加，不需額外報名。',lotteryHistory:'暫無紀錄',lotterySubtitle:'本期活動辦法'};}
+function demoCfg(){return{shopName:'貓系傲嬌女子',tagline:'24hrs 內衣團購',heroTitle:'2026.03 內衣團',heroDesc:'精選 24hours 內衣 · 限量優惠',deadline:'2026/03/24',shipping:'2026/04/10',lineId:'',bankInfo:{bank:'台新銀行 812',account:'28881009453813',name:'貓女'},lotteryContent:'🎁 早鳥加碼（3/18-3/20下單）：愛康涼感衛生棉正貨1包（抽1位）\n🎁 滿3件內衣抽男朋友保養品牌護唇精華×1，滿6件有2次機會（抽1位）\n\n🥬 首次跟團（抽1位）：抽24HRS品牌小圓鏡\n→ 備註欄填「我是第一次跟團」\n\n🙈 歡迎回購獎（抽1位）：抽德之寶金盞花葉黃素正貨1盒\n→ 備註欄填「我是忠實粉絲」',lotteryHistory:'暫無紀錄',lotterySubtitle:'本期活動辦法'};}
 
 init();
 </script>
