@@ -55,7 +55,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;}
 .stat{background:var(--white);border:1px solid var(--line);padding:1rem;}
 .stat-lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px;}
-.stat-val{font-family:var(--sans);font-size:24px;font-weight:400;}
+.stat-val{font-family:var(--sans);font-size:24px;font-weight:700;}
 .stat-val.accent{color:var(--green);}
 .stat-val.warn{color:#b06000;}
 
@@ -161,69 +161,38 @@ tr:hover td{background:#fdfdfb;}
 .page.active{display:block;}
 
 @media(max-width:768px){
-  /* Sidebar → bottom tab bar */
   .app{flex-direction:column;}
   .sidebar{
-    width:100%;height:auto;
-    position:fixed;bottom:0;left:0;right:0;
-    top:auto;flex-direction:column;z-index:90;
+    width:100%;
+    position:fixed;bottom:0;left:0;right:0;top:auto;
+    height:auto;
+    flex-direction:column;
+    z-index:90;
     border-right:none;border-top:1px solid var(--line);
   }
   .sb-logo{display:none;}
   .sb-nav{
-    flex-direction:row;padding:0;
-    overflow-x:auto;flex:none;
+    flex-direction:row;
+    padding:0;overflow-x:auto;flex:none;
   }
   .nav-item{
-    flex-direction:column;gap:3px;
-    padding:8px 14px;font-size:10px;
-    letter-spacing:.03em;white-space:nowrap;
-    flex:1;justify-content:center;align-items:center;min-width:60px;
+    flex-direction:column;gap:2px;
+    padding:8px 6px;font-size:10px;
+    letter-spacing:0;white-space:nowrap;
+    flex:1;justify-content:center;align-items:center;min-width:0;
   }
-  .nav-icon{font-size:18px;width:auto;}
+  .nav-icon{font-size:20px;width:auto;}
   .sb-foot{display:none;}
-
-  /* Main content above tab bar */
-  .main{
-    margin-left:0;
-    padding:1rem 1rem 5rem;
-    min-height:100vh;
-  }
+  .main{margin-left:0;padding:1rem 1rem 5rem;}
   .ph h1{font-size:18px;}
-
-  /* Stats grid 2 col */
   .stats{grid-template-columns:repeat(2,1fr);}
-
-  /* Tables: horizontal scroll */
   .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table{min-width:520px;font-size:12px;}
   th,td{padding:8px 10px;}
-
-  /* Cards full width */
   .card{border-radius:0;border-left:none;border-right:none;}
-
-  /* Modal full screen */
-  .mbox{
-    max-width:100%;max-height:100vh;
-    border-radius:0;
-    margin:0;
-    height:100vh;
-    overflow-y:auto;
-  }
   .moverlay{align-items:flex-end;}
-  .mbox{max-height:94vh;border-radius:12px 12px 0 0;}
-
-  /* Settings max-width reset */
-  .settings-card{max-width:100%;}
+  .mbox{max-width:100%;max-height:94vh;border-radius:12px 12px 0 0;}
   .frow{grid-template-columns:1fr;}
-
-  /* Product modal colors editor */
-  .color-item-hd{flex-wrap:wrap;}
-}
-
-@media(max-width:400px){
-  .nav-item{padding:8px 8px;font-size:9px;}
-  .stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
