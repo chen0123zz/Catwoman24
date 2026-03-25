@@ -115,8 +115,11 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .cpanel-value{font-size:15px;font-weight:500;color:var(--ink);word-break:break-all;}
 .cpanel-link{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:var(--ink3);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .15s;}
 .cpanel-link:hover{color:var(--ink);}
-.cpanel-qr{width:100%;max-width:200px;border:1px solid var(--line);display:block;margin-top:8px;}
+.cpanel-qr{width:100%;max-width:160px;border:1px solid var(--line);display:block;margin-top:8px;}
 .cpanel-note{font-size:13px;color:var(--ink3);line-height:1.7;white-space:pre-line;}
+.cpanel-group-btn{display:block;padding:13px 16px;background:var(--ink);color:#fff;text-decoration:none;font-size:13px;font-weight:500;text-align:center;letter-spacing:.06em;transition:background .15s;}
+.cpanel-group-btn:hover{background:var(--ink2);}
+.cpanel-group-name{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
 
 /* ── PRODUCT GRID ── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
@@ -444,20 +447,25 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     <button class="cpanel-close" onclick="closeContact()">✕</button>
   </div>
   <div class="cpanel-body" id="cpBody">
-    <div class="cpanel-section" id="cpLineWrap" style="display:none">
-      <span class="cpanel-label">LINE ID</span>
-      <div class="cpanel-value" id="cpLineId">—</div>
+    <!-- 1. 問候語 -->
+    <div class="cpanel-section" id="cpGreetWrap" style="display:none">
+      <div class="cpanel-note" id="cpGreet"></div>
     </div>
-    <div class="cpanel-section" id="cpQrWrap" style="display:none">
-      <span class="cpanel-label">LINE QR Code</span>
-      <img class="cpanel-qr" id="cpQrImg" src="" alt="LINE QR Code">
-    </div>
+    <!-- 2. 加入社群按鈕 -->
     <div class="cpanel-section" id="cpGroupWrap" style="display:none">
-      <span class="cpanel-label">團購社群</span>
-      <a class="cpanel-link" id="cpGroupLink" href="#" target="_blank">點此加入社群 →</a>
+      <a class="cpanel-group-btn" id="cpGroupLink" href="#" target="_blank">加入團購社群 →</a>
+      <div class="cpanel-group-name" id="cpGroupName"></div>
     </div>
+    <!-- 3. QR Code -->
+    <div class="cpanel-section" id="cpQrWrap" style="display:none">
+      <span class="cpanel-label">掃描加入社群</span>
+      <img class="cpanel-qr" id="cpQrImg" src="" alt="QR Code">
+    </div>
+    <!-- LINE ID (隱藏) -->
+    <div style="display:none"><div id="cpLineId"></div></div>
+    <!-- 備註 -->
     <div class="cpanel-section" id="cpNoteWrap" style="display:none">
-      <span class="cpanel-label">備註說明</span>
+      <span class="cpanel-label">其他說明</span>
       <div class="cpanel-note" id="cpNote"></div>
     </div>
   </div>
@@ -468,7 +476,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 <script>
 const GAS_URL='https://script.google.com/macros/s/AKfycbyjGQqyxZ1fWK8ygJCSwY6IIESUGNIkD4POKrDwCstV6Id53cdBF5mV0v225zuvmqS4MA/exec';
 const SHIP_FEE=38;
-const SHIP_DISCOUNT=20; // 711 賣貨便預留款
+const SHIP_DISCOUNT=20; // 賣貨便貨到付款賣場最低商品金額，匯款先扣除，取貨時補付
 let products=[],cart=[],cfg={};
 let curP=null,selColor=null,selSize=null;
 
@@ -513,15 +521,20 @@ function applyConfig(){
   if(cfg.lotteryContent)document.getElementById('lotteryContent').textContent=cfg.lotteryContent;
   if(cfg.lotterySubtitle)document.getElementById('lotterySubtitle').textContent=cfg.lotterySubtitle;
   // 聯絡貓女
-  const lineId=cfg.lineId||'';
-  document.getElementById('cpLineId').textContent=lineId||'（尚未設定）';
-  if(cfg.contactQr){
-    document.getElementById('cpQrImg').src=dThumb(cfg.contactQr,400);
-    document.getElementById('cpQrWrap').style.display='block';
+  document.getElementById('cpLineId').textContent=cfg.lineId||'';
+  if(cfg.contactGreet){
+    document.getElementById('cpGreet').textContent=cfg.contactGreet;
+    document.getElementById('cpGreetWrap').style.display='block';
   }
   if(cfg.contactGroup){
     document.getElementById('cpGroupLink').href=cfg.contactGroup;
     document.getElementById('cpGroupWrap').style.display='block';
+    if(cfg.contactGroupName)
+      document.getElementById('cpGroupName').textContent=cfg.contactGroupName;
+  }
+  if(cfg.contactQr){
+    document.getElementById('cpQrImg').src=dThumb(cfg.contactQr,400);
+    document.getElementById('cpQrWrap').style.display='block';
   }
   if(cfg.contactNote){
     document.getElementById('cpNote').textContent=cfg.contactNote;
@@ -764,14 +777,13 @@ function closeCheckout(){document.getElementById('so').classList.remove('open');
 function renderFeeBox(){
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
   const pack=calcPacking();
-  // 應匯 = 商品 + 包材費 + 運費 - 代墊扣除
-  // 說明：運費 $38 由賣貨便代收，下單者不需先匯，取貨時付；$20 代墊折抵
+  // 應匯 = 商品 + 包材費 - $20（賣貨便貨到付款賣場最低金額）
   const grand=itemTot+pack.fee-20;
   document.getElementById('feeBox').innerHTML=`
     ${cart.map(x=>`<div class="fee-row"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>$${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
     <div class="fee-row"><span>包材費（${pack.label}）</span><span>$${pack.fee}</span></div>
-    <div class="fee-row" style="color:var(--muted)"><span>預留賣貨便金額</span><span>-$20</span></div>
-    <div class="fee-note">※ 運費 $38 由賣貨便代收，取貨時支付，不含在本次匯款金額內</div>
+    <div class="fee-row" style="color:var(--muted)"><span>賣貨便餘款（取貨時補付）</span><span>-$20</span></div>
+    <div class="fee-note">※ 取貨時須支付 $20（商品餘款）＋ $38（運費）= $58 給 7-11</div>
     <div class="fee-total"><span>應匯金額</span><span>NT$ ${grand.toLocaleString()}</span></div>`;
 }
 
@@ -787,7 +799,7 @@ async function submitOrder(){
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
   const pack=calcPacking();
   const grand=itemTot+pack.fee-20;
-  const data={name,mobile,lineId,lineName,acct,seven,lottery,note,
+  const data={name,mobile,lineId,lineName,acct,lottery,note,
     shipFee:SHIP_FEE,packFee:pack.fee,packLabel:pack.label,
     total:grand,items:cart};
   try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submitOrder',data})});}catch{}
@@ -803,7 +815,7 @@ function showSuccess(){
       請在 <strong>12 小時內</strong>完成匯款<br>
       匯款後截圖私訊貓女確認<br><br>
       <strong>應匯金額已顯示在訂單摘要中</strong><br>
-      （運費 $38 取貨時另付給 7-11）</p>
+      （取貨時另付 $58：商品餘款 $20 ＋ 運費 $38）</p>
       <button onclick="closeCheckout()">繼續逛逛</button>
     </div>`;
   document.getElementById('so').classList.add('open');
