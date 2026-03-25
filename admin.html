@@ -129,8 +129,10 @@ tr:hover td{background:#fdfdfb;}
 .img-upload-area p{font-size:12px;color:var(--muted);letter-spacing:.06em;}
 .img-upload-area .upload-icon{font-size:24px;margin-bottom:.4rem;}
 .img-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.8rem;}
-.img-thumb{position:relative;width:72px;height:72px;}
-.img-thumb img{width:100%;height:100%;object-fit:cover;}
+.img-thumb{position:relative;width:72px;height:72px;cursor:grab;transition:opacity .15s,outline .15s;}
+.img-thumb:hover{outline:2px solid var(--ink);}
+.img-thumb.dragging{opacity:.4;outline:2px dashed var(--muted);}
+.img-thumb img{width:100%;height:100%;object-fit:cover;pointer-events:none;}
 .img-del{position:absolute;top:-5px;right:-5px;width:18px;height:18px;background:var(--red);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
 
 /* Sizes editor */
@@ -720,10 +722,12 @@ let imgDragData={type:null,idx:null,ci:null};
 function imgDragStart(e,type,idx,ci=null){
   imgDragData={type,idx,ci};
   e.dataTransfer.effectAllowed='move';
+  e.currentTarget.classList.add('dragging');
 }
 function imgDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
 function imgDragDrop(e,type,targetIdx,targetCi=null){
   e.preventDefault();
+  document.querySelectorAll('.img-thumb.dragging').forEach(el=>el.classList.remove('dragging'));
   const{idx:fromIdx,ci:fromCi}=imgDragData;
   if(fromIdx===null||fromIdx===targetIdx)return;
   if(type==='detail'){
