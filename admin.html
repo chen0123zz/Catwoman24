@@ -339,9 +339,24 @@ tr:hover td{background:#fdfdfb;}
         </div>
         <div class="card">
           <div class="card-hd"><h3>📲 LINE 設定</h3></div>
-          <div class="card-body">
+          <div class="card-body" style="display:grid;gap:12px">
             <div class="fgroup" style="margin:0"><label class="flabel">LINE ID（不含@）</label><input class="finput" id="cLine" placeholder="your_line_id"></div>
-            <div style="font-size:11px;color:var(--muted);margin-top:6px">客人結帳時會帶入訂單文字跳轉到你的 LINE</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:-4px">客人結帳時會帶入訂單文字跳轉到你的 LINE</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>🐱 聯絡貓女頁面</h3></div>
+          <div class="card-body" style="display:grid;gap:12px">
+            <div class="fgroup" style="margin:0">
+              <label class="flabel">LINE QR Code 圖片</label>
+              <input class="finput" id="cContactQr" placeholder="貼上 Google Drive 分享連結">
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">截圖你的 LINE QR Code 上傳到 Drive，貼連結即可</div>
+            </div>
+            <div class="fgroup" style="margin:0"><label class="flabel">團購社群連結</label><input class="finput" id="cContactGroup" placeholder="https://line.me/..."></div>
+            <div class="fgroup" style="margin:0">
+              <label class="flabel">備註說明（選填）</label>
+              <textarea class="finput" id="cContactNote" rows="3" style="resize:vertical;line-height:1.6" placeholder="e.g. 加 LINE 請備註「團購」"></textarea>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -514,6 +529,9 @@ function applyCfg(){
   document.getElementById('cLotterySubtitle').value=cfg.lotterySubtitle||'';
   document.getElementById('cLotteryContent').value=cfg.lotteryContent||'';
   document.getElementById('cLine').value=cfg.lineId||'';
+  document.getElementById('cContactQr').value=cfg.contactQr||'';
+  document.getElementById('cContactGroup').value=cfg.contactGroup||'';
+  document.getElementById('cContactNote').value=cfg.contactNote||'';
   document.getElementById('cAdminU').value=cfg.adminUser||'';
   if(cfg.bankInfo){
     document.getElementById('cBank').value=cfg.bankInfo.bank||'';
@@ -822,6 +840,9 @@ async function saveSettings(){
     shipping:fmtDate(shippingRaw),
     shippingRaw,
     lineId:document.getElementById('cLine').value.trim(),
+    contactQr:document.getElementById('cContactQr').value.trim(),
+    contactGroup:document.getElementById('cContactGroup').value.trim(),
+    contactNote:document.getElementById('cContactNote').value.trim(),
     bankInfo:{
       bank:document.getElementById('cBank').value.trim(),
       name:document.getElementById('cBankName').value.trim(),
