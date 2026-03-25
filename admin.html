@@ -299,9 +299,10 @@ tr:hover td{background:#fdfdfb;}
             <th class="sortable" onclick="sortOrders('time')">時間 <span id="sort-time">↓</span></th>
             <th class="sortable" onclick="sortOrders('name')">客戶 <span id="sort-name"></span></th>
             <th>電話</th>
+            <th class="sortable" onclick="sortOrders('lineId')">LINE ID <span id="sort-lineId"></span></th>
             <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
-            <th>取貨</th>
             <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
+            <th>備忘</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="ordersTb"></tbody>
@@ -815,10 +816,14 @@ function renderOrders(list){
       <td style="font-size:11px;color:var(--muted);font-weight:500">${o.id}</td>
       <td style="font-size:12px;color:var(--muted)">${fmtTime(o.time)}</td>
       <td><strong>${o.name}</strong>${o.lottery?`<div style="font-size:10px;color:#b06000;margin-top:2px">🎁 ${o.lottery}</div>`:''}</td>
-      <td style="font-size:12px">${o.phone}</td>
+      <td style="font-size:12px">${o.phone||'—'}</td>
+      <td style="font-size:12px;color:var(--ink3)">${o.lineId||'—'}</td>
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
-      <td><span class="badge badge-k">${o.pickup||'—'}</span></td>
       <td>${statusB(o.status)}</td>
+      <td>
+        <input class="finput" value="${o.memo||''}" placeholder="備忘…" style="padding:4px 6px;font-size:12px;min-width:100px"
+          onchange="saveMemo('${o.id}',this.value)" title="貨到後可在此備忘缺貨、補貨狀態等">
+      </td>
       <td style="display:flex;gap:4px">
         <button class="btn btn-ghost btn-sm" onclick="openOModal('${o.id}')">查看</button>
         <button class="btn btn-red btn-sm" onclick="deleteOrder('${o.id}')">刪除</button>
@@ -832,11 +837,15 @@ function renderOrders(list){
         <div>${statusB(o.status)}</div>
       </div>
       <div class="mob-card-rows">
-        <div class="mob-card-row"><span class="mob-card-label">手機</span><span class="mob-card-val">${o.phone}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">手機</span><span class="mob-card-val">${o.phone||'—'}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">LINE</span><span class="mob-card-val">${o.lineId||'—'}</span></div>
         <div class="mob-card-row"><span class="mob-card-label">金額</span><span class="mob-card-val"><strong>NT$ ${(o.total||0).toLocaleString()}</strong></span></div>
-        <div class="mob-card-row"><span class="mob-card-label">取貨</span><span class="mob-card-val">${o.pickup||'—'}</span></div>
         ${o.lottery?`<div class="mob-card-row"><span class="mob-card-label">密語</span><span class="mob-card-val" style="color:#b06000">🎁 ${o.lottery}</span></div>`:''}
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
+      </div>
+      <div style="margin-top:8px">
+        <input class="finput" value="${o.memo||''}" placeholder="📝 備忘（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
+          onchange="saveMemo('${o.id}',this.value)">
       </div>
       <div class="mob-card-actions">
         <button class="btn btn-ghost btn-sm" onclick="openOModal('${o.id}')" style="flex:1">📋 查看詳情</button>
@@ -866,19 +875,23 @@ let sortKey='time',sortAsc=false;
 function sortOrders(key){
   if(sortKey===key)sortAsc=!sortAsc;
   else{sortKey=key;sortAsc=key==='name';}
-  // 更新箭頭
-  ['id','time','name','total','status'].forEach(k=>{
+  ['id','time','name','lineId','total','status'].forEach(k=>{
     const el=document.getElementById('sort-'+k);
     if(el)el.textContent=k===key?(sortAsc?'↑':'↓'):'';
   });
-  // 排序
   allOrders.sort((a,b)=>{
     let va=a[key]??'', vb=b[key]??'';
     if(key==='total'){va=+va;vb=+vb;return sortAsc?va-vb:vb-va;}
-    if(key==='time'){va=String(va);vb=String(vb);}
     return sortAsc?String(va).localeCompare(String(vb),'zh'):String(vb).localeCompare(String(va),'zh');
   });
   searchOrders();
+}
+
+async function saveMemo(id,memo){
+  const o=allOrders.find(x=>x.id===id);
+  if(o)o.memo=memo;
+  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'updateMemo',token:sessionStorage.getItem('tok'),id,memo})});}catch{}
 }
 function openOModal(id){
   const o=allOrders.find(x=>x.id===id);if(!o)return;
