@@ -799,26 +799,72 @@ async function submitOrder(){
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
   const pack=calcPacking();
   const grand=itemTot+pack.fee-20;
-  const data={name,mobile,lineId,lineName,acct,lottery,note,
+  // 送出前確認：顯示應匯金額
+  if(!confirm(`📋 請確認應匯金額：\n\nNT$ ${grand.toLocaleString()}\n\n匯款後截圖私訊貓女確認\n取貨時另付 $58（商品餘款 $20 ＋ 運費 $38）\n\n確認送出訂單嗎？`))return;
+  const data={name,phone:mobile,mobile,lineId,lineName,acct,lottery,note,
     shipFee:SHIP_FEE,packFee:pack.fee,packLabel:pack.label,
     total:grand,items:cart};
   try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submitOrder',data})});}catch{}
-  cart=[];renderCart();closeCheckout();showSuccess();
+  cart=[];renderCart();
+  showSuccess(grand);
 }
 
-function showSuccess(){
-  document.getElementById('cs').innerHTML=`
+function showSuccess(grand){
+  // 重置結帳表單（修復送出後無法再次下單的問題）
+  const cs=document.getElementById('cs');
+  cs.innerHTML=`
     <div class="success-v">
       <div class="cat">🐱</div>
       <h3>訂單已送出！</h3>
-      <p>感謝你的下單 ♡<br>
-      請在 <strong>12 小時內</strong>完成匯款<br>
-      匯款後截圖私訊貓女確認<br><br>
-      <strong>應匯金額已顯示在訂單摘要中</strong><br>
-      （取貨時另付 $58：商品餘款 $20 ＋ 運費 $38）</p>
-      <button onclick="closeCheckout()">繼續逛逛</button>
+      <div style="background:var(--line2);padding:1rem;margin:1rem 0;text-align:left">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.1em">應匯金額</div>
+        <div style="font-size:28px;font-weight:700;">NT$ ${grand.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">請截圖此頁面，12 小時內完成匯款</div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.8">
+        匯款後截圖私訊貓女確認 ♡<br>
+        取貨時另付 <strong>$58</strong>（商品餘款 $20 ＋ 運費 $38）
+      </p>
+      <button onclick="resetCheckout()">繼續購物</button>
     </div>`;
   document.getElementById('so').classList.add('open');
+}
+
+function resetCheckout(){
+  // 關閉並重置整個結帳表單，讓下次下單正常運作
+  document.getElementById('so').classList.remove('open');
+  const cs=document.getElementById('cs');
+  cs.innerHTML=`
+    <div class="cs-title">填寫訂購資料</div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="tel" placeholder="09xxxxxxxx"></div>
+    </div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
+      <div class="fg"><label class="fl">社群顯示名稱</label><input class="fi" id="bLineName" placeholder="社群裡的名字"></div>
+    </div>
+    <div class="fg"><label class="fl">匯款帳號末 5 碼 <span>*</span></label><input class="fi" id="bAcct" type="tel" placeholder="例：53813" maxlength="5"></div>
+    <div class="fg">
+      <label class="fl">🎁 活動密語 / 抽獎資格</label>
+      <div class="lottery-hint">
+        🥬 首次跟團 → 填「我是第一次跟團」<br>
+        🙈 回購獎 → 填「我是忠實粉絲」<br>
+        ❤️ 兌換獎品 → 填抽到的密語
+      </div>
+      <input class="fi" id="bLottery" placeholder="填入適用的密語（選填）">
+    </div>
+    <div class="fg"><label class="fl">備註</label><input class="fi" id="bNote" placeholder="其他需求（選填）"></div>
+    <div class="fee-box" id="feeBox"></div>
+    <div class="pay-box">
+      <h4>匯款資訊</h4>
+      <div class="pr"><span>銀行</span><span id="pBank">${cfg.bankInfo?.bank||'—'}</span></div>
+      <div class="pr"><span>帳號</span><span id="pAcc">${cfg.bankInfo?.account||'—'}</span></div>
+      <div class="pr"><span>戶名</span><span id="pHolder">${cfg.bankInfo?.name||'—'}</span></div>
+      <div class="pnote">下單後 12 小時內請完成匯款，逾期視同棄單</div>
+    </div>
+    <button class="submit-btn" onclick="submitOrder()">確認送出訂單</button>
+    <button class="btn-cancel" onclick="closeCheckout()">← 返回修改</button>`;
 }
 
 // ── UTILS ──
