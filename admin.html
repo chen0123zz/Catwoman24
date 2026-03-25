@@ -55,7 +55,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;}
 .stat{background:var(--white);border:1px solid var(--line);padding:1rem;}
 .stat-lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px;}
-.stat-val{font-family:var(--sans);font-size:24px;font-weight:400;}
+.stat-val{font-family:var(--sans);font-size:24px;font-weight:700;}
 .stat-val.accent{color:var(--green);}
 .stat-val.warn{color:#b06000;}
 
@@ -149,6 +149,8 @@ tr:hover td{background:#fdfdfb;}
 .tab{padding:8px 16px;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
 .tab:hover{color:var(--ink);}
 .tab.active{color:var(--ink);font-weight:500;border-bottom-color:var(--ink);}
+.sortable{cursor:pointer;user-select:none;}
+.sortable:hover{background:var(--bg);}
 
 /* SETTINGS */
 .settings-card{max-width:600px;}
@@ -292,7 +294,16 @@ tr:hover td{background:#fdfdfb;}
       </div>
       <div class="card">
         <div class="tw"><table>
-          <thead><tr><th>訂單號</th><th>時間</th><th>客戶</th><th>電話</th><th>金額</th><th>取貨</th><th>狀態</th><th>操作</th></tr></thead>
+          <thead><tr>
+            <th class="sortable" onclick="sortOrders('id')">訂單號 <span id="sort-id"></span></th>
+            <th class="sortable" onclick="sortOrders('time')">時間 <span id="sort-time">↓</span></th>
+            <th class="sortable" onclick="sortOrders('name')">客戶 <span id="sort-name"></span></th>
+            <th>電話</th>
+            <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
+            <th>取貨</th>
+            <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
+            <th>操作</th>
+          </tr></thead>
           <tbody id="ordersTb"></tbody>
         </table></div>
         <div class="mob-only" id="ordersMob"></div>
@@ -552,7 +563,7 @@ function renderDash(){
   const recent=[...orders].reverse().slice(0,5);
   document.getElementById('recentTb').innerHTML=recent.length?recent.map(o=>`
     <tr>
-      <td style="font-size:11px;color:var(--muted)">${o.time}</td>
+      <td style="font-size:11px;color:var(--muted)">${fmtTime(o.time)}</td>
       <td><strong>${o.name}</strong></td>
       <td>NT$ ${(o.total||0).toLocaleString()}</td>
       <td>${statusB(o.status)}</td>
@@ -848,6 +859,25 @@ function filterO(status,el){
   curOrderFilter=status;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+  searchOrders();
+}
+
+let sortKey='time',sortAsc=false;
+function sortOrders(key){
+  if(sortKey===key)sortAsc=!sortAsc;
+  else{sortKey=key;sortAsc=key==='name';}
+  // 更新箭頭
+  ['id','time','name','total','status'].forEach(k=>{
+    const el=document.getElementById('sort-'+k);
+    if(el)el.textContent=k===key?(sortAsc?'↑':'↓'):'';
+  });
+  // 排序
+  allOrders.sort((a,b)=>{
+    let va=a[key]??'', vb=b[key]??'';
+    if(key==='total'){va=+va;vb=+vb;return sortAsc?va-vb:vb-va;}
+    if(key==='time'){va=String(va);vb=String(vb);}
+    return sortAsc?String(va).localeCompare(String(vb),'zh'):String(vb).localeCompare(String(va),'zh');
+  });
   searchOrders();
 }
 function openOModal(id){
