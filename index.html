@@ -127,9 +127,9 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .pc-img img.carousel-hidden{opacity:0;}
 .pc-img img.carousel-visible{opacity:1;}
 .pc:hover .pc-img img.carousel-visible{transform:scale(1.04);}
-.pc-img-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:2;}
-.pc-img-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);transition:background .2s;}
-.pc-img-dot.active{background:#fff;}
+.pc-img-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:2;mix-blend-mode:difference;}
+.pc-img-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6);transition:background .2s;border:1px solid rgba(255,255,255,.4);}
+.pc-img-dot.active{background:#fff;transform:scale(1.3);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
 .pc{background:var(--white);cursor:pointer;transition:all .25s;overflow:hidden;}
 .pc:hover{z-index:1;box-shadow:0 6px 32px rgba(0,0,0,.1);transform:translateY(-2px);}
@@ -350,8 +350,6 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
       <div class="sec-hd"><h2>抽獎活動</h2><p id="lotterySubtitle">本期活動辦法</p></div>
       <div class="notice-grid" style="grid-template-columns:1fr">
         <div class="lottery-box notice-box">
-          <div class="lottery-tag">本期抽獎</div>
-          <div class="lottery-sec-title" id="lotteryTitle">🎁 參加辦法</div>
           <div class="lottery-content" id="lotteryContent">本期抽獎說明請洽貓女，詳情待公告。</div>
         </div>
       </div>
@@ -594,12 +592,34 @@ function showList(){showView('view-list');}
 
 // ── PRODUCT GRID ──
 const carouselTimers={};
+const isMobile=()=>window.matchMedia('(hover:none)').matches;
+
+function startCarousel(pid,imgs){
+  if(carouselTimers[pid])return;
+  let cur=0;
+  // 找出目前顯示的是第幾張
+  imgs.forEach((img,i)=>{if(img.classList.contains('carousel-visible'))cur=i;});
+  carouselTimers[pid]=setInterval(()=>{
+    const els=document.querySelectorAll(`#pcimg_${pid} img`);
+    if(!els.length){stopCarousel(pid);return;}
+    els[cur].classList.remove('carousel-visible');
+    els[cur].classList.add('carousel-hidden');
+    const dotOld=document.getElementById(`dot_${pid}_${cur}`);
+    if(dotOld)dotOld.classList.remove('active');
+    cur=(cur+1)%els.length;
+    els[cur].classList.remove('carousel-hidden');
+    els[cur].classList.add('carousel-visible');
+    const dotNew=document.getElementById(`dot_${pid}_${cur}`);
+    if(dotNew)dotNew.classList.add('active');
+  },800);
+}
+function stopCarousel(pid){
+  clearInterval(carouselTimers[pid]);
+  delete carouselTimers[pid];
+}
 
 function renderGrid(){
-  // 清除舊輪播計時器
-  Object.values(carouselTimers).forEach(t=>clearInterval(t));
-  Object.keys(carouselTimers).forEach(k=>delete carouselTimers[k]);
-
+  Object.keys(carouselTimers).forEach(k=>{clearInterval(carouselTimers[k]);delete carouselTimers[k];});
   const g=document.getElementById('grid');
   const list=products.filter(p=>p.active!==false);
   document.getElementById('pCount').textContent=list.length?`共 ${list.length} 款商品`:'目前無商品';
@@ -607,12 +627,13 @@ function renderGrid(){
 
   g.innerHTML=list.map(p=>{
     const colors=p.colors||[];
-    // 蒐集所有顏色的所有圖片
     const allImgs=[];
     colors.forEach(c=>(c.images||[]).forEach(u=>allImgs.push(u)));
     const sold=!colors.some(c=>(c.sizes||[]).some(s=>s.stock>0));
     const hasMulti=allImgs.length>1;
-    return`<div class="pc" id="pc_${p.id}" onclick="openProduct('${p.id}')">
+    return`<div class="pc" id="pc_${p.id}" onclick="openProduct('${p.id}')"
+      onmouseenter="if(!isMobile()&&${hasMulti})startCarousel('${p.id}',[])"
+      onmouseleave="stopCarousel('${p.id}')">
       <div class="pc-img" id="pcimg_${p.id}">
         ${allImgs.length
           ? allImgs.map((u,i)=>`<img src="${dThumb(u,400)}" alt="${p.name}" loading="${i===0?'eager':'lazy'}" class="${i===0?'carousel-visible':'carousel-hidden'}">`).join('')
@@ -631,28 +652,6 @@ function renderGrid(){
       </div>
     </div>`;
   }).join('');
-
-  // 啟動輪播（只對有多圖的商品）
-  list.forEach(p=>{
-    const colors=p.colors||[];
-    const allImgs=[];
-    colors.forEach(c=>(c.images||[]).forEach(u=>allImgs.push(u)));
-    if(allImgs.length<=1)return;
-    let cur=0;
-    carouselTimers[p.id]=setInterval(()=>{
-      const imgs=document.querySelectorAll(`#pcimg_${p.id} img`);
-      if(!imgs.length)return;
-      imgs[cur].classList.remove('carousel-visible');
-      imgs[cur].classList.add('carousel-hidden');
-      const dotOld=document.getElementById(`dot_${p.id}_${cur}`);
-      if(dotOld)dotOld.classList.remove('active');
-      cur=(cur+1)%imgs.length;
-      imgs[cur].classList.remove('carousel-hidden');
-      imgs[cur].classList.add('carousel-visible');
-      const dotNew=document.getElementById(`dot_${p.id}_${cur}`);
-      if(dotNew)dotNew.classList.add('active');
-    },2800);
-  });
 }
 
 // ── PRODUCT DETAIL (SPA) ──
