@@ -162,49 +162,29 @@ tr:hover td{background:#fdfdfb;}
 
 @media(max-width:768px){
   .app{display:block;}
-  .sidebar{
-    width:100%;
-    position:fixed;bottom:0;left:0;right:0;top:auto;
-    height:auto;
-    flex-direction:row !important;
-    z-index:90;
-    border-right:none;border-top:1px solid var(--line);
-    background:var(--white);
-  }
+  .sidebar{width:100%;position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row !important;z-index:90;border-right:none;border-top:1px solid var(--line);background:var(--white);}
   .sb-logo{display:none;}
-  .sb-nav{
-    display:flex !important;
-    flex-direction:row !important;
-    width:100%;
-    padding:0;
-    overflow-x:auto;
-  }
-  .nav-item{
-    display:flex !important;
-    flex-direction:column;
-    gap:2px;
-    padding:8px 4px;
-    font-size:10px;
-    letter-spacing:0;
-    white-space:nowrap;
-    flex:1;
-    justify-content:center;
-    align-items:center;
-    min-width:0;
-    border-radius:0;
-  }
+  .sb-nav{display:flex !important;flex-direction:row !important;width:100%;padding:0;}
+  .nav-item{display:flex !important;flex-direction:column;gap:2px;padding:8px 4px;font-size:10px;letter-spacing:0;flex:1;justify-content:center;align-items:center;min-width:0;border-radius:0;}
   .nav-icon{font-size:20px;width:auto;}
   .sb-foot{display:none;}
-  .main{margin-left:0;padding:1rem 1rem 5rem;}
-  .ph h1{font-size:18px;}
-  .stats{grid-template-columns:repeat(2,1fr);}
+  .main{margin-left:0;padding:.8rem .8rem 5rem;}
+  .ph h1{font-size:17px;}.ph p{font-size:11px;}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem;}
+  .stat{padding:.7rem .8rem;}.stat-lbl{font-size:10px;}.stat-val{font-size:20px;}
+  .card{border-left:none;border-right:none;border-radius:0;margin-bottom:.4rem;}
+  .card-hd{padding:.8rem;}.card-body{padding:.8rem;}
   .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{min-width:520px;font-size:12px;}
-  th,td{padding:8px 10px;}
-  .card{border-radius:0;border-left:none;border-right:none;}
+  table{font-size:11px;min-width:600px;}
+  th{padding:6px 7px;font-size:10px;}
+  td{padding:7px 7px;}
+  .btn-sm{padding:4px 7px;font-size:10px;}
+  .frow{grid-template-columns:1fr;}
+  .frow3{grid-template-columns:1fr;}
+  .finput{padding:8px;font-size:13px;}
   .moverlay{align-items:flex-end;}
   .mbox{max-width:100%;max-height:94vh;border-radius:12px 12px 0 0;}
-  .frow{grid-template-columns:1fr;}
+  .mhd{padding:1rem;}.mbody{padding:1rem;}.mfoot{padding:.8rem 1rem;}
 }
 </style>
 </head>
