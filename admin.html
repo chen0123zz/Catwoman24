@@ -304,7 +304,7 @@ tr:hover td{background:#fdfdfb;}
             <th class="sortable" onclick="sortOrders('lineId')">LINE ID <span id="sort-lineId"></span></th>
             <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
             <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
-            <th>備忘</th>
+            <th>備註</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="ordersTb"></tbody>
@@ -875,7 +875,7 @@ function renderOrders(list){
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
       <td>${statusB(o.status)}</td>
       <td>
-        <input class="finput" value="${o.memo||''}" placeholder="備忘…" style="padding:4px 6px;font-size:12px;min-width:100px"
+        <input class="finput" value="${o.memo||''}" placeholder="備註欄" style="padding:4px 6px;font-size:12px;min-width:100px"
           onchange="saveMemo('${o.id}',this.value)" title="貨到後可在此備忘缺貨、補貨狀態等">
       </td>
       <td style="display:flex;gap:4px">
@@ -898,7 +898,7 @@ function renderOrders(list){
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
       </div>
       <div style="margin-top:8px">
-        <input class="finput" value="${o.memo||''}" placeholder="📝 備忘（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
+        <input class="finput" value="${o.memo||''}" placeholder="📝 備註（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
           onchange="saveMemo('${o.id}',this.value)">
       </div>
       <div class="mob-card-actions">
