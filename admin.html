@@ -55,7 +55,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;}
 .stat{background:var(--white);border:1px solid var(--line);padding:1rem;}
 .stat-lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px;}
-.stat-val{font-family:var(--sans);font-size:24px;font-weight:400;}
+.stat-val{font-family:var(--sans);font-size:24px;font-weight:700;}
 .stat-val.accent{color:var(--green);}
 .stat-val.warn{color:#b06000;}
 
@@ -302,7 +302,7 @@ tr:hover td{background:#fdfdfb;}
             <th class="sortable" onclick="sortOrders('lineId')">LINE ID <span id="sort-lineId"></span></th>
             <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
             <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
-            <th>備註</th>
+            <th>備忘</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="ordersTb"></tbody>
@@ -681,8 +681,12 @@ function renderColorsEditor(){
     return;
   }
   el.innerHTML=editColors.map((c,ci)=>`
-    <div class="color-item" id="ci_${ci}">
+    <div class="color-item" id="ci_${ci}" draggable="true"
+      ondragstart="colorDragStart(event,${ci})"
+      ondragover="colorDragOver(event)"
+      ondrop="colorDragDrop(event,${ci})">
       <div class="color-item-hd" onclick="toggleColor(${ci})">
+        <span style="color:var(--muted);cursor:grab;margin-right:4px;font-size:14px" onclick="event.stopPropagation()">⠿</span>
         <span class="color-item-name">${c.name||'（未命名）'}</span>
         <span style="font-size:11px;color:var(--muted)">${(c.images||[]).length}張圖 · ${(c.sizes||[]).length}個尺寸</span>
         <button onclick="event.stopPropagation();rmColor(${ci})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px" title="刪除此顏色">✕</button>
@@ -695,7 +699,7 @@ function renderColorsEditor(){
             <input class="finput" value="${c.name||''}" placeholder="e.g. 霧玫瑰、午夜黑" onchange="editColors[${ci}].name=this.value;document.querySelector('#ci_${ci} .color-item-name').textContent=this.value||'（未命名）'">
           </div>
         </div>
-        <label class="flabel">商品圖片（規格預覽用，從 Google Drive 貼連結）</label>
+        <label class="flabel">商品圖片（規格預覽用，從 Google Drive 貼連結）<span style="font-weight:400;color:var(--muted)"> — 可拖曳調整順序</span></label>
         <div class="img-thumbs" id="thumbs_${ci}"></div>
         <div style="display:flex;gap:8px;margin-bottom:.8rem">
           <input class="finput" id="imgUrl_${ci}" placeholder="貼上 Google Drive 分享連結" style="flex:1">
@@ -709,6 +713,44 @@ function renderColorsEditor(){
       </div>
     </div>`).join('');
   editColors.forEach((_,ci)=>{renderThumbs(ci);renderSizes2(ci);});
+}
+
+// ── 圖片拖曳排序 ──
+let imgDragData={type:null,idx:null,ci:null};
+function imgDragStart(e,type,idx,ci=null){
+  imgDragData={type,idx,ci};
+  e.dataTransfer.effectAllowed='move';
+}
+function imgDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
+function imgDragDrop(e,type,targetIdx,targetCi=null){
+  e.preventDefault();
+  const{idx:fromIdx,ci:fromCi}=imgDragData;
+  if(fromIdx===null||fromIdx===targetIdx)return;
+  if(type==='detail'){
+    const moved=editDetailImgs.splice(fromIdx,1)[0];
+    editDetailImgs.splice(targetIdx,0,moved);
+    renderDetailThumbs();
+  } else if(type==='color'&&fromCi===targetCi){
+    const arr=editColors[fromCi].images;
+    const moved=arr.splice(fromIdx,1)[0];
+    arr.splice(targetIdx,0,moved);
+    renderThumbs(fromCi);
+    updateColorMeta(fromCi);
+  }
+  imgDragData={type:null,idx:null,ci:null};
+}
+
+// ── 顏色拖曳排序 ──
+let colorDragIdx=null;
+function colorDragStart(e,ci){colorDragIdx=ci;e.dataTransfer.effectAllowed='move';}
+function colorDragOver(e){e.preventDefault();}
+function colorDragDrop(e,targetCi){
+  e.preventDefault();
+  if(colorDragIdx===null||colorDragIdx===targetCi)return;
+  const moved=editColors.splice(colorDragIdx,1)[0];
+  editColors.splice(targetCi,0,moved);
+  colorDragIdx=null;
+  renderColorsEditor();
 }
 
 function toggleColor(ci){
@@ -731,7 +773,11 @@ function rmImg(ci,ii){editColors[ci].images.splice(ii,1);renderThumbs(ci);update
 function renderThumbs(ci){
   const el=document.getElementById('thumbs_'+ci);if(!el)return;
   el.innerHTML=(editColors[ci].images||[]).map((u,ii)=>`
-    <div class="img-thumb">
+    <div class="img-thumb" draggable="true"
+      ondragstart="imgDragStart(event,'color',${ii},${ci})"
+      ondragover="imgDragOver(event)"
+      ondrop="imgDragDrop(event,'color',${ii},${ci})"
+      style="cursor:grab">
       <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
       <button class="img-del" onclick="rmImg(${ci},${ii})">✕</button>
     </div>`).join('');
@@ -768,7 +814,11 @@ function rmDetailImg(i){editDetailImgs.splice(i,1);renderDetailThumbs();}
 function renderDetailThumbs(){
   const el=document.getElementById('detailThumbs');if(!el)return;
   el.innerHTML=editDetailImgs.map((u,i)=>`
-    <div class="img-thumb">
+    <div class="img-thumb" draggable="true" data-type="detail" data-idx="${i}"
+      ondragstart="imgDragStart(event,'detail',${i})"
+      ondragover="imgDragOver(event)"
+      ondrop="imgDragDrop(event,'detail',${i})"
+      style="cursor:grab">
       <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
       <button class="img-del" onclick="rmDetailImg(${i})">✕</button>
     </div>`).join('');
@@ -821,7 +871,7 @@ function renderOrders(list){
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
       <td>${statusB(o.status)}</td>
       <td>
-        <input class="finput" value="${o.memo||''}" placeholder="備註" style="padding:4px 6px;font-size:12px;min-width:100px"
+        <input class="finput" value="${o.memo||''}" placeholder="備忘…" style="padding:4px 6px;font-size:12px;min-width:100px"
           onchange="saveMemo('${o.id}',this.value)" title="貨到後可在此備忘缺貨、補貨狀態等">
       </td>
       <td style="display:flex;gap:4px">
@@ -844,7 +894,7 @@ function renderOrders(list){
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
       </div>
       <div style="margin-top:8px">
-        <input class="finput" value="${o.memo||''}" placeholder="📝 備註（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
+        <input class="finput" value="${o.memo||''}" placeholder="📝 備忘（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
           onchange="saveMemo('${o.id}',this.value)">
       </div>
       <div class="mob-card-actions">
