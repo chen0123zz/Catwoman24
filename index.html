@@ -409,11 +409,6 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     <div class="fg"><label class="fl">匯款帳號末 5 碼 <span>*</span></label><input class="fi" id="bAcct" type="tel" placeholder="例：53813" maxlength="5"></div>
 
     <div class="fg">
-      <label class="fl">指定 7-11 門市（選填）</label>
-      <input class="fi" id="bSeven" placeholder="可留空，由貓女安排">
-    </div>
-
-    <div class="fg">
       <label class="fl">🎁 活動密語 / 抽獎資格</label>
       <div class="lottery-hint">
         🥬 首次跟團 → 填「我是第一次跟團」<br>
@@ -449,7 +444,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     <button class="cpanel-close" onclick="closeContact()">✕</button>
   </div>
   <div class="cpanel-body" id="cpBody">
-    <div class="cpanel-section" id="cpLineWrap">
+    <div class="cpanel-section" id="cpLineWrap" style="display:none">
       <span class="cpanel-label">LINE ID</span>
       <div class="cpanel-value" id="cpLineId">—</div>
     </div>
@@ -771,12 +766,12 @@ function renderFeeBox(){
   const pack=calcPacking();
   // 應匯 = 商品 + 包材費 + 運費 - 代墊扣除
   // 說明：運費 $38 由賣貨便代收，下單者不需先匯，取貨時付；$20 代墊折抵
-  const grand=itemTot+pack.fee;
+  const grand=itemTot+pack.fee-20;
   document.getElementById('feeBox').innerHTML=`
     ${cart.map(x=>`<div class="fee-row"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>$${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
     <div class="fee-row"><span>包材費（${pack.label}）</span><span>$${pack.fee}</span></div>
-    <div class="fee-row"><span>711 賣貨便運費</span><span>$38</span></div>
-    <div class="fee-note">※ 運費 $38 由賣貨便代收，取貨時支付，不含在匯款金額內</div>
+    <div class="fee-row" style="color:var(--muted)"><span>預留賣貨便金額</span><span>-$20</span></div>
+    <div class="fee-note">※ 賣貨便運費預先從匯款中扣除 $20，差額取貨時補付</div>
     <div class="fee-total"><span>應匯金額</span><span>NT$ ${grand.toLocaleString()}</span></div>`;
 }
 
@@ -786,13 +781,12 @@ async function submitOrder(){
   const lineId=document.getElementById('bLineId').value.trim();
   const lineName=document.getElementById('bLineName').value.trim();
   const acct=document.getElementById('bAcct').value.trim();
-  const seven=document.getElementById('bSeven').value.trim();
   const lottery=document.getElementById('bLottery').value.trim();
   const note=document.getElementById('bNote').value.trim();
   if(!name||!mobile||!lineId||!acct){showToast('請填寫姓名、手機、LINE ID 及帳號末5碼');return;}
   const itemTot=cart.reduce((s,x)=>s+x.qty*x.price,0);
   const pack=calcPacking();
-  const grand=itemTot+pack.fee;
+  const grand=itemTot+pack.fee-20;
   const data={name,mobile,lineId,lineName,acct,seven,lottery,note,
     shipFee:SHIP_FEE,packFee:pack.fee,packLabel:pack.label,
     total:grand,items:cart};
@@ -843,4 +837,4 @@ function demoCfg(){return{shopName:'貓系傲嬌女子',tagline:'24hrs 內衣團
 init();
 </script>
 </body>
-</html>f
+</html>
