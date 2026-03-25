@@ -161,9 +161,69 @@ tr:hover td{background:#fdfdfb;}
 .page.active{display:block;}
 
 @media(max-width:768px){
-  .sidebar{position:relative;width:100%;height:auto;flex-direction:row;}
-  .sb-nav{display:flex;overflow-x:auto;}
-  .main{margin-left:0;}
+  /* Sidebar → bottom tab bar */
+  .app{flex-direction:column;}
+  .sidebar{
+    width:100%;height:auto;
+    position:fixed;bottom:0;left:0;right:0;
+    top:auto;flex-direction:column;z-index:90;
+    border-right:none;border-top:1px solid var(--line);
+  }
+  .sb-logo{display:none;}
+  .sb-nav{
+    flex-direction:row;padding:0;
+    overflow-x:auto;flex:none;
+  }
+  .nav-item{
+    flex-direction:column;gap:3px;
+    padding:8px 14px;font-size:10px;
+    letter-spacing:.03em;white-space:nowrap;
+    flex:1;justify-content:center;align-items:center;min-width:60px;
+  }
+  .nav-icon{font-size:18px;width:auto;}
+  .sb-foot{display:none;}
+
+  /* Main content above tab bar */
+  .main{
+    margin-left:0;
+    padding:1rem 1rem 5rem;
+    min-height:100vh;
+  }
+  .ph h1{font-size:18px;}
+
+  /* Stats grid 2 col */
+  .stats{grid-template-columns:repeat(2,1fr);}
+
+  /* Tables: horizontal scroll */
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:520px;font-size:12px;}
+  th,td{padding:8px 10px;}
+
+  /* Cards full width */
+  .card{border-radius:0;border-left:none;border-right:none;}
+
+  /* Modal full screen */
+  .mbox{
+    max-width:100%;max-height:100vh;
+    border-radius:0;
+    margin:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .moverlay{align-items:flex-end;}
+  .mbox{max-height:94vh;border-radius:12px 12px 0 0;}
+
+  /* Settings max-width reset */
+  .settings-card{max-width:100%;}
+  .frow{grid-template-columns:1fr;}
+
+  /* Product modal colors editor */
+  .color-item-hd{flex-wrap:wrap;}
+}
+
+@media(max-width:400px){
+  .nav-item{padding:8px 8px;font-size:9px;}
+  .stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
@@ -443,8 +503,8 @@ function applyCfg(){
   document.getElementById('cTag').value=cfg.tagline||'';
   document.getElementById('cHeroT').value=cfg.heroTitle||'';
   document.getElementById('cHeroD').value=cfg.heroDesc||'';
-  document.getElementById('cDeadline').value=cfg.deadlineRaw||'';
-  document.getElementById('cShipping').value=cfg.shippingRaw||'';
+  document.getElementById('cDeadline').value=(cfg.deadlineRaw||'').replace(/^'/,'');
+  document.getElementById('cShipping').value=(cfg.shippingRaw||'').replace(/^'/,'');
   // notice
   document.getElementById('cNoticeShipping').value=cfg.noticeShipping||'';
   document.getElementById('cNoticePayment').value=cfg.noticePayment||'';
