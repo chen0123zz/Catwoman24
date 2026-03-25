@@ -30,13 +30,16 @@ header{position:sticky;top:0;z-index:80;background:rgba(250,249,247,.95);backdro
 .badge.on{display:flex;}
 
 /* ── HERO ── */
-.hero{background:linear-gradient(160deg,#1a0a0f 0%,#2d1520 30%,#1e1830 65%,#0d1220 100%);color:#fff;text-align:center;padding:5rem 2rem 4rem;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(160deg,#1a0a0f 0%,#2d1520 30%,#1e1830 65%,#0d1220 100%);color:#fff;text-align:center;padding:4.5rem 2rem 3.5rem;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 30%,rgba(180,80,100,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 70%,rgba(80,60,160,.15) 0%,transparent 60%);}
 .hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent,transparent 60px,rgba(255,255,255,.012) 60px,rgba(255,255,255,.012) 61px);}
 .hero-inner{position:relative;z-index:1;}
-.hero-eye{font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:1.2rem;}
-.hero-title{font-size:clamp(30px,5vw,56px);font-weight:700;line-height:1.1;margin-bottom:.6rem;}
-.hero-sub{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.08em;margin-bottom:2.5rem;}
+/* ① 品牌名放大、更明顯 */
+.hero-eye{font-size:14px;letter-spacing:.2em;color:rgba(255,255,255,.7);font-weight:500;margin-bottom:1rem;}
+/* ② 主標縮小一點 */
+.hero-title{font-size:clamp(24px,4vw,44px);font-weight:700;line-height:1.15;margin-bottom:.8rem;}
+/* ③ 副標（本次團購資訊）加大加亮 */
+.hero-sub{font-size:15px;color:rgba(255,255,255,.85);letter-spacing:.04em;margin-bottom:2.5rem;line-height:1.6;}
 .hero-bar{display:inline-flex;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);background:rgba(255,255,255,.04);}
 .hbi{padding:12px 24px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;}
 .hbi+.hbi{border-left:1px solid rgba(255,255,255,.12);}
@@ -44,10 +47,13 @@ header{position:sticky;top:0;z-index:80;background:rgba(250,249,247,.95);backdro
 
 /* ── PAGE NAV ── */
 .page-nav{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:62px;z-index:70;}
-.page-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;}
+.page-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;}
 .pni{padding:12px 18px;font-size:12px;letter-spacing:.06em;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;}
 .pni:hover{color:var(--ink);}
 .pni.active{color:var(--ink);font-weight:500;border-bottom-color:var(--ink);}
+/* 聯絡貓女按鈕 */
+.contact-btn{padding:7px 14px;font-size:12px;border:1px solid var(--line);background:none;cursor:pointer;color:var(--ink3);letter-spacing:.04em;transition:all .15s;white-space:nowrap;}
+.contact-btn:hover{border-color:var(--ink);color:var(--ink);}
 
 /* ── VIEWS (SPA) ── */
 .view{display:none;}
@@ -67,14 +73,50 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .notice-box ul li{font-size:13px;color:var(--ink3);padding-left:1rem;position:relative;line-height:1.6;}
 .notice-box ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
 .notice-box p{font-size:13px;color:var(--ink3);line-height:1.7;}
-.notice-dark{background:var(--ink);color:#fff;}
-.notice-dark h3{color:#fff;}
-.notice-dark ul li{color:rgba(255,255,255,.75);}
-.notice-dark ul li::before{color:rgba(255,255,255,.3);}
-.lottery-box{background:linear-gradient(135deg,#2d1520,#1e1830);color:#fff;border:none;}
-.lottery-box h3{color:#fff;}
-.lottery-box p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.7;white-space:pre-line;}
-.lottery-tag{display:inline-block;padding:2px 8px;background:rgba(255,255,255,.15);font-size:10px;letter-spacing:.1em;margin-bottom:.6rem;}
+/* ④ 注意事項改成淺底深字（不突兀） */
+.notice-dark{background:#f8f6f0;border:1px solid #e0d8c8;}
+.notice-dark h3{color:var(--ink);}
+.notice-dark ul li{color:var(--ink3);}
+.notice-dark ul li::before{color:var(--muted);}
+/* ④ 抽獎區塊改成柔和底色，標題放大 */
+.lottery-box{background:var(--line2);border:1px solid var(--line);padding:2rem;}
+.lottery-box .lottery-sec-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:.5rem;}
+.lottery-box .lottery-sec-sub{font-size:13px;color:var(--muted);margin-bottom:1.2rem;}
+.lottery-box .lottery-content{font-size:14px;color:var(--ink3);line-height:1.9;white-space:pre-line;}
+.lottery-tag{display:inline-block;padding:3px 10px;background:var(--ink);color:#fff;font-size:10px;letter-spacing:.1em;margin-bottom:.8rem;}
+
+/* ── BACK TO TOP ── */
+.back-top{
+  position:fixed;bottom:2rem;right:1.5rem;
+  width:44px;height:44px;
+  background:var(--ink);color:#fff;
+  border:none;border-radius:50%;
+  cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  z-index:90;opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  transform:translateY(10px);
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+}
+.back-top.show{opacity:1;pointer-events:all;transform:translateY(0);}
+.back-top:hover{background:var(--ink2);}
+
+/* ── CONTACT PANEL ── */
+.cpanel-overlay{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
+.cpanel-overlay.open{opacity:1;pointer-events:all;}
+.cpanel{position:fixed;right:0;top:0;bottom:0;width:min(360px,100%);background:var(--white);z-index:501;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);border-left:1px solid var(--line);}
+.cpanel.open{transform:translateX(0);}
+.cpanel-hd{padding:1.4rem 1.5rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.cpanel-hd h2{font-size:16px;font-weight:700;}
+.cpanel-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);}
+.cpanel-body{flex:1;overflow-y:auto;padding:1.5rem;}
+.cpanel-section{margin-bottom:1.5rem;}
+.cpanel-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block;}
+.cpanel-value{font-size:15px;font-weight:500;color:var(--ink);word-break:break-all;}
+.cpanel-link{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:var(--ink3);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .15s;}
+.cpanel-link:hover{color:var(--ink);}
+.cpanel-qr{width:100%;max-width:200px;border:1px solid var(--line);display:block;margin-top:8px;}
+.cpanel-note{font-size:13px;color:var(--ink3);line-height:1.7;white-space:pre-line;}
 
 /* ── PRODUCT GRID ── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
@@ -246,7 +288,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     </div>
     <button class="cart-btn" onclick="openDrawer()">
       <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      購物袋
+      購物車
       <span class="badge" id="badge">0</span>
     </button>
   </div>
@@ -270,9 +312,12 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
   <nav class="page-nav">
     <div class="page-nav-inner">
-      <div class="pni active" onclick="navTo('#sec-notice',this)">跟團須知</div>
-      <div class="pni" onclick="navTo('#sec-lottery',this)">抽獎活動</div>
-      <div class="pni" onclick="navTo('#sec-products',this)">本期商品</div>
+      <div style="display:flex;">
+        <div class="pni active" onclick="navTo('#sec-notice',this)">跟團須知</div>
+        <div class="pni" onclick="navTo('#sec-lottery',this)">抽獎活動</div>
+        <div class="pni" onclick="navTo('#sec-products',this)">本期商品</div>
+      </div>
+      <button class="contact-btn" onclick="openContact()">聯絡貓女 🐱</button>
     </div>
   </nav>
 
@@ -295,8 +340,8 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
       <div class="notice-grid" style="grid-template-columns:1fr">
         <div class="lottery-box notice-box">
           <div class="lottery-tag">本期抽獎</div>
-          <h3 style="color:#fff;font-size:15px;margin-bottom:.6rem;">🎁 參加辦法</h3>
-          <p id="lotteryContent">本期抽獎說明請洽貓女，詳情待公告。</p>
+          <div class="lottery-sec-title" id="lotteryTitle">🎁 參加辦法</div>
+          <div class="lottery-content" id="lotteryContent">本期抽獎說明請洽貓女，詳情待公告。</div>
         </div>
       </div>
     </div>
@@ -334,10 +379,13 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
   </div>
 </div><!-- end view-product -->
 
+<!-- Back to Top -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到頂端">↑</button>
+
 <!-- Cart Drawer -->
 <div class="do" id="dOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
-  <div class="dh"><h2>購物袋</h2><button class="dc" onclick="closeDrawer()">✕</button></div>
+  <div class="dh"><h2>購物車</h2><button class="dc" onclick="closeDrawer()">✕</button></div>
   <div class="di" id="di"><div class="di-empty">袋子還是空的</div></div>
   <div class="df">
     <div class="total-row"><span class="total-lbl">商品小計</span><span class="total-amt" id="total">NT$ 0</span></div>
@@ -393,6 +441,33 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
   </div>
 </div>
 
+<!-- Contact Panel -->
+<div class="cpanel-overlay" id="cpOverlay" onclick="closeContact()"></div>
+<div class="cpanel" id="cpanel">
+  <div class="cpanel-hd">
+    <h2>聯絡貓女 🐱</h2>
+    <button class="cpanel-close" onclick="closeContact()">✕</button>
+  </div>
+  <div class="cpanel-body" id="cpBody">
+    <div class="cpanel-section" id="cpLineWrap">
+      <span class="cpanel-label">LINE ID</span>
+      <div class="cpanel-value" id="cpLineId">—</div>
+    </div>
+    <div class="cpanel-section" id="cpQrWrap" style="display:none">
+      <span class="cpanel-label">LINE QR Code</span>
+      <img class="cpanel-qr" id="cpQrImg" src="" alt="LINE QR Code">
+    </div>
+    <div class="cpanel-section" id="cpGroupWrap" style="display:none">
+      <span class="cpanel-label">團購社群</span>
+      <a class="cpanel-link" id="cpGroupLink" href="#" target="_blank">點此加入社群 →</a>
+    </div>
+    <div class="cpanel-section" id="cpNoteWrap" style="display:none">
+      <span class="cpanel-label">備註說明</span>
+      <div class="cpanel-note" id="cpNote"></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -442,6 +517,37 @@ function applyConfig(){
   }
   if(cfg.lotteryContent)document.getElementById('lotteryContent').textContent=cfg.lotteryContent;
   if(cfg.lotterySubtitle)document.getElementById('lotterySubtitle').textContent=cfg.lotterySubtitle;
+  // 聯絡貓女
+  const lineId=cfg.lineId||'';
+  document.getElementById('cpLineId').textContent=lineId||'（尚未設定）';
+  if(cfg.contactQr){
+    document.getElementById('cpQrImg').src=dThumb(cfg.contactQr,400);
+    document.getElementById('cpQrWrap').style.display='block';
+  }
+  if(cfg.contactGroup){
+    document.getElementById('cpGroupLink').href=cfg.contactGroup;
+    document.getElementById('cpGroupWrap').style.display='block';
+  }
+  if(cfg.contactNote){
+    document.getElementById('cpNote').textContent=cfg.contactNote;
+    document.getElementById('cpNoteWrap').style.display='block';
+  }
+}
+
+// ── BACK TO TOP ──
+window.addEventListener('scroll',()=>{
+  const btn=document.getElementById('backTop');
+  if(btn)btn.classList.toggle('show',window.scrollY>400);
+},{ passive:true });
+
+// ── CONTACT PANEL ──
+function openContact(){
+  document.getElementById('cpanel').classList.add('open');
+  document.getElementById('cpOverlay').classList.add('open');
+}
+function closeContact(){
+  document.getElementById('cpanel').classList.remove('open');
+  document.getElementById('cpOverlay').classList.remove('open');
 }
 function applyNotice(){
   const keys=['noticeShipping','noticePayment','noticeReturn','noticeOther'];
@@ -737,4 +843,4 @@ function demoCfg(){return{shopName:'貓系傲嬌女子',tagline:'24hrs 內衣團
 init();
 </script>
 </body>
-</html>
+</html>f
