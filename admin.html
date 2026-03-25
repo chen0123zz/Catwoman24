@@ -55,7 +55,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;}
 .stat{background:var(--white);border:1px solid var(--line);padding:1rem;}
 .stat-lbl{font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px;}
-.stat-val{font-family:var(--sans);font-size:24px;font-weight:400;}
+.stat-val{font-family:var(--sans);font-size:24px;font-weight:700;}
 .stat-val.accent{color:var(--green);}
 .stat-val.warn{color:#b06000;}
 
@@ -642,6 +642,152 @@ function dragDrop(e){
   products.splice(targetIdx,0,moved);
   dragIdx=null;
   renderProds();syncProds();
+}
+
+// ── PRODUCT MODAL ──
+function openPModal(id){
+  editingId=id||null;
+  document.getElementById('pModalTitle').textContent=id?'編輯商品':'新增商品';
+  const p=id?products.find(x=>x.id===id):null;
+  document.getElementById('pName').value=p?.name||'';
+  document.getElementById('pBrand').value=p?.brand||'24hours';
+  document.getElementById('pPrice').value=p?.price||'';
+  document.getElementById('pDesc').value=p?.desc||'';
+  document.getElementById('pActive').value=p?.active===false?'false':'true';
+  editColors=JSON.parse(JSON.stringify(p?.colors||[]));
+  editDetailImgs=JSON.parse(JSON.stringify(p?.detailImages||[]));
+  renderColorsEditor();
+  renderDetailThumbs();
+  document.getElementById('pModal').classList.add('open');
+}
+function closePModal(){document.getElementById('pModal').classList.remove('open');}
+
+function renderColorsEditor(){
+  const el=document.getElementById('colorsContainer');
+  if(!editColors.length){
+    el.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">尚無顏色，點擊「新增顏色」開始</div>`;
+    return;
+  }
+  el.innerHTML=editColors.map((c,ci)=>`
+    <div class="color-item" id="ci_${ci}">
+      <div class="color-item-hd" onclick="toggleColor(${ci})">
+        <span class="color-item-name">${c.name||'（未命名）'}</span>
+        <span style="font-size:11px;color:var(--muted)">${(c.images||[]).length}張圖 · ${(c.sizes||[]).length}個尺寸</span>
+        <button onclick="event.stopPropagation();rmColor(${ci})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px" title="刪除此顏色">✕</button>
+        <span class="color-toggle" id="ct_${ci}">▶</span>
+      </div>
+      <div class="color-item-body" id="cb_${ci}">
+        <div style="margin-bottom:12px">
+          <div class="fgroup" style="margin:0">
+            <label class="flabel">顏色名稱</label>
+            <input class="finput" value="${c.name||''}" placeholder="e.g. 霧玫瑰、午夜黑" onchange="editColors[${ci}].name=this.value;document.querySelector('#ci_${ci} .color-item-name').textContent=this.value||'（未命名）'">
+          </div>
+        </div>
+        <label class="flabel">商品圖片（規格預覽用，從 Google Drive 貼連結）</label>
+        <div class="img-thumbs" id="thumbs_${ci}"></div>
+        <div style="display:flex;gap:8px;margin-bottom:.8rem">
+          <input class="finput" id="imgUrl_${ci}" placeholder="貼上 Google Drive 分享連結" style="flex:1">
+          <button class="btn btn-ghost btn-sm" onclick="addImgUrl(${ci})">新增</button>
+        </div>
+        <div class="sizes-hd">
+          <span class="flabel" style="margin:0">尺寸與庫存</span>
+          <button class="btn btn-ghost btn-sm" onclick="addSize(${ci})">＋ 新增尺寸</button>
+        </div>
+        <div id="sizes_${ci}"></div>
+      </div>
+    </div>`).join('');
+  editColors.forEach((_,ci)=>{renderThumbs(ci);renderSizes2(ci);});
+}
+
+function toggleColor(ci){
+  const body=document.getElementById('cb_'+ci);
+  const tog=document.getElementById('ct_'+ci);
+  const open=body.classList.toggle('open');
+  tog.textContent=open?'▼':'▶';
+}
+function addColor(){editColors.push({name:'',images:[],sizes:[]});renderColorsEditor();}
+function rmColor(ci){if(!confirm('確定刪除此顏色？'))return;editColors.splice(ci,1);renderColorsEditor();}
+
+function addImgUrl(ci){
+  const inp=document.getElementById('imgUrl_'+ci);
+  const url=inp.value.trim();if(!url)return;
+  if(!editColors[ci].images)editColors[ci].images=[];
+  editColors[ci].images.push(url);inp.value='';
+  renderThumbs(ci);updateColorMeta(ci);
+}
+function rmImg(ci,ii){editColors[ci].images.splice(ii,1);renderThumbs(ci);updateColorMeta(ci);}
+function renderThumbs(ci){
+  const el=document.getElementById('thumbs_'+ci);if(!el)return;
+  el.innerHTML=(editColors[ci].images||[]).map((u,ii)=>`
+    <div class="img-thumb">
+      <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
+      <button class="img-del" onclick="rmImg(${ci},${ii})">✕</button>
+    </div>`).join('');
+}
+
+function addSize(ci){
+  if(!editColors[ci].sizes)editColors[ci].sizes=[];
+  editColors[ci].sizes.push({name:'',stock:0});
+  renderSizes2(ci);
+}
+function rmSize(ci,si){editColors[ci].sizes.splice(si,1);renderSizes2(ci);}
+function renderSizes2(ci){
+  const el=document.getElementById('sizes_'+ci);if(!el)return;
+  el.innerHTML=(editColors[ci].sizes||[]).map((s,si)=>`
+    <div class="size-row">
+      <input class="size-name-in" value="${s.name}" placeholder="S / M / L / XL" onchange="editColors[${ci}].sizes[${si}].name=this.value">
+      <input class="size-stock-in" type="number" value="${s.stock}" min="0" onchange="editColors[${ci}].sizes[${si}].stock=+this.value">
+      <button class="size-del" onclick="rmSize(${ci},${si})">✕</button>
+    </div>`).join('');
+}
+function updateColorMeta(ci){
+  const el=document.querySelector(`#ci_${ci} .color-item-hd span:nth-child(2)`);
+  if(el)el.textContent=`${(editColors[ci].images||[]).length}張圖 · ${(editColors[ci].sizes||[]).length}個尺寸`;
+}
+
+// ── DETAIL IMAGES ──
+function addDetailImg(){
+  const inp=document.getElementById('detailImgUrl');
+  const url=inp.value.trim();if(!url)return;
+  editDetailImgs.push(url);inp.value='';
+  renderDetailThumbs();
+}
+function rmDetailImg(i){editDetailImgs.splice(i,1);renderDetailThumbs();}
+function renderDetailThumbs(){
+  const el=document.getElementById('detailThumbs');if(!el)return;
+  el.innerHTML=editDetailImgs.map((u,i)=>`
+    <div class="img-thumb">
+      <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
+      <button class="img-del" onclick="rmDetailImg(${i})">✕</button>
+    </div>`).join('');
+}
+
+async function saveProduct(){
+  const name=document.getElementById('pName').value.trim();
+  const price=parseInt(document.getElementById('pPrice').value);
+  if(!name||isNaN(price)){showToast('❌ 請填寫商品名稱和價格');return;}
+  const prod={
+    id:editingId||Date.now().toString(),
+    name,brand:document.getElementById('pBrand').value.trim()||'24hours',
+    price,desc:document.getElementById('pDesc').value.trim(),
+    active:document.getElementById('pActive').value==='true',
+    colors:editColors,
+    detailImages:editDetailImgs
+  };
+  if(editingId){const i=products.findIndex(p=>p.id===editingId);products[i]=prod;}
+  else products.push(prod);
+  await syncProds();renderProds();renderDash();closePModal();
+  showToast('✅ 商品已儲存');
+}
+
+async function delProd(id){
+  if(!confirm('確定刪除這個商品？'))return;
+  products=products.filter(p=>p.id!==id);
+  await syncProds();renderProds();renderDash();
+  showToast('🗑️ 商品已刪除');
+}
+async function syncProds(){
+  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'saveProducts',token:sessionStorage.getItem('tok'),data:products})});}catch{}
 }
 
 // ── ORDERS ──
