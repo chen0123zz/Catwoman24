@@ -403,7 +403,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
     <div class="fgrid">
       <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
-      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="tel" placeholder="09xxxxxxxx"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx"></div>
     </div>
     <div class="fgrid">
       <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
@@ -688,7 +688,7 @@ function renderPDPInfo(){
         <button class="qty-btn" onclick="chQty(1)">+</button>
       </div>
     </div>
-    <button class="add-btn" onclick="addToCart()">加入購物車</button>
+    <button class="add-btn" onclick="addToCart()">加入購物袋</button>
     <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6">
       ↓ 向下捲動查看詳細商品介紹
     </div>`;
@@ -725,7 +725,7 @@ function addToCart(){
   if(ex)ex.qty+=qty;
   else cart.push({key,id:curP.id,name:curP.name,color:selColor.name,size:selSize,price:curP.price,qty,thumb:selColor.images?.[0]||''});
   renderCart();
-  showToast(`已加入購物車：${curP.name} · ${selColor.name} · ${selSize}`);
+  showToast(`已加入購物袋：${curP.name} · ${selColor.name} · ${selSize}`);
 }
 
 // ── CART ──
@@ -768,7 +768,7 @@ function closeDrawer(){document.getElementById('drawer').classList.remove('open'
 
 // ── CHECKOUT ──
 function openCheckout(){
-  if(!cart.length){showToast('購物車是空的');return;}
+  if(!cart.length){showToast('購物袋是空的');return;}
   closeDrawer();renderFeeBox();
   document.getElementById('so').classList.add('open');
 }
@@ -838,7 +838,7 @@ function resetCheckout(){
     <div class="cs-title">填寫訂購資料</div>
     <div class="fgrid">
       <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
-      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="tel" placeholder="09xxxxxxxx"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx"></div>
     </div>
     <div class="fgrid">
       <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
