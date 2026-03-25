@@ -121,7 +121,15 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .cpanel-group-btn:hover{background:var(--ink2);}
 .cpanel-group-name{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
 
-/* ── PRODUCT GRID ── */
+/* ── PRODUCT CARD CAROUSEL ── */
+.pc-img{position:relative;height:320px;overflow:hidden;background:var(--line2);}
+.pc-img img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:opacity .6s ease,transform .5s cubic-bezier(.25,.46,.45,.94);position:absolute;top:0;left:0;}
+.pc-img img.carousel-hidden{opacity:0;}
+.pc-img img.carousel-visible{opacity:1;}
+.pc:hover .pc-img img.carousel-visible{transform:scale(1.04);}
+.pc-img-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:2;}
+.pc-img-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);transition:background .2s;}
+.pc-img-dot.active{background:#fff;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);}
 .pc{background:var(--white);cursor:pointer;transition:all .25s;overflow:hidden;}
 .pc:hover{z-index:1;box-shadow:0 6px 32px rgba(0,0,0,.1);transform:translateY(-2px);}
@@ -389,7 +397,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 <div class="do" id="dOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="dh"><h2>購物車</h2><button class="dc" onclick="closeDrawer()">✕</button></div>
-  <div class="di" id="di"><div class="di-empty">袋子還是空的</div></div>
+  <div class="di" id="di"><div class="di-empty">購物車還是空的</div></div>
   <div class="df">
     <div class="total-row"><span class="total-lbl">商品小計</span><span class="total-amt" id="total">NT$ 0</span></div>
     <button class="checkout-btn" onclick="openCheckout()">前往填寫訂購資料</button>
@@ -585,20 +593,31 @@ function showView(id){
 function showList(){showView('view-list');}
 
 // ── PRODUCT GRID ──
+const carouselTimers={};
+
 function renderGrid(){
+  // 清除舊輪播計時器
+  Object.values(carouselTimers).forEach(t=>clearInterval(t));
+  Object.keys(carouselTimers).forEach(k=>delete carouselTimers[k]);
+
   const g=document.getElementById('grid');
   const list=products.filter(p=>p.active!==false);
   document.getElementById('pCount').textContent=list.length?`共 ${list.length} 款商品`:'目前無商品';
   if(!list.length){g.innerHTML='<div class="empty-state">商品即將上架</div>';return;}
+
   g.innerHTML=list.map(p=>{
     const colors=p.colors||[];
-    const thumb=colors[0]?.images?.[0]||'';
+    // 蒐集所有顏色的所有圖片
+    const allImgs=[];
+    colors.forEach(c=>(c.images||[]).forEach(u=>allImgs.push(u)));
     const sold=!colors.some(c=>(c.sizes||[]).some(s=>s.stock>0));
-    const imgCount=colors.reduce((s,c)=>s+(c.images||[]).length,0);
-    return`<div class="pc" onclick="openProduct('${p.id}')">
-      <div class="pc-img">
-        ${thumb?`<img src="${dThumb(thumb,400)}" alt="${p.name}" loading="lazy">`:`<div class="pc-img-empty">NO IMAGE</div>`}
-        ${imgCount>1?`<span class="pc-img-badge">${imgCount} 張</span>`:''}
+    const hasMulti=allImgs.length>1;
+    return`<div class="pc" id="pc_${p.id}" onclick="openProduct('${p.id}')">
+      <div class="pc-img" id="pcimg_${p.id}">
+        ${allImgs.length
+          ? allImgs.map((u,i)=>`<img src="${dThumb(u,400)}" alt="${p.name}" loading="${i===0?'eager':'lazy'}" class="${i===0?'carousel-visible':'carousel-hidden'}">`).join('')
+          : `<div class="pc-img-empty">NO IMAGE</div>`}
+        ${hasMulti?`<div class="pc-img-dots">${allImgs.map((_,i)=>`<div class="pc-img-dot ${i===0?'active':''}" id="dot_${p.id}_${i}"></div>`).join('')}</div>`:''}
         ${sold?'<div class="sold-badge">Sold Out</div>':''}
       </div>
       <div class="pc-body">
@@ -612,10 +631,34 @@ function renderGrid(){
       </div>
     </div>`;
   }).join('');
+
+  // 啟動輪播（只對有多圖的商品）
+  list.forEach(p=>{
+    const colors=p.colors||[];
+    const allImgs=[];
+    colors.forEach(c=>(c.images||[]).forEach(u=>allImgs.push(u)));
+    if(allImgs.length<=1)return;
+    let cur=0;
+    carouselTimers[p.id]=setInterval(()=>{
+      const imgs=document.querySelectorAll(`#pcimg_${p.id} img`);
+      if(!imgs.length)return;
+      imgs[cur].classList.remove('carousel-visible');
+      imgs[cur].classList.add('carousel-hidden');
+      const dotOld=document.getElementById(`dot_${p.id}_${cur}`);
+      if(dotOld)dotOld.classList.remove('active');
+      cur=(cur+1)%imgs.length;
+      imgs[cur].classList.remove('carousel-hidden');
+      imgs[cur].classList.add('carousel-visible');
+      const dotNew=document.getElementById(`dot_${p.id}_${cur}`);
+      if(dotNew)dotNew.classList.add('active');
+    },2800);
+  });
 }
 
 // ── PRODUCT DETAIL (SPA) ──
 function openProduct(id){
+  // 停止所有輪播計時器
+  Object.values(carouselTimers).forEach(t=>clearInterval(t));
   curP=products.find(p=>p.id===id);if(!curP)return;
   selColor=curP.colors?.[0]||null;selSize=null;
   renderPDP();
@@ -724,8 +767,10 @@ function addToCart(){
   const ex=cart.find(x=>x.key===key);
   if(ex)ex.qty+=qty;
   else cart.push({key,id:curP.id,name:curP.name,color:selColor.name,size:selSize,price:curP.price,qty,thumb:selColor.images?.[0]||''});
+  // 加入後數量歸1
+  document.getElementById('qtyInput').value=1;
   renderCart();
-  showToast(`已加入購物車：${curP.name} · ${selColor.name} · ${selSize}`);
+  showToast(`已加入購物車：${curP.name} · ${selColor.name} · ${selSize} ×${qty}`);
 }
 
 // ── CART ──
@@ -742,7 +787,7 @@ function renderCart(){
   document.getElementById('total').textContent='NT$ '+tot.toLocaleString();
   const b=document.getElementById('badge');b.textContent=cnt;b.classList.toggle('on',cnt>0);
   const el=document.getElementById('di');
-  if(!cart.length){el.innerHTML='<div class="di-empty">袋子還是空的</div>';return;}
+  if(!cart.length){el.innerHTML='<div class="di-empty">購物車還是空的</div>';return;}
   el.innerHTML=cart.map(item=>`
     <div class="ci">
       <div class="ci-img">${item.thumb?`<img src="${dThumb(item.thumb,200)}" alt="">`:''}</div>
