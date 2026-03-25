@@ -281,10 +281,10 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     <div class="sec" id="sec-notice">
       <div class="sec-hd"><h2>跟團須知</h2><p>下單前請詳閱</p></div>
       <div class="notice-grid">
-        <div class="notice-box"><h3>📦 出貨說明</h3><ul id="noticeShipping"><li>統一出貨，不接受分批</li><li>到貨後通知取貨或寄送</li><li>711 賣貨便 $38，含包材費</li></ul></div>
-        <div class="notice-box"><h3>💳 付款說明</h3><ul id="noticePayment"><li>下單後 12 小時內完成匯款</li><li>匯款後截圖私訊貓女</li><li>逾期未付款視同棄單</li></ul></div>
-        <div class="notice-box"><h3>🔄 退換說明</h3><ul id="noticeReturn"><li>預購性質，非瑕疵不退換</li><li>收到後立即確認商品</li><li>瑕疵請於 3 日內告知並附照</li></ul></div>
-        <div class="notice-box notice-dark"><h3>⚠️ 注意事項</h3><ul id="noticeOther"><li>顏色因螢幕顯示略有差異</li><li>尺寸建議參考官方尺寸表</li><li>本團為個人代購，非官方授權</li></ul></div>
+        <div class="notice-box"><h3>📦 出貨說明</h3><ul id="noticeShipping"></ul></div>
+        <div class="notice-box"><h3>💳 付款說明</h3><ul id="noticePayment"></ul></div>
+        <div class="notice-box"><h3>🔄 退換說明</h3><ul id="noticeReturn"></ul></div>
+        <div class="notice-box notice-dark"><h3>⚠️ 注意事項</h3><ul id="noticeOther"></ul></div>
       </div>
     </div>
     <hr class="sec-divider">
@@ -433,8 +433,8 @@ function applyConfig(){
   if(cfg.tagline)document.getElementById('shopTagline').textContent=cfg.tagline;
   if(cfg.heroTitle)document.getElementById('heroTitle').textContent=cfg.heroTitle;
   if(cfg.heroDesc)document.getElementById('heroDesc').textContent=cfg.heroDesc;
-  document.getElementById('heroDeadline').textContent=fmtDate(cfg.deadline);
-  document.getElementById('heroShipping').textContent=fmtDate(cfg.shipping);
+  document.getElementById('heroDeadline').textContent=fmtDate((cfg.deadline||'').replace(/^'/,''));
+  document.getElementById('heroShipping').textContent=fmtDate((cfg.shipping||'').replace(/^'/,''));
   if(cfg.bankInfo){
     document.getElementById('pBank').textContent=cfg.bankInfo.bank||'—';
     document.getElementById('pAcc').textContent=cfg.bankInfo.account||'—';
