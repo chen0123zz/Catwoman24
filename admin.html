@@ -265,10 +265,13 @@ tr:hover td{background:#fdfdfb;}
     <!-- PRODUCTS -->
     <div class="page" id="page-products">
       <div class="ph"><h1>商品管理</h1><p>新增商品、上傳圖片、設定顏色與尺寸</p></div>
-      <div style="margin-bottom:1rem"><button class="btn btn-ink" onclick="openPModal()">＋ 新增商品</button></div>
+      <div style="margin-bottom:1rem;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-ink" onclick="openPModal()">＋ 新增商品</button>
+        <span style="font-size:11px;color:var(--muted)">拖曳左側 ⠿ 可調整商品順序</span>
+      </div>
       <div class="card">
         <div class="tw"><table>
-          <thead><tr><th>商品</th><th>價格</th><th>顏色款數</th><th>狀態</th><th>操作</th></tr></thead>
+          <thead><tr><th style="width:28px"></th><th>商品</th><th>價格</th><th>顏色款數</th><th>狀態</th><th>操作</th></tr></thead>
           <tbody id="prodsTb"></tbody>
         </table></div>
         <div class="mob-only" id="prodsMob"></div>
@@ -278,6 +281,9 @@ tr:hover td{background:#fdfdfb;}
     <!-- ORDERS -->
     <div class="page" id="page-orders">
       <div class="ph"><h1>訂單管理</h1><p>查看與管理所有訂單</p></div>
+      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
+        <input class="finput" id="orderSearch" placeholder="搜尋姓名 / 電話 / 密語⋯" style="max-width:260px;padding:7px 10px" oninput="searchOrders()">
+      </div>
       <div class="tabs">
         <div class="tab active" onclick="filterO('all',this)">全部</div>
         <div class="tab" onclick="filterO('待確認',this)">待確認</div>
@@ -332,14 +338,23 @@ tr:hover td{background:#fdfdfb;}
           <div class="card-hd"><h3>🐱 聯絡貓女頁面</h3></div>
           <div class="card-body" style="display:grid;gap:12px">
             <div class="fgroup" style="margin:0">
-              <label class="flabel">LINE QR Code 圖片</label>
-              <input class="finput" id="cContactQr" placeholder="貼上 Google Drive 分享連結">
-              <div style="font-size:11px;color:var(--muted);margin-top:4px">截圖你的 LINE QR Code 上傳到 Drive，貼連結即可</div>
+              <label class="flabel">問候語（選填）</label>
+              <textarea class="finput" id="cContactGreet" rows="3" style="resize:vertical;line-height:1.6" placeholder="嗨！我是貓女，歡迎跟團 🐱&#10;有任何問題都可以加入社群詢問喔！"></textarea>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">顯示在聯絡頁面最上方，沒填就不顯示</div>
             </div>
             <div class="fgroup" style="margin:0"><label class="flabel">團購社群連結</label><input class="finput" id="cContactGroup" placeholder="https://line.me/..."></div>
             <div class="fgroup" style="margin:0">
-              <label class="flabel">備註說明（選填）</label>
-              <textarea class="finput" id="cContactNote" rows="3" style="resize:vertical;line-height:1.6" placeholder="e.g. 加 LINE 請備註「團購」"></textarea>
+              <label class="flabel">社群名稱（顯示在按鈕下方）</label>
+              <input class="finput" id="cContactGroupName" placeholder="Fashion For Yes｜24HRS 內衣團購｜狄卡貓女團購">
+            </div>
+            <div class="fgroup" style="margin:0">
+              <label class="flabel">社群 QR Code 圖片</label>
+              <input class="finput" id="cContactQr" placeholder="貼上 Google Drive 分享連結">
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">截圖 QR Code 上傳到 Drive，貼連結即可</div>
+            </div>
+            <div class="fgroup" style="margin:0">
+              <label class="flabel">其他說明（選填）</label>
+              <textarea class="finput" id="cContactNote" rows="2" style="resize:vertical;line-height:1.6" placeholder="e.g. 加入社群請備註「跟團」"></textarea>
             </div>
           </div>
         </div>
@@ -515,6 +530,8 @@ function applyCfg(){
   document.getElementById('cLine').value=cfg.lineId||'';
   document.getElementById('cContactQr').value=cfg.contactQr||'';
   document.getElementById('cContactGroup').value=cfg.contactGroup||'';
+  document.getElementById('cContactGroupName').value=cfg.contactGroupName||'';
+  document.getElementById('cContactGreet').value=cfg.contactGreet||'';
   document.getElementById('cContactNote').value=cfg.contactNote||'';
   document.getElementById('cAdminU').value=cfg.adminUser||'';
   if(cfg.bankInfo){
@@ -543,35 +560,52 @@ function renderDash(){
 }
 function statusB(s){const m={'待確認':'badge-o','已付款':'badge-g','已完成':'badge-k','取消':'badge-r'};return`<span class="badge ${m[s]||'badge-k'}">${s}</span>`;}
 
+function fmtTime(t){
+  if(!t)return'—';
+  const s=String(t).replace('T',' ').replace(/\..*Z$/,'').replace('Z','');
+  if(s.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/))return s.slice(0,16);
+  return s;
+}
+
+let curOrderFilter='all';
+function searchOrders(){
+  const q=(document.getElementById('orderSearch').value||'').trim().toLowerCase();
+  const list=curOrderFilter==='all'?allOrders:allOrders.filter(o=>o.status===curOrderFilter);
+  const filtered=q?list.filter(o=>
+    (o.name||'').toLowerCase().includes(q)||
+    (o.phone||'').includes(q)||
+    (o.lottery||'').toLowerCase().includes(q)||
+    (o.lineId||'').toLowerCase().includes(q)
+  ):list;
+  renderOrders(filtered);
+}
+
 // ── PRODUCTS ──
 function renderProds(){
   const tb=document.getElementById('prodsTb');
   const mob=document.getElementById('prodsMob');
   if(!products.length){
-    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">尚無商品，點擊「新增商品」開始</td></tr>';
+    tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">尚無商品，點擊「新增商品」開始</td></tr>';
     mob.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">尚無商品</div>';
     return;
   }
-  // 桌機表格
-  tb.innerHTML=products.map(p=>{
+  tb.innerHTML=products.map((p,idx)=>{
     const hasImg=(p.colors||[]).some(c=>(c.images||[]).length>0);
     const sold=!(p.colors||[]).some(c=>(c.sizes||[]).some(s=>s.stock>0));
-    return`<tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:10px">
-          ${p.colors?.[0]?.images?.[0]?`<img src="${dThumb(p.colors[0].images[0])}" style="width:40px;height:50px;object-fit:cover;border:1px solid var(--line)" alt="">`:
-          `<div style="width:40px;height:50px;background:var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted)">圖</div>`}
-          <div><div style="font-weight:500;font-size:13px">${p.name}</div>
-          <div style="font-size:11px;color:var(--muted)">${p.brand||'24hours'} · ${hasImg?'有圖片':'無圖片'}</div></div>
-        </div>
-      </td>
+    return`<tr draggable="true" data-idx="${idx}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dragDrop(event)">
+      <td style="color:var(--muted);cursor:grab;user-select:none;font-size:16px;text-align:center">⠿</td>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        ${p.colors?.[0]?.images?.[0]?`<img src="${dThumb(p.colors[0].images[0])}" style="width:40px;height:50px;object-fit:cover;border:1px solid var(--line)" alt="">`:
+        `<div style="width:40px;height:50px;background:var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted)">圖</div>`}
+        <div><div style="font-weight:500;font-size:13px">${p.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${p.brand||'24hours'} · ${hasImg?'有圖片':'無圖片'}</div></div>
+      </div></td>
       <td><strong>NT$ ${(p.price||0).toLocaleString()}</strong></td>
       <td><div style="display:flex;gap:4px;flex-wrap:wrap">${(p.colors||[]).map(c=>`<span style="font-size:11px;background:var(--line2);padding:2px 6px;color:var(--ink3)">${c.name}</span>`).join('')}</div></td>
       <td>${sold?`<span class="badge badge-r">已售完</span>`:`<span class="badge badge-g">${p.active===false?'已下架':'上架中'}</span>`}</td>
       <td><button class="btn btn-ghost btn-sm" onclick="openPModal('${p.id}')" style="margin-right:4px">編輯</button><button class="btn btn-red btn-sm" onclick="delProd('${p.id}')">刪除</button></td>
     </tr>`;
   }).join('');
-  // 手機卡片
   mob.innerHTML=products.map(p=>{
     const hasImg=(p.colors||[]).some(c=>(c.images||[]).length>0);
     const sold=!(p.colors||[]).some(c=>(c.sizes||[]).some(s=>s.stock>0));
@@ -581,10 +615,7 @@ function renderProds(){
         <div style="display:flex;gap:10px;align-items:flex-start;flex:1">
           ${thumb?`<img src="${dThumb(thumb)}" style="width:44px;height:56px;object-fit:cover;border:1px solid var(--line);flex-shrink:0" alt="">`:
           `<div style="width:44px;height:56px;background:var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);flex-shrink:0">無圖</div>`}
-          <div>
-            <div class="mob-card-title">${p.name}</div>
-            <div class="mob-card-sub">${p.brand||'24hours'} · ${hasImg?'有圖片':'無圖片'}</div>
-          </div>
+          <div><div class="mob-card-title">${p.name}</div><div class="mob-card-sub">${p.brand||'24hours'}</div></div>
         </div>
         <div>${sold?`<span class="badge badge-r">售完</span>`:`<span class="badge badge-g">${p.active===false?'下架':'上架'}</span>`}</div>
       </div>
@@ -600,177 +631,17 @@ function renderProds(){
   }).join('');
 }
 
-// ── PRODUCT MODAL ──
-function openPModal(id){
-  editingId=id||null;
-  document.getElementById('pModalTitle').textContent=id?'編輯商品':'新增商品';
-  const p=id?products.find(x=>x.id===id):null;
-  document.getElementById('pName').value=p?.name||'';
-  document.getElementById('pBrand').value=p?.brand||'24hours';
-  document.getElementById('pPrice').value=p?.price||'';
-  document.getElementById('pDesc').value=p?.desc||'';
-  document.getElementById('pActive').value=p?.active===false?'false':'true';
-  editColors=JSON.parse(JSON.stringify(p?.colors||[]));
-  editDetailImgs=JSON.parse(JSON.stringify(p?.detailImages||[]));
-  renderColorsEditor();
-  renderDetailThumbs();
-  document.getElementById('pModal').classList.add('open');
-}
-function closePModal(){document.getElementById('pModal').classList.remove('open');}
-
-function renderColorsEditor(){
-  const el=document.getElementById('colorsContainer');
-  if(!editColors.length){
-    el.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">尚無顏色，點擊「新增顏色」開始</div>`;
-    return;
-  }
-  el.innerHTML=editColors.map((c,ci)=>`
-    <div class="color-item" id="ci_${ci}">
-      <div class="color-item-hd" onclick="toggleColor(${ci})">
-        <span class="color-item-name">${c.name||'（未命名）'}</span>
-        <span style="font-size:11px;color:var(--muted)">${(c.images||[]).length}張圖 · ${(c.sizes||[]).length}個尺寸</span>
-        <button onclick="event.stopPropagation();rmColor(${ci})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px" title="刪除此顏色">✕</button>
-        <span class="color-toggle" id="ct_${ci}">▶</span>
-      </div>
-      <div class="color-item-body" id="cb_${ci}">
-        <!-- color basic -->
-        <div style="margin-bottom:12px">
-          <div class="fgroup" style="margin:0">
-            <label class="flabel">顏色名稱</label>
-            <input class="finput" value="${c.name||''}" placeholder="e.g. 霧玫瑰、午夜黑、奶茶白" onchange="editColors[${ci}].name=this.value;document.querySelector('#ci_${ci} .color-item-name').textContent=this.value||'（未命名）'">
-          </div>
-        </div>
-
-        <!-- images -->
-        <label class="flabel">商品圖片（從 Google Drive 貼上分享連結）</label>
-        <div class="img-thumbs" id="thumbs_${ci}"></div>
-        <div style="display:flex;gap:8px;margin-bottom:.8rem">
-          <input class="finput" id="imgUrl_${ci}" placeholder="貼上 Google Drive 分享連結 or 圖片 URL" style="flex:1">
-          <button class="btn btn-ghost btn-sm" onclick="addImgUrl(${ci})">新增</button>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:1rem">
-          Drive 連結格式：https://drive.google.com/file/d/檔案ID/view<br>
-          圖片需設為「知道連結的人都可以查看」
-        </div>
-
-        <!-- sizes -->
-        <div class="sizes-hd">
-          <span class="flabel" style="margin:0">尺寸與庫存</span>
-          <button class="btn btn-ghost btn-sm" onclick="addSize(${ci})">＋ 新增尺寸</button>
-        </div>
-        <div id="sizes_${ci}"></div>
-      </div>
-    </div>`).join('');
-
-  editColors.forEach((_,ci)=>{
-    renderThumbs(ci);
-    renderSizeRows(ci);
-  });
-}
-
-function toggleColor(ci){
-  const body=document.getElementById('cb_'+ci);
-  const tog=document.getElementById('ct_'+ci);
-  const open=body.classList.toggle('open');
-  tog.textContent=open?'▼':'▶';
-}
-
-function addColor(){
-  editColors.push({name:'',hex:'#cccccc',images:[],sizes:[{name:'S',stock:0},{name:'M',stock:0},{name:'L',stock:0}]});
-  renderColorsEditor();
-  // auto-open last
-  const ci=editColors.length-1;
-  setTimeout(()=>toggleColor(ci),50);
-}
-function rmColor(ci){editColors.splice(ci,1);renderColorsEditor();}
-
-function addImgUrl(ci){
-  const inp=document.getElementById('imgUrl_'+ci);
-  const url=inp.value.trim();
-  if(!url)return;
-  if(!editColors[ci].images)editColors[ci].images=[];
-  editColors[ci].images.push(url);
-  inp.value='';
-  renderThumbs(ci);
-  updateColorMeta(ci);
-}
-function rmImg(ci,ii){editColors[ci].images.splice(ii,1);renderThumbs(ci);updateColorMeta(ci);}
-function renderThumbs(ci){
-  const el=document.getElementById('thumbs_'+ci);
-  const imgs=editColors[ci].images||[];
-  el.innerHTML=imgs.map((u,ii)=>`
-    <div class="img-thumb">
-      <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
-      <button class="img-del" onclick="rmImg(${ci},${ii})">✕</button>
-    </div>`).join('');
-}
-
-function addSize(ci){
-  if(!editColors[ci].sizes)editColors[ci].sizes=[];
-  editColors[ci].sizes.push({name:'',stock:0});
-  renderSizeRows(ci);
-}
-function rmSize(ci,si){editColors[ci].sizes.splice(si,1);renderSizeRows(ci);updateColorMeta(ci);}
-function renderSizeRows(ci){
-  const el=document.getElementById('sizes_'+ci);
-  const sizes=editColors[ci].sizes||[];
-  el.innerHTML=sizes.map((s,si)=>`
-    <div class="size-row">
-      <input class="size-name-in" value="${s.name}" placeholder="尺寸（S/M/L/XL...）"
-        onchange="editColors[${ci}].sizes[${si}].name=this.value">
-      <input class="size-stock-in" type="number" value="${s.stock}" min="0" placeholder="庫存"
-        onchange="editColors[${ci}].sizes[${si}].stock=parseInt(this.value)||0">
-      <button class="size-del" onclick="rmSize(${ci},${si})">✕</button>
-    </div>`).join('');
-}
-function updateColorMeta(ci){
-  const span=document.querySelector(`#ci_${ci} .color-item-hd span:nth-child(3)`);
-  if(span)span.textContent=`${(editColors[ci].images||[]).length}張圖 · ${(editColors[ci].sizes||[]).length}個尺寸`;
-}
-
-// ── DETAIL IMAGES ──
-function addDetailImg(){
-  const inp=document.getElementById('detailImgUrl');
-  const url=inp.value.trim();if(!url)return;
-  editDetailImgs.push(url);inp.value='';
-  renderDetailThumbs();
-}
-function rmDetailImg(i){editDetailImgs.splice(i,1);renderDetailThumbs();}
-function renderDetailThumbs(){
-  const el=document.getElementById('detailThumbs');if(!el)return;
-  el.innerHTML=editDetailImgs.map((u,i)=>`
-    <div class="img-thumb">
-      <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
-      <button class="img-del" onclick="rmDetailImg(${i})">✕</button>
-    </div>`).join('');
-}
-
-async function saveProduct(){
-  const name=document.getElementById('pName').value.trim();
-  const price=parseInt(document.getElementById('pPrice').value);
-  if(!name||isNaN(price)){showToast('❌ 請填寫商品名稱和價格');return;}
-  const prod={
-    id:editingId||Date.now().toString(),
-    name,brand:document.getElementById('pBrand').value.trim()||'24hours',
-    price,desc:document.getElementById('pDesc').value.trim(),
-    active:document.getElementById('pActive').value==='true',
-    colors:editColors,
-    detailImages:editDetailImgs
-  };
-  if(editingId){const i=products.findIndex(p=>p.id===editingId);products[i]=prod;}
-  else products.push(prod);
-  await syncProds();renderProds();renderDash();closePModal();
-  showToast('✅ 商品已儲存');
-}
-
-async function delProd(id){
-  if(!confirm('確定刪除這個商品？'))return;
-  products=products.filter(p=>p.id!==id);
-  await syncProds();renderProds();renderDash();
-  showToast('🗑️ 商品已刪除');
-}
-async function syncProds(){
-  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'saveProducts',token:sessionStorage.getItem('tok'),data:products})});}catch{}
+let dragIdx=null;
+function dragStart(e){dragIdx=+e.currentTarget.dataset.idx;e.dataTransfer.effectAllowed='move';}
+function dragOver(e){e.preventDefault();}
+function dragDrop(e){
+  e.preventDefault();
+  const targetIdx=+e.currentTarget.dataset.idx;
+  if(dragIdx===null||dragIdx===targetIdx)return;
+  const moved=products.splice(dragIdx,1)[0];
+  products.splice(targetIdx,0,moved);
+  dragIdx=null;
+  renderProds();syncProds();
 }
 
 // ── ORDERS ──
@@ -782,35 +653,32 @@ function renderOrders(list){
     mob.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">尚無訂單</div>';
     return;
   }
-  // 桌機表格
   tb.innerHTML=list.map(o=>`
     <tr>
       <td style="font-size:11px;color:var(--muted);font-weight:500">${o.id}</td>
-      <td style="font-size:11px;color:var(--muted)">${o.time}</td>
-      <td><strong>${o.name}</strong></td>
+      <td style="font-size:12px;color:var(--muted)">${fmtTime(o.time)}</td>
+      <td><strong>${o.name}</strong>${o.lottery?`<div style="font-size:10px;color:#b06000;margin-top:2px">🎁 ${o.lottery}</div>`:''}</td>
       <td style="font-size:12px">${o.phone}</td>
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
-      <td><span class="badge badge-k">${o.pickup}</span></td>
+      <td><span class="badge badge-k">${o.pickup||'—'}</span></td>
       <td>${statusB(o.status)}</td>
       <td style="display:flex;gap:4px">
         <button class="btn btn-ghost btn-sm" onclick="openOModal('${o.id}')">查看</button>
         <button class="btn btn-red btn-sm" onclick="deleteOrder('${o.id}')">刪除</button>
       </td>
     </tr>`).join('');
-  // 手機卡片
   mob.innerHTML=list.map(o=>`
     <div class="mob-card">
       <div class="mob-card-top">
-        <div>
-          <div class="mob-card-title">${o.name}</div>
-          <div class="mob-card-sub">${o.id} · ${o.time}</div>
-        </div>
+        <div><div class="mob-card-title">${o.name}</div>
+        <div class="mob-card-sub">${o.id} · ${fmtTime(o.time)}</div></div>
         <div>${statusB(o.status)}</div>
       </div>
       <div class="mob-card-rows">
         <div class="mob-card-row"><span class="mob-card-label">手機</span><span class="mob-card-val">${o.phone}</span></div>
         <div class="mob-card-row"><span class="mob-card-label">金額</span><span class="mob-card-val"><strong>NT$ ${(o.total||0).toLocaleString()}</strong></span></div>
-        <div class="mob-card-row"><span class="mob-card-label">取貨</span><span class="mob-card-val">${o.pickup}</span></div>
+        <div class="mob-card-row"><span class="mob-card-label">取貨</span><span class="mob-card-val">${o.pickup||'—'}</span></div>
+        ${o.lottery?`<div class="mob-card-row"><span class="mob-card-label">密語</span><span class="mob-card-val" style="color:#b06000">🎁 ${o.lottery}</span></div>`:''}
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
       </div>
       <div class="mob-card-actions">
@@ -819,7 +687,6 @@ function renderOrders(list){
       </div>
     </div>`).join('');
 }
-
 async function deleteOrder(id){
   if(!confirm('確定刪除此筆訂單？此操作無法復原。'))return;
   allOrders=allOrders.filter(o=>o.id!==id);
@@ -832,28 +699,37 @@ async function deleteOrder(id){
   showToast('🗑️ 訂單已刪除');
 }
 function filterO(status,el){
+  curOrderFilter=status;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  renderOrders(status==='all'?allOrders:allOrders.filter(o=>o.status===status));
+  searchOrders();
 }
 function openOModal(id){
   const o=allOrders.find(x=>x.id===id);if(!o)return;
   document.getElementById('oModalBody').innerHTML=`
     <div style="display:grid;gap:12px">
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${statusB(o.status)}<span class="badge badge-k">${o.pickup}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${statusB(o.status)}<span class="badge badge-k">${o.pickup||'—'}</span></div>
       <div class="frow">
-        <div><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">姓名</span><div style="font-size:15px;font-weight:500;margin-top:3px">${o.name}</div></div>
-        <div><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">電話</span><div style="font-size:15px;font-weight:500;margin-top:3px">${o.phone}</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">姓名</span><div style="font-size:15px;font-weight:500;margin-top:2px">${o.name}</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">手機</span><div style="font-size:15px;font-weight:500;margin-top:2px">${o.phone}</div></div>
       </div>
-      ${o.address?`<div><span style="font-size:11px;color:var(--muted)">地址</span><div style="margin-top:3px">${o.address}</div></div>`:''}
+      <div class="frow">
+        <div><span style="font-size:11px;color:var(--muted)">LINE ID</span><div style="margin-top:2px;font-size:13px">${o.lineId||'—'}</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">社群名稱</span><div style="margin-top:2px;font-size:13px">${o.lineName||'—'}</div></div>
+      </div>
+      <div class="frow">
+        <div><span style="font-size:11px;color:var(--muted)">帳號末5碼</span><div style="margin-top:2px;font-size:13px;font-weight:500">${o.acct||'—'}</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">抽獎密語</span><div style="margin-top:2px;font-size:13px;color:#b06000;font-weight:500">${o.lottery||'—'}</div></div>
+      </div>
       <div style="background:var(--line2);padding:12px">
         <div style="font-size:11px;font-weight:500;letter-spacing:.06em;margin-bottom:8px">訂購明細</div>
         ${(o.items||[]).map(i=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span>${i.name} / ${i.color} / ${i.size} ×${i.qty}</span><span>NT$ ${(i.qty*i.price).toLocaleString()}</span></div>`).join('')}
         <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:600;border-top:1px solid var(--line);padding-top:8px;margin-top:8px">
-          <span>合計</span><span style="color:var(--green)">NT$ ${(o.total||0).toLocaleString()}</span>
+          <span>應匯金額</span><span style="color:var(--green)">NT$ ${(o.total||0).toLocaleString()}</span>
         </div>
       </div>
       ${o.note?`<div style="font-size:13px"><span style="color:var(--muted)">備註：</span>${o.note}</div>`:''}
+      <div style="font-size:11px;color:var(--muted)">下單時間：${fmtTime(o.time)} ／ 訂單號：${o.id}</div>
     </div>`;
   document.getElementById('oModalFoot').innerHTML=`
     <select class="finput" id="oStatus" style="width:auto;padding:7px 10px;margin-right:auto">
@@ -891,6 +767,8 @@ async function saveSettings(){
     lineId:document.getElementById('cLine').value.trim(),
     contactQr:document.getElementById('cContactQr').value.trim(),
     contactGroup:document.getElementById('cContactGroup').value.trim(),
+    contactGroupName:document.getElementById('cContactGroupName').value.trim(),
+    contactGreet:document.getElementById('cContactGreet').value.trim(),
     contactNote:document.getElementById('cContactNote').value.trim(),
     bankInfo:{
       bank:document.getElementById('cBank').value.trim(),
