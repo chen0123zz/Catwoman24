@@ -161,25 +161,37 @@ tr:hover td{background:#fdfdfb;}
 .page.active{display:block;}
 
 @media(max-width:768px){
-  .app{flex-direction:column;}
+  .app{display:block;}
   .sidebar{
     width:100%;
     position:fixed;bottom:0;left:0;right:0;top:auto;
     height:auto;
-    flex-direction:column;
+    flex-direction:row !important;
     z-index:90;
     border-right:none;border-top:1px solid var(--line);
+    background:var(--white);
   }
   .sb-logo{display:none;}
   .sb-nav{
-    flex-direction:row;
-    padding:0;overflow-x:auto;flex:none;
+    display:flex !important;
+    flex-direction:row !important;
+    width:100%;
+    padding:0;
+    overflow-x:auto;
   }
   .nav-item{
-    flex-direction:column;gap:2px;
-    padding:8px 6px;font-size:10px;
-    letter-spacing:0;white-space:nowrap;
-    flex:1;justify-content:center;align-items:center;min-width:0;
+    display:flex !important;
+    flex-direction:column;
+    gap:2px;
+    padding:8px 4px;
+    font-size:10px;
+    letter-spacing:0;
+    white-space:nowrap;
+    flex:1;
+    justify-content:center;
+    align-items:center;
+    min-width:0;
+    border-radius:0;
   }
   .nav-icon{font-size:20px;width:auto;}
   .sb-foot{display:none;}
