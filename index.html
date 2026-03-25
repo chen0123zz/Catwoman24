@@ -468,7 +468,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 <script>
 const GAS_URL='https://script.google.com/macros/s/AKfycbyjGQqyxZ1fWK8ygJCSwY6IIESUGNIkD4POKrDwCstV6Id53cdBF5mV0v225zuvmqS4MA/exec';
 const SHIP_FEE=38;
-const SHIP_DISCOUNT=20; // 711 賣貨便代墊，取貨時另付，預先從匯款額扣除
+const SHIP_DISCOUNT=20; // 711 賣貨便預留款
 let products=[],cart=[],cfg={};
 let curP=null,selColor=null,selSize=null;
 
@@ -771,7 +771,7 @@ function renderFeeBox(){
     ${cart.map(x=>`<div class="fee-row"><span>${x.name} · ${x.color} · ${x.size} ×${x.qty}</span><span>$${(x.qty*x.price).toLocaleString()}</span></div>`).join('')}
     <div class="fee-row"><span>包材費（${pack.label}）</span><span>$${pack.fee}</span></div>
     <div class="fee-row" style="color:var(--muted)"><span>預留賣貨便金額</span><span>-$20</span></div>
-    <div class="fee-note">※ 賣貨便運費預先從匯款中扣除 $20，差額取貨時補付</div>
+    <div class="fee-note">※ 運費 $38 由賣貨便代收，取貨時支付，不含在本次匯款金額內</div>
     <div class="fee-total"><span>應匯金額</span><span>NT$ ${grand.toLocaleString()}</span></div>`;
 }
 
