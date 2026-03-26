@@ -305,6 +305,7 @@ tr:hover td{background:#fdfdfb;}
           <button class="btn btn-ghost btn-sm" onclick="clearSelection()">取消選取</button>
         </div>
         <button class="btn btn-red btn-sm" style="margin-left:auto" onclick="clearAllOrders()">🗑️ 清空全部訂單</button>
+        <button class="btn btn-ghost btn-sm" onclick="openLotteryModal()">🎁 抽獎</button>
       </div>
       <div class="tabs">
         <div class="tab active" onclick="filterO('all',this)">全部</div>
@@ -350,9 +351,9 @@ tr:hover td{background:#fdfdfb;}
               <div class="fgroup" style="margin:0"><label class="flabel">預計到貨日</label><input class="finput" type="date" id="cShipping"></div>
             </div>
             <div class="fgroup" style="margin:0">
-              <label class="flabel">本期成本價（官網實際下單價格，每件）</label>
-              <input class="finput" type="number" id="cCostPrice" placeholder="例：350">
-              <div style="font-size:11px;color:var(--muted);margin-top:4px">填入後，總覽會自動計算本期利潤</div>
+              <label class="flabel">本期成本設定（關鍵字對應）</label>
+              <textarea class="finput" id="cCostRules" rows="5" style="resize:vertical;line-height:1.8;font-family:monospace" placeholder="每行一條：關鍵字, 成本價&#10;例：&#10;內衣, 350&#10;內褲, 80&#10;限量款, 420"></textarea>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">商品名稱包含該關鍵字即套用對應成本，從上到下優先匹配</div>
             </div>
           </div>
         </div>
@@ -488,6 +489,37 @@ tr:hover td{background:#fdfdfb;}
   </div>
 </div>
 
+<!-- LOTTERY MODAL -->
+<div class="moverlay" id="lotteryModal">
+  <div class="mbox" style="max-width:500px">
+    <div class="mhd"><h3>🎁 隨機抽獎</h3><button class="mclose" onclick="closeLotteryModal()">✕</button></div>
+    <div class="mbody">
+      <div class="fgroup">
+        <label class="flabel">抽獎範圍</label>
+        <select class="finput" id="lotteryFilter" onchange="updateLotteryPool()">
+          <option value="all">全部訂單</option>
+          <option value="first">首次跟團（填「我是第一次跟團」）</option>
+          <option value="return">回購（填「我是忠實粉絲」）</option>
+          <option value="lottery">有填密語的訂單</option>
+        </select>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:1rem">
+        符合條件：<strong id="lotteryPoolCount">0</strong> 人
+      </div>
+      <div id="lotteryResult" style="display:none;text-align:center;padding:2rem;background:var(--line2);margin-bottom:1rem">
+        <div style="font-size:40px;margin-bottom:.5rem">🎉</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:.3rem">得獎者</div>
+        <div style="font-size:24px;font-weight:700" id="lotteryWinner">—</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:.3rem" id="lotteryWinnerDetail"></div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeLotteryModal()">關閉</button>
+      <button class="btn btn-ink" onclick="drawLottery()">🎲 開始抽獎</button>
+    </div>
+  </div>
+</div>
+
 <!-- ORDER MODAL -->
 <div class="moverlay" id="oModal">
   <div class="mbox">
@@ -557,7 +589,7 @@ function applyCfg(){
   document.getElementById('cHeroD').value=cfg.heroDesc||'';
   document.getElementById('cDeadline').value=(cfg.deadlineRaw||'').replace(/^'/,'');
   document.getElementById('cShipping').value=(cfg.shippingRaw||'').replace(/^'/,'');
-  document.getElementById('cCostPrice').value=cfg.costPrice||'';
+  document.getElementById('cCostRules').value=cfg.costRules||'';
   // notice
   document.getElementById('cNoticeShipping').value=cfg.noticeShipping||'';
   document.getElementById('cNoticePayment').value=cfg.noticePayment||'';
@@ -588,16 +620,25 @@ function renderDash(){
   document.getElementById('sRevenue').textContent='NT$ '+tot.toLocaleString();
   document.getElementById('sProds').textContent=products.length;
   document.getElementById('sPending').textContent=pend;
-  // 利潤計算
-  const costPrice=parseFloat(cfg.costPrice||0);
-  if(costPrice>0){
-    // 計算所有訂單的商品總件數
-    let totalQty=0;
-    orders.forEach(o=>(o.items||[]).forEach(i=>totalQty+=i.qty||0));
-    const profit=tot-(costPrice*totalQty);
+  // 利潤計算（關鍵字對應成本）
+  const costRules=(cfg.costRules||'').split('\n').map(l=>{
+    const parts=l.split(',');
+    if(parts.length<2)return null;
+    const kw=parts[0].trim(), cost=parseFloat(parts[1]);
+    return(kw&&!isNaN(cost))?{kw,cost}:null;
+  }).filter(Boolean);
+  if(costRules.length>0){
+    let totalCost=0;
+    orders.forEach(o=>(o.items||[]).forEach(i=>{
+      const name=i.name||'';
+      const rule=costRules.find(r=>name.includes(r.kw));
+      if(rule)totalCost+=rule.cost*(i.qty||0);
+    }));
+    const profit=tot-totalCost;
     document.getElementById('sProfitCard').style.display='block';
-    document.getElementById('sProfit').textContent='NT$ '+profit.toLocaleString();
-    document.getElementById('sProfitNote').textContent=`${totalQty}件 × 成本$${costPrice}`;
+    document.getElementById('sProfit').textContent=(profit>=0?'NT$ ':'- NT$ ')+Math.abs(profit).toLocaleString();
+    document.getElementById('sProfit').style.color=profit>=0?'var(--green)':'var(--red)';
+    document.getElementById('sProfitNote').textContent=`總收款 ${tot.toLocaleString()} - 成本 ${totalCost.toLocaleString()}`;
   } else {
     document.getElementById('sProfitCard').style.display='none';
   }
@@ -963,7 +1004,7 @@ function renderOrders(list){
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
       <td>${statusB(o.status)}</td>
       <td>
-        <input class="finput" value="${o.memo||''}" placeholder="備註欄" style="padding:4px 6px;font-size:12px;min-width:100px"
+        <input class="finput" value="${o.memo||''}" placeholder="備註" style="padding:4px 6px;font-size:12px;min-width:100px"
           onchange="saveMemo('${o.id}',this.value)">
       </td>
       <td style="display:flex;gap:4px">
@@ -1017,16 +1058,22 @@ async function batchUpdateStatus(){
   if(!status){showToast('請選擇要更新的狀態');return;}
   const ids=[...document.querySelectorAll('.order-check:checked')].map(c=>c.value);
   if(!ids.length)return;
-  ids.forEach(id=>{const o=allOrders.find(x=>x.id===id);if(o)o.status=status;});
+  // 立即更新記憶體中的狀態
+  ids.forEach(id=>{
+    const o=allOrders.find(x=>x.id===id);
+    if(o)o.status=status;
+  });
   orders=allOrders;
-  // 批次送 GAS
+  // 立即重新渲染，不等 GAS 回應
+  clearSelection();
+  searchOrders();
+  renderDash();
+  showToast(`✅ 已將 ${ids.length} 筆訂單更新為「${status}」`);
+  // 背景送 GAS
   for(const id of ids){
     try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'updateOrderStatus',token:sessionStorage.getItem('tok'),id,status})});}catch{}
   }
-  clearSelection();
-  searchOrders();renderDash();
-  showToast(`✅ 已將 ${ids.length} 筆訂單更新為「${status}」`);
 }
 
 // ── 清空全部訂單 ──
@@ -1159,6 +1206,7 @@ async function saveSettings(){
     noticeOther:document.getElementById('cNoticeOther').value.trim(),
     lotterySubtitle:document.getElementById('cLotterySubtitle').value.trim(),
     lotteryContent:document.getElementById('cLotteryContent').value.trim(),
+    costRules:document.getElementById('cCostRules').value.trim(),
   };
   const np=document.getElementById('cAdminP').value;if(np)nc.adminPass=np;
   cfg={...cfg,...nc};
@@ -1167,7 +1215,37 @@ async function saveSettings(){
   showToast('✅ 設定已儲存');
 }
 
-// ── UTILS ──
+// ── 抽獎 ──
+function openLotteryModal(){
+  updateLotteryPool();
+  document.getElementById('lotteryResult').style.display='none';
+  document.getElementById('lotteryModal').classList.add('open');
+}
+function closeLotteryModal(){document.getElementById('lotteryModal').classList.remove('open');}
+function getLotteryPool(){
+  const f=document.getElementById('lotteryFilter').value;
+  const valid=allOrders.filter(o=>o.status!=='取消');
+  if(f==='all')return valid;
+  if(f==='first')return valid.filter(o=>(o.lottery||'').includes('第一次跟團'));
+  if(f==='return')return valid.filter(o=>(o.lottery||'').includes('忠實粉絲'));
+  if(f==='lottery')return valid.filter(o=>(o.lottery||'').trim());
+  return valid;
+}
+function updateLotteryPool(){
+  document.getElementById('lotteryPoolCount').textContent=getLotteryPool().length;
+  document.getElementById('lotteryResult').style.display='none';
+}
+function drawLottery(){
+  const pool=getLotteryPool();
+  if(!pool.length){showToast('沒有符合條件的訂單');return;}
+  const winner=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('lotteryResult').style.display='block';
+  document.getElementById('lotteryWinner').textContent=winner.name;
+  document.getElementById('lotteryWinnerDetail').textContent=
+    `${winner.lineId||winner.phone||''}${winner.lottery?' · 密語：'+winner.lottery:''}`;
+}
+
+
 function dThumb(url){if(!url)return'';const m=url.match(/[-\w]{25,}/);return m?`https://drive.google.com/thumbnail?id=${m[0]}&sz=w300`:url;}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
 
