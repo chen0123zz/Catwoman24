@@ -323,7 +323,7 @@ tr:hover td{background:#fdfdfb;}
             <th class="sortable" onclick="sortOrders('lineId')">LINE ID <span id="sort-lineId"></span></th>
             <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
             <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
-            <th>備忘</th>
+            <th>備註</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="ordersTb"></tbody>
@@ -986,7 +986,7 @@ function renderOrders(list){
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
       </div>
       <div style="margin-top:8px">
-        <input class="finput" value="${o.memo||''}" placeholder="📝 備忘（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
+        <input class="finput" value="${o.memo||''}" placeholder="📝 備註（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
           onchange="saveMemo('${o.id}',this.value)">
       </div>
       <div class="mob-card-actions">
@@ -1039,6 +1039,8 @@ async function clearAllOrders(){
   searchOrders();renderDash();
   showToast('🗑️ 所有訂單已清空');
 }
+
+async function deleteOrder(id){
   if(!confirm('確定刪除此筆訂單？此操作無法復原。'))return;
   allOrders=allOrders.filter(o=>o.id!==id);
   orders=allOrders;
