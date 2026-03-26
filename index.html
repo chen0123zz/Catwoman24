@@ -64,7 +64,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .sec{padding:3rem 0 2rem;}
 .sec-hd{margin-bottom:2rem;}
 .sec-hd h2{font-size:20px;font-weight:700;}
-.sec-hd p{font-size:14px;color:var(--ink3);margin-top:6px;}
+.sec-hd p{font-size:12px;color:var(--muted);margin-top:4px;}
 .sec-divider{border:none;border-top:1px solid var(--line);margin:0;}
 .notice-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .notice-box{background:var(--white);border:1px solid var(--line);padding:1.4rem 1.6rem;}
@@ -120,6 +120,12 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 .cpanel-group-btn{display:block;padding:13px 16px;background:var(--ink);color:#fff;text-decoration:none;font-size:13px;font-weight:500;text-align:center;letter-spacing:.06em;transition:background .15s;}
 .cpanel-group-btn:hover{background:var(--ink2);}
 .cpanel-group-name{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+
+/* ── CATEGORY FILTER ── */
+.cat-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.cat-btn{padding:6px 16px;font-size:12px;border:1px solid var(--line);background:none;cursor:pointer;letter-spacing:.06em;font-family:var(--sans);color:var(--muted);transition:all .15s;}
+.cat-btn:hover{border-color:var(--ink);color:var(--ink);}
+.cat-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 
 /* ── PRODUCT CARD CAROUSEL ── */
 .pc-img{position:relative;height:320px;overflow:hidden;background:var(--line2);}
@@ -359,6 +365,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
     <!-- PRODUCTS -->
     <div class="sec" id="sec-products">
       <div class="sec-hd"><h2>本期商品</h2><p id="pCount">載入中⋯</p></div>
+      <div class="cat-filter" id="catFilter"></div>
       <div class="grid" id="grid"><div class="empty-state">商品載入中⋯</div></div>
     </div>
   </main>
@@ -409,7 +416,7 @@ main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem;}
 
     <div class="fgrid">
       <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
-      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx" maxlength="10"></div>
     </div>
     <div class="fgrid">
       <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
@@ -493,7 +500,7 @@ async function init(){
     const d=await r.json();
     products=d.products||[];cfg=d.config||{};
   }catch{products=demo();cfg=demoCfg();showToast('⚠ 示範模式');}
-  applyConfig();renderGrid();applyNotice();
+  applyConfig();renderCatFilter();renderGrid();applyNotice();
 }
 
 // ── DATE FORMAT — 純字串拆解，完全不用 Date 物件避免時區偏移 ──
@@ -593,6 +600,23 @@ function showList(){showView('view-list');}
 // ── PRODUCT GRID ──
 const carouselTimers={};
 const isMobile=()=>window.matchMedia('(hover:none)').matches;
+let curCategory='all';
+
+function renderCatFilter(){
+  const el=document.getElementById('catFilter');
+  if(!el)return;
+  // 從 config 讀取分類，格式「內衣,內褲,配件」或空
+  const cats=(cfg.productCategories||'').split(/[,，]/).map(c=>c.trim()).filter(Boolean);
+  if(!cats.length){el.innerHTML='';return;}
+  el.innerHTML=[{key:'all',label:'全部'},...cats.map(c=>({key:c,label:c}))].map(c=>`
+    <button class="cat-btn ${curCategory===c.key?'active':''}" onclick="setCat('${c.key}')">${c.label}</button>
+  `).join('');
+}
+function setCat(key){
+  curCategory=key;
+  renderCatFilter();
+  renderGrid();
+}
 
 function startCarousel(pid,imgs){
   if(carouselTimers[pid])return;
@@ -621,7 +645,11 @@ function stopCarousel(pid){
 function renderGrid(){
   Object.keys(carouselTimers).forEach(k=>{clearInterval(carouselTimers[k]);delete carouselTimers[k];});
   const g=document.getElementById('grid');
-  const list=products.filter(p=>p.active!==false);
+  let list=products.filter(p=>p.active!==false);
+  // 分類篩選
+  if(curCategory!=='all'){
+    list=list.filter(p=>(p.category||'').includes(curCategory)||p.name.includes(curCategory));
+  }
   document.getElementById('pCount').textContent=list.length?`共 ${list.length} 款商品`:'目前無商品';
   if(!list.length){g.innerHTML='<div class="empty-state">商品即將上架</div>';return;}
 
@@ -786,7 +814,7 @@ function renderCart(){
   document.getElementById('total').textContent='NT$ '+tot.toLocaleString();
   const b=document.getElementById('badge');b.textContent=cnt;b.classList.toggle('on',cnt>0);
   const el=document.getElementById('di');
-  if(!cart.length){el.innerHTML='<div class="di-empty">購物車還是空的</div>';return;}
+  if(!cart.length){el.innerHTML='<div class="di-empty">袋子還是空的</div>';return;}
   el.innerHTML=cart.map(item=>`
     <div class="ci">
       <div class="ci-img">${item.thumb?`<img src="${dThumb(item.thumb,200)}" alt="">`:''}</div>
@@ -849,19 +877,25 @@ async function submitOrder(){
     shipFee:SHIP_FEE,packFee:pack.fee,packLabel:pack.label,
     total:grand,items:cart};
   try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submitOrder',data})});}catch{}
+  const successItems=[...cart];
   cart=[];renderCart();
-  showSuccess(grand);
+  showSuccess(grand,successItems);
 }
 
-function showSuccess(grand){
-  // 重置結帳表單（修復送出後無法再次下單的問題）
+function showSuccess(grand,items){
   const cs=document.getElementById('cs');
+  const itemsHtml=(items||[]).map(i=>`
+    <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--line)">
+      <span style="color:var(--ink3)">${i.name} · ${i.color} · ${i.size} ×${i.qty}</span>
+      <span style="font-weight:500">$${(i.qty*i.price).toLocaleString()}</span>
+    </div>`).join('');
   cs.innerHTML=`
     <div class="success-v">
       <div class="cat">🐱</div>
       <h3>訂單已送出！</h3>
       <div style="background:var(--line2);padding:1rem;margin:1rem 0;text-align:left">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.1em">應匯金額</div>
+        ${itemsHtml?`<div style="margin-bottom:10px">${itemsHtml}</div>`:''}
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.1em;margin-top:${itemsHtml?'8px':'0'}">應匯金額</div>
         <div style="font-size:28px;font-weight:700;">NT$ ${grand.toLocaleString()}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:4px">請截圖此頁面，12 小時內完成匯款</div>
       </div>
@@ -882,7 +916,7 @@ function resetCheckout(){
     <div class="cs-title">填寫訂購資料</div>
     <div class="fgrid">
       <div class="fg"><label class="fl">姓名 <span>*</span></label><input class="fi" id="bName" placeholder="真實姓名"></div>
-      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx"></div>
+      <div class="fg"><label class="fl">手機號碼 <span>*</span></label><input class="fi" id="bMobile" type="text" inputmode="numeric" placeholder="09xxxxxxxx" maxlength="10"></div>
     </div>
     <div class="fgrid">
       <div class="fg"><label class="fl">LINE ID <span>*</span></label><input class="fi" id="bLineId" placeholder="LINE ID（不含@）"></div>
@@ -927,9 +961,9 @@ function demo(){return[
   {id:'1',name:'【鎮店款】24HRS 無感支撐內衣',brand:'24hours',desc:'超輕薄無縫設計，無鋼圈自然支撐，整日穿著如裸感。\n採用高彈力莫代爾布料，親膚透氣不悶熱。',price:380,active:true,colors:[
     {name:'棉花糖粉',images:[],sizes:[{name:'S',stock:5},{name:'M',stock:3},{name:'L',stock:2}]},
     {name:'春日粉紫',images:[],sizes:[{name:'S',stock:2},{name:'M',stock:0},{name:'L',stock:1}]},
-    {name:'午夜黑',images:[],sizes:[{name:'S',stock:0},{name:'M',stock:2},{name:'L',stock:3}]},
+    {name:'經典黑',images:[],sizes:[{name:'S',stock:0},{name:'M',stock:2},{name:'L',stock:3}]},
   ]},
-  {id:'2',name:'涼感冰絲內褲',brand:'24hours',desc:'冰絲面料，夏日涼感首選，平角剪裁不夾臀。',price:180,active:true,colors:[
+  {id:'2',name:'【鎮店款】24HRS無感支撐內褲',brand:'24hours',desc:'冰絲面料，夏日涼感首選，平角剪裁不夾臀。',price:180,active:true,colors:[
     {name:'奶油白',images:[],sizes:[{name:'S',stock:8},{name:'M',stock:5},{name:'L',stock:3}]},
     {name:'薰衣草紫',images:[],sizes:[{name:'S',stock:4},{name:'M',stock:6},{name:'L',stock:0}]},
   ]},
