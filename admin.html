@@ -350,9 +350,18 @@ tr:hover td{background:#fdfdfb;}
               <div class="fgroup" style="margin:0"><label class="flabel">預計到貨日</label><input class="finput" type="date" id="cShipping"></div>
             </div>
             <div class="fgroup" style="margin:0">
+              <label class="flabel">前台商品分類標籤</label>
+              <input class="finput" id="cProductCategories" placeholder="例：內衣,內褲,配件（用逗號分隔）">
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">前台商品頁會出現分類按鈕，讓客人快速篩選；留空則不顯示分類</div>
+            </div>
+            <div class="fgroup" style="margin:0">
               <label class="flabel">本期成本設定（關鍵字對應）</label>
               <textarea class="finput" id="cCostRules" rows="5" style="resize:vertical;line-height:1.8;font-family:monospace" placeholder="每行一條：關鍵字, 成本價&#10;例：&#10;內衣, 350&#10;內褲, 80&#10;限量款, 420"></textarea>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px">商品名稱包含該關鍵字即套用對應成本，從上到下優先匹配</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">
+                商品名稱包含該關鍵字即套用對應成本，<strong>從上到下優先匹配</strong>（第一個符合的就套用）<br>
+                例：商品名稱「限量款無感內衣」→ 若「限量款」寫在「內衣」前面，就套限量款成本；反之套內衣成本<br>
+                支援中文逗號「，」或英文逗號「,」
+              </div>
             </div>
           </div>
         </div>
@@ -449,6 +458,12 @@ tr:hover td{background:#fdfdfb;}
             <option value="false">下架</option>
           </select>
         </div>
+      </div>
+      <div class="fgroup" style="margin-bottom:12px">
+        <label class="flabel">商品分類</label>
+        <select class="finput" id="pCategory">
+          <option value="">未分類</option>
+        </select>
       </div>
       <div class="fgroup" style="margin-bottom:20px"><label class="flabel">商品描述</label><input class="finput" id="pDesc" placeholder="商品特色介紹..."></div>
 
@@ -589,6 +604,7 @@ function applyCfg(){
   document.getElementById('cDeadline').value=(cfg.deadlineRaw||'').replace(/^'/,'');
   document.getElementById('cShipping').value=(cfg.shippingRaw||'').replace(/^'/,'');
   document.getElementById('cCostRules').value=cfg.costRules||'';
+  document.getElementById('cProductCategories').value=cfg.productCategories||'';
   // notice
   document.getElementById('cNoticeShipping').value=cfg.noticeShipping||'';
   document.getElementById('cNoticePayment').value=cfg.noticePayment||'';
@@ -621,7 +637,7 @@ function renderDash(){
   document.getElementById('sPending').textContent=pend;
   // 利潤計算（關鍵字對應成本）
   const costRules=(cfg.costRules||'').split('\n').map(l=>{
-    const parts=l.split(',');
+    const parts=l.split(/[,，]/);
     if(parts.length<2)return null;
     const kw=parts[0].trim(), cost=parseFloat(parts[1]);
     return(kw&&!isNaN(cost))?{kw,cost}:null;
@@ -761,6 +777,11 @@ function openPModal(id){
   document.getElementById('pPrice').value=p?.price||'';
   document.getElementById('pDesc').value=p?.desc||'';
   document.getElementById('pActive').value=p?.active===false?'false':'true';
+  // 填入分類選項
+  const cats=(cfg.productCategories||'').split(/[,，]/).map(c=>c.trim()).filter(Boolean);
+  const catSel=document.getElementById('pCategory');
+  catSel.innerHTML='<option value="">未分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  catSel.value=p?.category||'';
   editColors=JSON.parse(JSON.stringify(p?.colors||[]));
   editDetailImgs=JSON.parse(JSON.stringify(p?.detailImages||[]));
   renderColorsEditor();
@@ -965,6 +986,7 @@ async function saveProduct(){
     name,brand:document.getElementById('pBrand').value.trim()||'24hours',
     price,desc:document.getElementById('pDesc').value.trim(),
     active:document.getElementById('pActive').value==='true',
+    category:document.getElementById('pCategory').value||'',
     colors:editColors,
     detailImages:editDetailImgs
   };
@@ -1004,7 +1026,7 @@ function renderOrders(list){
       <td><strong>NT$ ${(o.total||0).toLocaleString()}</strong></td>
       <td>${statusB(o.status)}</td>
       <td>
-        <input class="finput" value="${o.memo||''}" placeholder="備註" style="padding:4px 6px;font-size:12px;min-width:100px"
+        <input class="finput" value="${o.memo||''}" placeholder="備註欄" style="padding:4px 6px;font-size:12px;min-width:100px"
           onchange="saveMemo('${o.id}',this.value)">
       </td>
       <td style="display:flex;gap:4px">
@@ -1206,6 +1228,7 @@ async function saveSettings(){
     lotterySubtitle:document.getElementById('cLotterySubtitle').value.trim(),
     lotteryContent:document.getElementById('cLotteryContent').value.trim(),
     costRules:document.getElementById('cCostRules').value.trim(),
+    productCategories:document.getElementById('cProductCategories').value.trim(),
   };
   const np=document.getElementById('cAdminP').value;if(np)nc.adminPass=np;
   cfg={...cfg,...nc};
@@ -1237,11 +1260,41 @@ function updateLotteryPool(){
 function drawLottery(){
   const pool=getLotteryPool();
   if(!pool.length){showToast('沒有符合條件的訂單');return;}
+  // 動畫效果：快速滾動名字，再慢慢停下來
+  const result=document.getElementById('lotteryResult');
+  const winnerEl=document.getElementById('lotteryWinner');
+  const detailEl=document.getElementById('lotteryWinnerDetail');
+  result.style.display='block';
+  detailEl.textContent='';
+  winnerEl.style.fontSize='18px';
+  winnerEl.style.letterSpacing='.1em';
+  let count=0;
+  const total=28;
   const winner=pool[Math.floor(Math.random()*pool.length)];
-  document.getElementById('lotteryResult').style.display='block';
-  document.getElementById('lotteryWinner').textContent=winner.name;
-  document.getElementById('lotteryWinnerDetail').textContent=
-    `${winner.lineId||winner.phone||''}${winner.lottery?' · 密語：'+winner.lottery:''}`;
+  const intervals=[60,60,80,80,100,120,150,180,220,260,300,350];
+  let step=0;
+  function roll(){
+    const r=pool[Math.floor(Math.random()*pool.length)];
+    winnerEl.textContent=r.name;
+    count++;
+    if(count>=total){
+      // 最終停下
+      winnerEl.textContent=winner.name;
+      winnerEl.style.fontSize='24px';
+      winnerEl.style.letterSpacing='0';
+      detailEl.textContent=`${winner.lineId||winner.phone||''}${winner.lottery?' · 密語：'+winner.lottery:''}`;
+      // 撒花效果
+      winnerEl.animate([
+        {transform:'scale(1.3)',color:'#c0392b'},
+        {transform:'scale(1)',color:'inherit'}
+      ],{duration:500,easing:'ease-out'});
+      return;
+    }
+    const delay=intervals[Math.min(step,intervals.length-1)];
+    if(count>total-intervals.length)step++;
+    setTimeout(roll,delay);
+  }
+  roll();
 }
 
 
