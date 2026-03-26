@@ -134,6 +134,9 @@ tr:hover td{background:#fdfdfb;}
 .img-thumb.dragging{opacity:.4;outline:2px dashed var(--muted);}
 .img-thumb img{width:100%;height:100%;object-fit:cover;pointer-events:none;}
 .img-del{position:absolute;top:-5px;right:-5px;width:18px;height:18px;background:var(--red);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.img-move-btns{display:none;position:absolute;bottom:-1px;left:0;right:0;background:rgba(0,0,0,.55);justify-content:space-between;}
+.img-move-btns button{background:none;border:none;color:#fff;font-size:14px;padding:1px 6px;cursor:pointer;flex:1;}
+@media(max-width:768px){.img-move-btns{display:flex;}}
 
 /* Sizes editor */
 .sizes-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
@@ -259,6 +262,11 @@ tr:hover td{background:#fdfdfb;}
         <div class="stat"><div class="stat-lbl">總金額</div><div class="stat-val accent" id="sRevenue">NT$ 0</div></div>
         <div class="stat"><div class="stat-lbl">商品款數</div><div class="stat-val" id="sProds">0</div></div>
         <div class="stat"><div class="stat-lbl">待確認</div><div class="stat-val warn" id="sPending">0</div></div>
+        <div class="stat" id="sProfitCard" style="display:none">
+          <div class="stat-lbl">本期利潤 <span style="font-size:10px;color:var(--muted)">(估)</span></div>
+          <div class="stat-val accent" id="sProfit">NT$ 0</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px" id="sProfitNote"></div>
+        </div>
       </div>
       <div class="card">
         <div class="card-hd"><h3>最新訂單</h3><button class="btn btn-ghost btn-sm" onclick="go('orders')">查看全部</button></div>
@@ -287,6 +295,16 @@ tr:hover td{background:#fdfdfb;}
       <div class="ph"><h1>訂單管理</h1><p>查看與管理所有訂單</p></div>
       <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
         <input class="finput" id="orderSearch" placeholder="搜尋姓名 / 電話 / 密語⋯" style="max-width:260px;padding:7px 10px" oninput="searchOrders()">
+        <div id="batchBar" style="display:none;align-items:center;gap:8px">
+          <span id="batchCount" style="font-size:12px;color:var(--muted)">已選 0 筆</span>
+          <select class="finput" id="batchStatus" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="">— 批次更新狀態 —</option>
+            <option>待確認</option><option>已付款</option><option>已完成</option><option>取消</option>
+          </select>
+          <button class="btn btn-ink btn-sm" onclick="batchUpdateStatus()">套用</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearSelection()">取消選取</button>
+        </div>
+        <button class="btn btn-red btn-sm" style="margin-left:auto" onclick="clearAllOrders()">🗑️ 清空全部訂單</button>
       </div>
       <div class="tabs">
         <div class="tab active" onclick="filterO('all',this)">全部</div>
@@ -297,6 +315,7 @@ tr:hover td{background:#fdfdfb;}
       <div class="card">
         <div class="tw"><table>
           <thead><tr>
+            <th style="width:32px"><input type="checkbox" id="checkAll" onchange="toggleAllCheck(this)"></th>
             <th class="sortable" onclick="sortOrders('id')">訂單號 <span id="sort-id"></span></th>
             <th class="sortable" onclick="sortOrders('time')">時間 <span id="sort-time">↓</span></th>
             <th class="sortable" onclick="sortOrders('name')">客戶 <span id="sort-name"></span></th>
@@ -304,7 +323,7 @@ tr:hover td{background:#fdfdfb;}
             <th class="sortable" onclick="sortOrders('lineId')">LINE ID <span id="sort-lineId"></span></th>
             <th class="sortable" onclick="sortOrders('total')">金額 <span id="sort-total"></span></th>
             <th class="sortable" onclick="sortOrders('status')">狀態 <span id="sort-status"></span></th>
-            <th>備註</th>
+            <th>備忘</th>
             <th>操作</th>
           </tr></thead>
           <tbody id="ordersTb"></tbody>
@@ -329,6 +348,11 @@ tr:hover td{background:#fdfdfb;}
             <div class="frow">
               <div class="fgroup" style="margin:0"><label class="flabel">截單日期</label><input class="finput" type="date" id="cDeadline"></div>
               <div class="fgroup" style="margin:0"><label class="flabel">預計到貨日</label><input class="finput" type="date" id="cShipping"></div>
+            </div>
+            <div class="fgroup" style="margin:0">
+              <label class="flabel">本期成本價（官網實際下單價格，每件）</label>
+              <input class="finput" type="number" id="cCostPrice" placeholder="例：350">
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">填入後，總覽會自動計算本期利潤</div>
             </div>
           </div>
         </div>
@@ -533,6 +557,7 @@ function applyCfg(){
   document.getElementById('cHeroD').value=cfg.heroDesc||'';
   document.getElementById('cDeadline').value=(cfg.deadlineRaw||'').replace(/^'/,'');
   document.getElementById('cShipping').value=(cfg.shippingRaw||'').replace(/^'/,'');
+  document.getElementById('cCostPrice').value=cfg.costPrice||'';
   // notice
   document.getElementById('cNoticeShipping').value=cfg.noticeShipping||'';
   document.getElementById('cNoticePayment').value=cfg.noticePayment||'';
@@ -563,6 +588,19 @@ function renderDash(){
   document.getElementById('sRevenue').textContent='NT$ '+tot.toLocaleString();
   document.getElementById('sProds').textContent=products.length;
   document.getElementById('sPending').textContent=pend;
+  // 利潤計算
+  const costPrice=parseFloat(cfg.costPrice||0);
+  if(costPrice>0){
+    // 計算所有訂單的商品總件數
+    let totalQty=0;
+    orders.forEach(o=>(o.items||[]).forEach(i=>totalQty+=i.qty||0));
+    const profit=tot-(costPrice*totalQty);
+    document.getElementById('sProfitCard').style.display='block';
+    document.getElementById('sProfit').textContent='NT$ '+profit.toLocaleString();
+    document.getElementById('sProfitNote').textContent=`${totalQty}件 × 成本$${costPrice}`;
+  } else {
+    document.getElementById('sProfitCard').style.display='none';
+  }
   const recent=[...orders].reverse().slice(0,5);
   document.getElementById('recentTb').innerHTML=recent.length?recent.map(o=>`
     <tr>
@@ -620,7 +658,7 @@ function renderProds(){
       <td><button class="btn btn-ghost btn-sm" onclick="openPModal('${p.id}')" style="margin-right:4px">編輯</button><button class="btn btn-red btn-sm" onclick="delProd('${p.id}')">刪除</button></td>
     </tr>`;
   }).join('');
-  mob.innerHTML=products.map(p=>{
+  mob.innerHTML=products.map((p,idx)=>{
     const hasImg=(p.colors||[]).some(c=>(c.images||[]).length>0);
     const sold=!(p.colors||[]).some(c=>(c.sizes||[]).some(s=>s.stock>0));
     const thumb=p.colors?.[0]?.images?.[0]||'';
@@ -631,7 +669,13 @@ function renderProds(){
           `<div style="width:44px;height:56px;background:var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);flex-shrink:0">無圖</div>`}
           <div><div class="mob-card-title">${p.name}</div><div class="mob-card-sub">${p.brand||'24hours'}</div></div>
         </div>
-        <div>${sold?`<span class="badge badge-r">售完</span>`:`<span class="badge badge-g">${p.active===false?'下架':'上架'}</span>`}</div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          ${sold?`<span class="badge badge-r">售完</span>`:`<span class="badge badge-g">${p.active===false?'下架':'上架'}</span>`}
+          <div style="display:flex;gap:2px">
+            <button class="btn btn-ghost btn-sm" onclick="moveProd(${idx},-1)" ${idx===0?'disabled':''} style="padding:2px 8px">↑</button>
+            <button class="btn btn-ghost btn-sm" onclick="moveProd(${idx},1)" ${idx===products.length-1?'disabled':''} style="padding:2px 8px">↓</button>
+          </div>
+        </div>
       </div>
       <div class="mob-card-rows">
         <div class="mob-card-row"><span class="mob-card-label">價格</span><span class="mob-card-val"><strong>NT$ ${(p.price||0).toLocaleString()}</strong></span></div>
@@ -643,6 +687,14 @@ function renderProds(){
       </div>
     </div>`;
   }).join('');
+}
+
+function moveProd(idx,dir){
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=products.length)return;
+  const moved=products.splice(idx,1)[0];
+  products.splice(newIdx,0,moved);
+  renderProds();syncProds();
 }
 
 let dragIdx=null;
@@ -691,6 +743,10 @@ function renderColorsEditor(){
         <span style="color:var(--muted);cursor:grab;margin-right:4px;font-size:14px" onclick="event.stopPropagation()">⠿</span>
         <span class="color-item-name">${c.name||'（未命名）'}</span>
         <span style="font-size:11px;color:var(--muted)">${(c.images||[]).length}張圖 · ${(c.sizes||[]).length}個尺寸</span>
+        <div style="display:flex;gap:2px;margin-left:auto" onclick="event.stopPropagation()">
+          <button class="btn btn-ghost btn-sm mob-only" onclick="moveColor(${ci},-1)" ${ci===0?'disabled':''} style="padding:2px 8px;font-size:11px">↑</button>
+          <button class="btn btn-ghost btn-sm mob-only" onclick="moveColor(${ci},1)" ${ci===editColors.length-1?'disabled':''} style="padding:2px 8px;font-size:11px">↓</button>
+        </div>
         <button onclick="event.stopPropagation();rmColor(${ci})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px" title="刪除此顏色">✕</button>
         <span class="color-toggle" id="ct_${ci}">▶</span>
       </div>
@@ -744,6 +800,23 @@ function imgDragDrop(e,type,targetIdx,targetCi=null){
   imgDragData={type:null,idx:null,ci:null};
 }
 
+
+// ── 手機版圖片左右移動 ──
+function moveImg(type,ci,idx,dir){
+  const newIdx=idx+dir;
+  if(type==='detail'){
+    if(newIdx<0||newIdx>=editDetailImgs.length)return;
+    const moved=editDetailImgs.splice(idx,1)[0];
+    editDetailImgs.splice(newIdx,0,moved);
+    renderDetailThumbs();
+  } else if(type==='color'){
+    const arr=editColors[ci].images;
+    if(newIdx<0||newIdx>=arr.length)return;
+    const moved=arr.splice(idx,1)[0];
+    arr.splice(newIdx,0,moved);
+    renderThumbs(ci);updateColorMeta(ci);
+  }
+}
 // ── 顏色拖曳排序 ──
 let colorDragIdx=null;
 function colorDragStart(e,ci){colorDragIdx=ci;e.dataTransfer.effectAllowed='move';}
@@ -754,6 +827,13 @@ function colorDragDrop(e,targetCi){
   const moved=editColors.splice(colorDragIdx,1)[0];
   editColors.splice(targetCi,0,moved);
   colorDragIdx=null;
+  renderColorsEditor();
+}
+function moveColor(ci,dir){
+  const newCi=ci+dir;
+  if(newCi<0||newCi>=editColors.length)return;
+  const moved=editColors.splice(ci,1)[0];
+  editColors.splice(newCi,0,moved);
   renderColorsEditor();
 }
 
@@ -776,14 +856,18 @@ function addImgUrl(ci){
 function rmImg(ci,ii){editColors[ci].images.splice(ii,1);renderThumbs(ci);updateColorMeta(ci);}
 function renderThumbs(ci){
   const el=document.getElementById('thumbs_'+ci);if(!el)return;
-  el.innerHTML=(editColors[ci].images||[]).map((u,ii)=>`
+  const imgs=editColors[ci].images||[];
+  el.innerHTML=imgs.map((u,ii)=>`
     <div class="img-thumb" draggable="true"
       ondragstart="imgDragStart(event,'color',${ii},${ci})"
       ondragover="imgDragOver(event)"
-      ondrop="imgDragDrop(event,'color',${ii},${ci})"
-      style="cursor:grab">
+      ondrop="imgDragDrop(event,'color',${ii},${ci})">
       <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
       <button class="img-del" onclick="rmImg(${ci},${ii})">✕</button>
+      <div class="img-move-btns">
+        <button onclick="moveImg('color',${ci},${ii},-1)">◀</button>
+        <button onclick="moveImg('color',${ci},${ii},1)">▶</button>
+      </div>
     </div>`).join('');
 }
 
@@ -818,13 +902,16 @@ function rmDetailImg(i){editDetailImgs.splice(i,1);renderDetailThumbs();}
 function renderDetailThumbs(){
   const el=document.getElementById('detailThumbs');if(!el)return;
   el.innerHTML=editDetailImgs.map((u,i)=>`
-    <div class="img-thumb" draggable="true" data-type="detail" data-idx="${i}"
+    <div class="img-thumb" draggable="true"
       ondragstart="imgDragStart(event,'detail',${i})"
       ondragover="imgDragOver(event)"
-      ondrop="imgDragDrop(event,'detail',${i})"
-      style="cursor:grab">
+      ondrop="imgDragDrop(event,'detail',${i})">
       <img src="${dThumb(u)}" alt="" onerror="this.style.background='var(--line2)';this.src=''">
       <button class="img-del" onclick="rmDetailImg(${i})">✕</button>
+      <div class="img-move-btns">
+        <button onclick="moveImg('detail',null,${i},-1)">◀</button>
+        <button onclick="moveImg('detail',null,${i},1)">▶</button>
+      </div>
     </div>`).join('');
 }
 
@@ -867,6 +954,7 @@ function renderOrders(list){
   }
   tb.innerHTML=list.map(o=>`
     <tr>
+      <td><input type="checkbox" class="order-check" value="${o.id}" onchange="updateBatchBar()"></td>
       <td style="font-size:11px;color:var(--muted);font-weight:500">${o.id}</td>
       <td style="font-size:12px;color:var(--muted)">${fmtTime(o.time)}</td>
       <td><strong>${o.name}</strong>${o.lottery?`<div style="font-size:10px;color:#b06000;margin-top:2px">🎁 ${o.lottery}</div>`:''}</td>
@@ -876,7 +964,7 @@ function renderOrders(list){
       <td>${statusB(o.status)}</td>
       <td>
         <input class="finput" value="${o.memo||''}" placeholder="備註欄" style="padding:4px 6px;font-size:12px;min-width:100px"
-          onchange="saveMemo('${o.id}',this.value)" title="貨到後可在此備忘缺貨、補貨狀態等">
+          onchange="saveMemo('${o.id}',this.value)">
       </td>
       <td style="display:flex;gap:4px">
         <button class="btn btn-ghost btn-sm" onclick="openOModal('${o.id}')">查看</button>
@@ -898,7 +986,7 @@ function renderOrders(list){
         ${o.note?`<div class="mob-card-row"><span class="mob-card-label">備註</span><span class="mob-card-val">${o.note}</span></div>`:''}
       </div>
       <div style="margin-top:8px">
-        <input class="finput" value="${o.memo||''}" placeholder="📝 備註（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
+        <input class="finput" value="${o.memo||''}" placeholder="📝 備忘（缺貨、補貨狀態…）" style="padding:6px 8px;font-size:12px;width:100%"
           onchange="saveMemo('${o.id}',this.value)">
       </div>
       <div class="mob-card-actions">
@@ -907,7 +995,50 @@ function renderOrders(list){
       </div>
     </div>`).join('');
 }
-async function deleteOrder(id){
+// ── 批次勾選 ──
+function updateBatchBar(){
+  const checked=document.querySelectorAll('.order-check:checked');
+  const bar=document.getElementById('batchBar');
+  bar.style.display=checked.length?'flex':'none';
+  document.getElementById('batchCount').textContent=`已選 ${checked.length} 筆`;
+}
+function toggleAllCheck(cb){
+  document.querySelectorAll('.order-check').forEach(c=>c.checked=cb.checked);
+  updateBatchBar();
+}
+function clearSelection(){
+  document.querySelectorAll('.order-check').forEach(c=>c.checked=false);
+  const ca=document.getElementById('checkAll');
+  if(ca)ca.checked=false;
+  updateBatchBar();
+}
+async function batchUpdateStatus(){
+  const status=document.getElementById('batchStatus').value;
+  if(!status){showToast('請選擇要更新的狀態');return;}
+  const ids=[...document.querySelectorAll('.order-check:checked')].map(c=>c.value);
+  if(!ids.length)return;
+  ids.forEach(id=>{const o=allOrders.find(x=>x.id===id);if(o)o.status=status;});
+  orders=allOrders;
+  // 批次送 GAS
+  for(const id of ids){
+    try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'updateOrderStatus',token:sessionStorage.getItem('tok'),id,status})});}catch{}
+  }
+  clearSelection();
+  searchOrders();renderDash();
+  showToast(`✅ 已將 ${ids.length} 筆訂單更新為「${status}」`);
+}
+
+// ── 清空全部訂單 ──
+async function clearAllOrders(){
+  if(!confirm(`⚠️ 確定清空全部 ${allOrders.length} 筆訂單？\n\n此操作將同步刪除 Google Sheets 中的所有訂單，無法復原。\n\n建議清空前先截圖或備份 Sheets 資料。`))return;
+  if(!confirm('再次確認：確定要清空所有訂單嗎？'))return;
+  allOrders=[];orders=[];
+  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'clearOrders',token:sessionStorage.getItem('tok')})});}catch{}
+  searchOrders();renderDash();
+  showToast('🗑️ 所有訂單已清空');
+}
   if(!confirm('確定刪除此筆訂單？此操作無法復原。'))return;
   allOrders=allOrders.filter(o=>o.id!==id);
   orders=allOrders;
@@ -1007,6 +1138,7 @@ async function saveSettings(){
     deadlineRaw,
     shipping:fmtDate(shippingRaw),
     shippingRaw,
+    costPrice:document.getElementById('cCostPrice').value.trim(),
     lineId:document.getElementById('cLine').value.trim(),
     contactQr:document.getElementById('cContactQr').value.trim(),
     contactGroup:document.getElementById('cContactGroup').value.trim(),
